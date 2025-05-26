@@ -34,20 +34,6 @@
   box-sizing: border-box;
 }
 
-.select-form {
-  width: 100%;
-  padding: 12px;
-  padding-bottom: 35px;
-  font-size: 15px;
-  margin-bottom: 20px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: white;
-  color: #333;
-  box-sizing: border-box;
-  height: 45px; 
-  font-family: inherit;
-}
 
 .contact-form textarea {
   height: 120px;
