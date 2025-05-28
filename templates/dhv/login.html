@@ -1,5 +1,5 @@
 
-    <!--====== BANNER PART START ======-->
+   <!--====== BANNER PART START ======-->
 
 <section class="banner-area bg_cover mt-80" style="background-image: url(<?=$setting['template']?>/assets-frontend/images/Media/trangchu/Banner\ chính.jpg)">
     <div class="container">
@@ -26,10 +26,10 @@
     </div>
 </section>
 
-   <div class="login-container">
-  <form class="login-form">
-    <input type="text" placeholder="Tên đăng nhập / Email" class="form-input">
-    <input type="password" placeholder="Mật khẩu" class="form-input">
+<div class="login-container">
+  <form class="login-form" method="POST" action="/login">
+    <input type="text" name="email" placeholder="Tên đăng nhập / Email" class="form-input">
+    <input type="password" name="password" placeholder="Mật khẩu" class="form-input">
 
     <div class="remember-container">
       <input type="checkbox" id="remember">
@@ -37,10 +37,10 @@
     </div>
 
     <div class="btn-container">
-      <button type="submit" class="btn-login">ĐĂNG NHẬP</button>
+        <button class="btn-login" type="submit" data-action="submit" data-load="/"><?=$jatbi->lang("ĐĂNG NHẬP")?></button>
+
     </div>
   </form>
 </div>
 
 
-    <!--====== OFFER PART ENDS ======-->

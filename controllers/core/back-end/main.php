@@ -2,16 +2,25 @@
 	if (!defined('ECLO')) die("Hacking attempt");
     $jatbi = new Jatbi($app);
     $setting = $app->getValueData('setting');
-    $app->router("/admin/login", 'GET', function($vars) use ($app, $jatbi,$setting) {
+    // $app->router("/",'GET', function($vars) use ($app,$jatbi,$setting) {
+    //     if(!$app->getSession("accounts")){
+    //         $vars['templates'] = 'login';
+    //         echo $app->render('templates/login.html', $vars);
+    //     }
+    //     else {
+    //         echo $app->render('templates/dhv/index.html', $vars);
+    //     }
+    // });
+    $app->router("/login", 'GET', function($vars) use ($app, $jatbi,$setting) {
         if(!$app->getSession("accounts")){
             $vars['templates'] = 'login';
-            echo $app->render('templates/login.html', $vars);
+            echo $app->render('templates/dhv/login.html', $vars);
         }
         else {
             $app->redirect('/');
         }
     });
-    $app->router("/admin/login", 'POST', function($vars) use ($app, $jatbi,$setting) {
+    $app->router("/login", 'POST', function($vars) use ($app, $jatbi,$setting) {
         $app->header([
             'Content-Type' => 'application/json',
         ]);
@@ -78,12 +87,12 @@
             echo json_encode(['status' => 'error','content' => $jatbi->lang('Vui lòng không để trống')]);
         }
     });
-    $app->router("/admin/logout", 'GET', function($vars) use ($app) {
+    $app->router("/logout", 'GET', function($vars) use ($app) {
         $app->deleteSession('accounts');
         $app->deleteCookie('token');
         $app->redirect('/');
     });
-    $app->router("/admin/register", 'GET', function($vars) use ($app, $jatbi,$setting) {
+    $app->router("/register", 'GET', function($vars) use ($app, $jatbi,$setting) {
         if(!$app->getSession("accounts")){
             $vars['templates'] = 'register';
             echo $app->render('templates/login.html', $vars);
@@ -92,7 +101,7 @@
             $app->redirect('/');
         }
     });
-    $app->router("/admin/register", 'POST', function($vars) use ($app, $jatbi) {
+    $app->router("/register", 'POST', function($vars) use ($app, $jatbi) {
         $app->header([
             'Content-Type' => 'application/json',
         ]);
@@ -254,7 +263,7 @@
             echo json_encode($error);
         }
     });
-    $app->router("/admin/email-comfirm", 'POST', function($vars) use ($app, $jatbi) {
+    $app->router("/email-comfirm", 'POST', function($vars) use ($app, $jatbi) {
         $app->header([
             'Content-Type' => 'application/json',
         ]);
@@ -302,7 +311,7 @@
             }
         }
     });
-    $app->router("/admin/forgot-password", 'GET', function($vars) use ($app, $jatbi) {
+    $app->router("/forgot-password", 'GET', function($vars) use ($app, $jatbi) {
         if(!$app->getSession("accounts")){
             $vars['templates'] = 'forgot';
             echo $app->render('templates/login.html', $vars);
@@ -311,7 +320,7 @@
             $app->redirect('/');
         }
     });
-    $app->router("/admin/lang/{active}", 'GET', function($vars) use ($app, $jatbi,$setting) {
+    $app->router("/lang/{active}", 'GET', function($vars) use ($app, $jatbi,$setting) {
         $app->setCookie('lang', $vars['active'],time()+$setting['cookie'],'/');
         $account = $app->get("accounts","id",["id"=>$app->getSession("accounts")['id']]);
         if($account>0){
@@ -319,7 +328,7 @@
         }
         $app->redirect($_SERVER['HTTP_REFERER']);
     });
-    $app->router("/admin/login-check/google", 'GET', function($vars) use ($app,$jatbi,$setting) {
+    $app->router("/login-check/google", 'GET', function($vars) use ($app,$jatbi,$setting) {
          $app->header([
             'Content-Type' => 'application/json',
         ]);
@@ -593,7 +602,7 @@
             die();
         }
     });
-    $app->router("/admin/login-check/apple", 'POST', function($vars) use ($app,$jatbi,$setting) {
+    $app->router("/login-check/apple", 'POST', function($vars) use ($app,$jatbi,$setting) {
          $app->header([
             'Content-Type' => 'application/json',
         ]);
@@ -989,4 +998,65 @@
             echo $app->render('templates/error.html', $vars);
         }
     });
+
+    function getdata() {
+        global $app;
+
+        $late = $app->count("latetime", ["type" => "Đi trễ", "Status" => "A"]); // Removed extra comma
+        $early = $app->count("latetime", ["type" => "Về sớm", "Status" => "A"]); // Removed extra comma
+        $kophep = $app->count("leavetype", ["SalaryType" => "Nghỉ có lương", "Status" => "A"]); // Removed extra comma
+        $cophep = $app->count("leavetype", ["SalaryType" => "Nghỉ không lương", "Status" => "A"]); // Removed extra comma
+        $overtime = $app->count("overtime", ["statu" => "Pending"]);
+        $shift = $app->count("shift", ["statu" => "A"]);
+
+        $reward = $app->query("
+            SELECT personSN 
+            FROM reward_discipline 
+            WHERE type = 'reward' 
+            GROUP BY personSN 
+            ORDER BY COUNT(personSN) DESC 
+            LIMIT 1
+        ")->fetchColumn();
+        $Creward = $app->count("reward_discipline", ["personSN" => $reward, "type" => "reward"]);
+        $reward = $app->get("employee", "name", ["sn" => $reward]);
+
+        $discipline = $app->query("
+            SELECT personSN 
+            FROM reward_discipline 
+            WHERE type = 'discipline' 
+            GROUP BY personSN 
+            ORDER BY COUNT(personSN) DESC 
+            LIMIT 1
+        ")->fetchColumn();
+        $Cdiscipline = $app->count("reward_discipline", ["personSN" => $discipline, "type" => "discipline"]);
+        $discipline = $app->get("employee", "name", ["sn" => $discipline]);
+
+        $createTime = $app->query("
+            SELECT 
+                DATE(createTime) AS record_date, 
+                MIN(createTime) AS minTime, 
+                MAX(createTime) AS maxTime 
+            FROM record 
+            WHERE personType = 2 
+            GROUP BY DATE(createTime)
+            ORDER BY record_date DESC
+            LIMIT 7
+        ")->fetchAll(PDO::FETCH_ASSOC);
+
+        $contract = $app->query("
+            SELECT person_sn AS contract, contract_duration AS time 
+            FROM employee_contracts 
+            ORDER BY contract_duration ASC 
+            LIMIT 4
+        ")->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach ($contract as $key => $value) {
+            $contract[$key]['contract'] = $app->get("employee", "name", ["sn" => $value['contract']]);
+        }
+
+        $holiday = $app->select("staff-holiday", ["startDate", "endDate"], ["status" => "A"]);
+        //var_dump($holiday);
+        return [$late, $early, $kophep, $cophep, $overtime, $shift, $reward, $Creward, $discipline, $Cdiscipline, $createTime, $contract, $holiday];
+    }
+
 ?>
