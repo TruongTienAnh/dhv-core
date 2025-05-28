@@ -4,7 +4,6 @@
     $setting = $app->getValueData('setting');
     $common = $app->getValueData('common');
     $permission = $app->getValueData('permission');
-
     $app->router("/notification", 'GET', function($vars) use ($app, $jatbi) {
         $vars['templates'] = 'notification';
         $user = $app->getSession("accounts");
@@ -755,6 +754,7 @@
     })->setPermissions(['accounts.deleted']);
 
     $app->router("/users/permission", 'GET', function($vars) use ($app, $jatbi) {
+        $app->setGlobalFile(__DIR__ . '/../../includes/global.php');
         $vars['title'] = $jatbi->lang("Nhóm quyền");
         echo $app->render('templates/users/permission.html', $vars);
     })->setPermissions(['permission']);

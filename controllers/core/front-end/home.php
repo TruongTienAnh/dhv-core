@@ -23,9 +23,9 @@ $app->router("/project", 'GET', function($vars) use ($app, $jatbi, $setting) {
     echo $app->render('templates/dhv/project.html', $vars);
 }); 
 
-// $app->router("/login", 'GET', function($vars) use ($app, $jatbi, $setting) {
-//     echo $app->render('templates/dhv/login.html', $vars);
-// }); 
+$app->router("/login", 'GET', function($vars) use ($app, $jatbi, $setting) {
+    echo $app->render('templates/dhv/login.html', $vars);
+}); 
 
 $app->router("/library", 'GET', function($vars) use ($app, $jatbi, $setting) {
     echo $app->render('templates/dhv/library.html', $vars);
