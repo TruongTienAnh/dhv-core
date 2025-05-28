@@ -5,13 +5,15 @@
     $common = $app->getValueData('common');
     $permission = $app->getValueData('permission');
     $app->router("/notification", 'GET', function($vars) use ($app, $jatbi) {
+        $app->setGlobalFile(__DIR__ . '/../../includes/global.php');
         $vars['templates'] = 'notification';
         $user = $app->getSession("accounts");
         $vars['datas'] = $app->select("notifications","*",["account"=>$user['id'],"deleted"=>0,"ORDER"=>["date"=>"DESC"],"LIMIT"=>20]);
-        echo $app->render('templates/users/notification.html', $vars,'global');
+        echo $app->render('templates/users/notification.html', $vars);
     })->setPermissions(['login']);
 
     $app->router("/users/profile", 'GET', function($vars) use ($app, $jatbi,$setting) {
+        $app->setGlobalFile(__DIR__ . '/../../includes/global.php');
         $vars['title'] = $jatbi->lang("Thông tin");
         $vars['router'] = 'profile';
         $vars['account'] = $app->get("accounts","*",["id"=>$app->getSession("accounts")['id']]);
@@ -19,6 +21,7 @@
     })->setPermissions(['login']);
 
     $app->router("/users/notification", 'GET', function($vars) use ($app, $jatbi,$setting) {
+        $app->setGlobalFile(__DIR__ . '/../../includes/global.php');
         $vars['router'] = 'notification';
         $vars['title'] = $jatbi->lang("Thông báo");
         echo $app->render('templates/users/profile.html', $vars);
@@ -104,6 +107,7 @@
     })->setPermissions(['login']);
 
     $app->router("/users/notification/{active}", 'GET', function($vars) use ($app, $jatbi,$setting) {
+        $app->setGlobalFile(__DIR__ . '/../../includes/global.php');
         $data = $app->get("notifications","*",["active"=>$app->xss($vars['active']),"deleted"=>0,]);
         $app->update("notifications",["views"=>$data['views']+1],["id"=>$data['id']]);
         if($data['template']=='url'){
@@ -133,6 +137,7 @@
     })->setPermissions(['login']);
 
     $app->router("/users/notification-deleted", 'GET', function($vars) use ($app, $jatbi) {
+        $app->setGlobalFile(__DIR__ . '/../../includes/global.php');
         $vars['title'] = $jatbi->lang("Xóa thông báo");
         echo $app->render('templates/common/deleted.html', $vars, 'global');
     })->setPermissions(['login']);
@@ -156,6 +161,7 @@
     })->setPermissions(['login']);
 
     $app->router("/users/logs", 'GET', function($vars) use ($app, $jatbi,$setting) {
+        $app->setGlobalFile(__DIR__ . '/../../includes/global.php');
         $vars['router'] = 'logs';
         $vars['title'] = $jatbi->lang("Nhật ký");
         echo $app->render('templates/users/profile.html', $vars);
@@ -240,6 +246,7 @@
     })->setPermissions(['login']);
 
     $app->router("/users/logs-views/{id}", 'GET', function($vars) use ($app, $jatbi) {
+        $app->setGlobalFile(__DIR__ . '/../../includes/global.php');
         $vars['data'] = $app->get("logs","*",["active"=>$vars['id'],"deleted"=>0]);
         if($vars['data']>1){
             echo $app->render('templates/admin/logs-views.html', $vars, 'global');
@@ -250,6 +257,7 @@
     })->setPermissions(['login']);
 
     $app->router("/users/settings", 'GET', function($vars) use ($app, $jatbi,$setting) {
+        $app->setGlobalFile(__DIR__ . '/../../includes/global.php');
         $vars['router'] = 'settings';
         $vars['title'] = $jatbi->lang("Cài đặt");
         $vars['account'] = $app->get("accounts","*",["id"=>$app->getSession("accounts")['id']]);
@@ -308,6 +316,7 @@
     })->setPermissions(['login']);
 
     $app->router("/users/change-password", 'GET', function($vars) use ($app, $jatbi,$setting) {
+        $app->setGlobalFile(__DIR__ . '/../../includes/global.php');
         $vars['account'] = $app->get("accounts","*",["id"=>$app->getSession("accounts")['id'],"status"=>"A"]);
         if($vars['account']>1){
             echo $app->render('templates/users/change-password.html', $vars, 'global');
@@ -347,6 +356,7 @@
     })->setPermissions(['login']);
 
     $app->router("/users/change-infomation", 'GET', function($vars) use ($app, $jatbi,$setting) {
+        $app->setGlobalFile(__DIR__ . '/../../includes/global.php');
         $vars['account'] = $app->get("accounts","*",["id"=>$app->getSession("accounts")['id'],"status"=>"A"]);
         if($vars['account']>1){
             echo $app->render('templates/users/change-infomation.html', $vars, 'global');
@@ -384,6 +394,7 @@
     })->setPermissions(['login']);
 
     $app->router("/users/accounts", 'GET', function($vars) use ($app, $jatbi) {
+        $app->setGlobalFile(__DIR__ . '/../../includes/global.php');
         $vars['title'] = $jatbi->lang("Tài khoản");
         $vars['add'] = '/users/accounts-add';
         $vars['deleted'] = '/users/accounts-deleted';
@@ -467,6 +478,7 @@
     })->setPermissions(['accounts']);
 
     $app->router("/users/accounts-add", 'GET', function($vars) use ($app, $jatbi) {
+        $app->setGlobalFile(__DIR__ . '/../../includes/global.php');
         $vars['title'] = $jatbi->lang("Thêm Tài khoản");
         $vars['permissions'] = $app->select("permissions","*",["deleted"=>0,"status"=>"A"]);
         $vars['data'] = [
@@ -571,6 +583,7 @@
     })->setPermissions(['accounts.add']);
 
     $app->router("/users/accounts-edit/{id}", 'GET', function($vars) use ($app, $jatbi) {
+        $app->setGlobalFile(__DIR__ . '/../../includes/global.php');
         $vars['title'] = $jatbi->lang("Sửa Tài khoản");
         $vars['permissions'] = $app->select("permissions","*",["deleted"=>0,"status"=>"A"]);
         $vars['data'] = $app->get("accounts","*",["active"=>$vars['id'],"deleted"=>0]);
@@ -700,6 +713,7 @@
     })->setPermissions(['accounts.edit']);
 
     $app->router("/users/accounts-deleted", 'GET', function($vars) use ($app, $jatbi) {
+        $app->setGlobalFile(__DIR__ . '/../../includes/global.php');
         $vars['title'] = $jatbi->lang("Xóa Tài khoản");
         echo $app->render('templates/common/deleted.html', $vars, 'global');
     })->setPermissions(['accounts.deleted']);
@@ -725,6 +739,7 @@
     })->setPermissions(['accounts.deleted']);
 
     $app->router("/users/accounts-restore/{id}", 'GET', function($vars) use ($app, $jatbi) {
+        $app->setGlobalFile(__DIR__ . '/../../includes/global.php');
         $vars['data'] = $app->get("trashs","*",["active"=>$vars['id'],"deleted"=>0]);
         if($vars['data']>1){
             echo $app->render('templates/common/restore.html', $vars, 'global');
@@ -814,6 +829,7 @@
     })->setPermissions(['permission']);
 
     $app->router("/users/permission-add", 'GET', function($vars) use ($app, $jatbi,$permission) {
+        $app->setGlobalFile(__DIR__ . '/../../includes/global.php');
         $vars['title'] = $jatbi->lang("Thêm Nhóm Quyền");
         $vars['permissions'] = $permission;
         $vars['data'] = [
@@ -849,6 +865,7 @@
     })->setPermissions(['permission.add']);
 
     $app->router("/users/permission-edit/{id}", 'GET', function($vars) use ($app, $jatbi,$permission) {
+        $app->setGlobalFile(__DIR__ . '/../../includes/global.php');
         $vars['title'] = $jatbi->lang("Sửa Nhóm Quyền");
         $vars['data'] = $app->get("permissions","*",["active"=>$vars['id'],"deleted"=>0]);
         if($vars['data']>1){
@@ -919,6 +936,7 @@
     })->setPermissions(['permission.edit']);
 
     $app->router("/users/permission-deleted", 'GET', function($vars) use ($app, $jatbi) {
+        $app->setGlobalFile(__DIR__ . '/../../includes/global.php');
         $vars['title'] = $jatbi->lang("Xóa Tài khoản");
         echo $app->render('templates/common/deleted.html', $vars, 'global');
     })->setPermissions(['permission.deleted']);
@@ -944,6 +962,7 @@
     })->setPermissions(['permission.deleted']);
 
     $app->router("/users/permission-restore/{id}", 'GET', function($vars) use ($app, $jatbi) {
+        $app->setGlobalFile(__DIR__ . '/../../includes/global.php');
         $vars['data'] = $app->get("trashs","*",["active"=>$vars['id'],"deleted"=>0]);
         if($vars['data']>1){
             echo $app->render('templates/common/restore.html', $vars, 'global');

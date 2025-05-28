@@ -3,22 +3,22 @@
     $jatbi = new Jatbi($app);
     $setting = $app->getValueData('setting');
     // $app->setGlobalFile(__DIR__ . '/../../includes/global.php');
-    // $app->router("/",'GET', function($vars) use ($app,$jatbi,$setting) {
-    //     if(!$app->getSession("accounts")){
-    //         $vars['templates'] = 'login';
-    //         echo $app->render('templates/login.html', $vars);
-    //     }
-    //     else {
-    //         echo $app->render('templates/dhv/index.html', $vars);
-    //     }
-    // });
+    $app->router("/admin",'GET', function($vars) use ($app,$jatbi,$setting) {
+        if(!$app->getSession("accounts")){
+            $vars['templates'] = 'login';
+            echo $app->render('templates/login.html', $vars);
+        }
+        else {
+            echo $app->render('templates/home.html', $vars);
+        }
+    });
     $app->router("/login", 'GET', function($vars) use ($app, $jatbi,$setting) {
         if(!$app->getSession("accounts")){
             $vars['templates'] = 'login';
             echo $app->render('templates/dhv/login.html', $vars);
         }
         else {
-            $app->redirect('/');
+            $app->redirect('/admin');
         }
     });
     $app->router("/login", 'POST', function($vars) use ($app, $jatbi,$setting) {
@@ -89,11 +89,13 @@
         }
     });
     $app->router("/logout", 'GET', function($vars) use ($app) {
+        $app->setGlobalFile(__DIR__ . '/../../includes/global.php');
         $app->deleteSession('accounts');
         $app->deleteCookie('token');
         $app->redirect('/');
     });
     $app->router("/register", 'GET', function($vars) use ($app, $jatbi,$setting) {
+        $app->setGlobalFile(__DIR__ . '/../../includes/global.php');
         if(!$app->getSession("accounts")){
             $vars['templates'] = 'register';
             echo $app->render('templates/login.html', $vars);
@@ -313,6 +315,7 @@
         }
     });
     $app->router("/forgot-password", 'GET', function($vars) use ($app, $jatbi) {
+        $app->setGlobalFile(__DIR__ . '/../../includes/global.php');
         if(!$app->getSession("accounts")){
             $vars['templates'] = 'forgot';
             echo $app->render('templates/login.html', $vars);
@@ -322,6 +325,7 @@
         }
     });
     $app->router("/lang/{active}", 'GET', function($vars) use ($app, $jatbi,$setting) {
+        $app->setGlobalFile(__DIR__ . '/../../includes/global.php');
         $app->setCookie('lang', $vars['active'],time()+$setting['cookie'],'/');
         $account = $app->get("accounts","id",["id"=>$app->getSession("accounts")['id']]);
         if($account>0){
@@ -330,6 +334,7 @@
         $app->redirect($_SERVER['HTTP_REFERER']);
     });
     $app->router("/login-check/google", 'GET', function($vars) use ($app,$jatbi,$setting) {
+        $app->setGlobalFile(__DIR__ . '/../../includes/global.php');
          $app->header([
             'Content-Type' => 'application/json',
         ]);
@@ -915,6 +920,7 @@
     });
 
     $app->router("/upload/{path}/{id}", 'GET', function($vars) use ($app,$jatbi) {
+        $app->setGlobalFile(__DIR__ . '/../../includes/global.php');
         ob_start();
         $getType = $app->xss($_GET['type'] ?? '');
         $data = $app->get("uploads",'content',["active"=>$vars['id'],"deleted"=>0]);
@@ -992,6 +998,7 @@
     })->setPermissions(['login']);
 
     $app->router("::error",'GET', function($vars) use ($app,$jatbi,$setting) {
+        $app->setGlobalFile(__DIR__ . '/../../includes/global.php');
         if(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest'){
             echo $app->render('templates/common/error-modal.html', $vars, 'global');
         }

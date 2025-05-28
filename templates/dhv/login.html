@@ -27,20 +27,56 @@
 </section>
 
 <div class="login-container">
-  <form class="login-form" method="POST" action="/login">
-    <input type="text" name="email" placeholder="Tên đăng nhập / Email" class="form-input">
-    <input type="password" name="password" placeholder="Mật khẩu" class="form-input">
-
-    <div class="remember-container">
-      <input type="checkbox" id="remember">
-      <label for="remember">Ghi nhớ tài khoản</label>
-    </div>
-
-    <div class="btn-container">
-        <button class="btn-login" type="submit" data-action="submit" data-load="/"><?=$jatbi->lang("ĐĂNG NHẬP")?></button>
-
-    </div>
-  </form>
+    <form class="login-form" method="POST" action="/login" id="login-form">
+        <input type="text" name="email" placeholder="Tên đăng nhập / Email" class="form-input" required>
+        <input type="password" name="password" placeholder="Mật khẩu" class="form-input" required>
+        <div class="remember-container">
+            <input type="checkbox" id="remember" name="remember" value="1">
+            <label for="remember">Ghi nhớ tài khoản</label>
+        </div>
+        <div class="btn-container">
+            <button class="btn-login" type="submit" data-action="submit" data-load="/"><?=$jatbi->lang("ĐĂNG NHẬP")?></button>
+        </div>
+    </form>
 </div>
+<!-- Thêm JS để xử lý form AJAX -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.getElementById('login-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const form = this;
+    const formData = new FormData(form);
+    fetch('/login', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            Swal.fire({
+                icon: 'success',
+                title: data.content,
+                showConfirmButton: false,
+                timer: 1500
+            }).then(() => {
+                window.location.href = '/admin';
+            });
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: data.content,
+                showConfirmButton: true
+            });
+        }
+    })
+    .catch(error => {
+        Swal.fire({
+            icon: 'error',
+            title: 'Lỗi kết nối',
+            showConfirmButton: true
+        });
+    });
+});
+</script>
 
 

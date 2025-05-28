@@ -47,6 +47,7 @@
 
 	$jatbi->checkAuthenticated($requests);
 	require_once __DIR__ . '/requests-frontend.php';
+	$app->setValueData('permission', $SelectPermission);
 
 	foreach ($setRequest as $items) {
 		$app->request($items['key'], $items['controllers']);
