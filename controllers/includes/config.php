@@ -43,22 +43,21 @@
 	$app->setValueData('jatbi', $jatbi);
 	$app->setValueData('common', $common);
     $app->JWT($setting['secret-key'], 'HS256');
+	require_once __DIR__ . '/requests.php';
 
+	$jatbi->checkAuthenticated($requests);
+	require_once __DIR__ . '/requests-frontend.php';
+
+	foreach ($setRequest as $items) {
+		$app->request($items['key'], $items['controllers']);
+	}
 	$router = explode('/', $_SERVER['REQUEST_URI']);
 	if ($router[1] == explode("/", $setting['backend'])[1]) {
 		$app->setGlobalFile(__DIR__ . '/global.php');
-		require_once __DIR__ . '/requests.php';
-		$jatbi->checkAuthenticated($requests);
-		$app->setValueData('permission', $SelectPermission);
-		foreach ($setRequest as $items) {
-			$app->request($items['key'], $items['controllers']);
-		}
+		
 	} else {
 		$app->setGlobalFile(__DIR__ . '/global-frontend.php');
-		require_once __DIR__ . '/requests-frontend.php';
-		foreach ($setRequest as $items) {
-			$app->request($items['key'], $items['controllers']);
-		}
+		
 	}
     require_once __DIR__ . '/components.php';
 ?>
