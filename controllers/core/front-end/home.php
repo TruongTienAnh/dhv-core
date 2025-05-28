@@ -42,3 +42,8 @@ $app->router("/news-detail", 'GET', function($vars) use ($app, $jatbi, $setting)
 $app->router("/library-detail", 'GET', function($vars) use ($app, $jatbi, $setting) {
     echo $app->render('templates/dhv/library-detail.html', $vars);
 }); 
+
+$app->router("/about", 'GET', function($vars) use ($app, $jatbi, $setting) {
+    echo $app->render('templates/dhv/about.html', $vars);
+}); 
+
