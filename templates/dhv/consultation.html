@@ -16,60 +16,61 @@
 
     <!--====== BANNER PART ENDS ======-->
     
-        <section class="consult-form">
-            <div class="container-2">
-                <p class="intro">
-              
-                    <span class="quote-mark">"</span> <br>
-                    Bạn đang muốn khởi nghiệp?<br>
-                    Bạn đang muốn chuyển đổi và phát triển?<br>
-                    Bạn đang muốn xây dựng Văn hóa Doanh nghiệp?<br>
-                    Hãy để chúng tôi giúp bạn bắt đầu với buổi tư vấn 1:1 <br>
-                    cùng chuyên gia.
-                    <span class="quote-mark end">"</span>
-                
-                </p>
-                <h4>1. Chọn Dịch vụ và hình thức tư vấn</h4>
-                <div class="services">
-                    <div class="service-item">
-                        <img src="<?=$setting['template']?>/assets-frontend/images/Media/8. Tư vấn/1.b.png" alt="Dịch vụ Doanh nghiệp">
-                        <p>Dịch vụ Doanh nghiệp</p>
+       <form method="POST" action="<?= $_SERVER['REQUEST_URI'] ?>-add">
+            <section class="consult-form">
+                <div class="container-2">
+                    <p class="intro">
+                        <span class="quote-mark">"</span> <br>
+                        Bạn đang muốn khởi nghiệp?<br>
+                        Bạn đang muốn chuyển đổi và phát triển?<br>
+                        Bạn đang muốn xây dựng Văn hóa Doanh nghiệp?<br>
+                        Hãy để chúng tôi giúp bạn bắt đầu với buổi tư vấn 1:1 <br>
+                        cùng chuyên gia.
+                        <span class="quote-mark end">"</span>
+                    </p>
+
+                    <h4>1. Chọn Dịch vụ và hình thức tư vấn</h4>
+                    <div class="services">
+                        <div class="service-item">
+                            <img src="<?=$setting['template']?>/assets-frontend/images/Media/8. Tư vấn/1.b.png" alt="Dịch vụ Doanh nghiệp">
+                            <p>Dịch vụ Doanh nghiệp</p>
+                        </div>
+                        <div class="service-item">
+                            <img src="<?=$setting['template']?>/assets-frontend/images/Media/8. Tư vấn/2B.png" alt="Tổ chức sự kiện, hội thảo">
+                            <p>Tổ chức sự kiện, hội thảo</p>
+                        </div>
                     </div>
-                    <div class="service-item">
-                        <img src="<?=$setting['template']?>/assets-frontend/images/Media/8. Tư vấn/2B.png" alt="Tổ chức sự kiện, hội thảo">
-                        <p>Tổ chức sự kiện, hội thảo</p>
+
+                    <div class="dropdowns">
+                        <select name="service_package" class="form-select">
+                            <option value="">Chọn gói dịch vụ</option>
+                            <option value="dvdn">Dịch vụ Doanh nghiệp</option>
+                            <option value="tcsk">Tổ chức sự kiện,hội thảo</option>
+                        </select>
+                        <select name="consult_method" class="form-select">
+                            <option value="">Chọn hình thức tư vấn</option>
+                            <option value="online">Online</option>
+                            <option value="offline">Offline</option>
+                        </select>
+                    </div>
+
+                    <h4>2. Thông tin của bạn</h4>
+                    <input type="text" name="name" class="form-input" placeholder="Họ và tên">
+                    <input type="text" name="phone" class="form-input" placeholder="Số điện thoại">
+                    <input type="email" name="email" class="form-input" placeholder="Email">
+                    <input type="text" name="name_business" class="form-input" placeholder="Tên Doanh nghiệp">
+                    <textarea name="note" class="form-textarea" placeholder="Vấn đề đang gặp phải và mong muốn ..."></textarea>
+
+                    <h4>3. Chọn ngày và giờ</h4>
+                    <input type="text" name="date" class="form-input" placeholder="dd/mm/yyyy">
+                    <input type="text" name="time" class="form-input" placeholder="--:--">
+
+                    <div class="btn-container-2">
+                        <button type="submit" class="btn-submit">GỬI YÊU CẦU TƯ VẤN</button>
                     </div>
                 </div>
-
-                <div class="dropdowns">
-                <select class="form-select">
-                    <option style="padding: 0px;">Chọn gói dịch vụ</option>
-                    <option>Gói 1</option>
-                    <option>Gói 2</option>
-                </select>
-                <select class="form-select">
-                    <option style="padding: 0px;">Chọn hình thức tư vấn</option>
-                    <option>Online</option>
-                    <option>Offline</option>
-                </select>
-                </div>
-
-                <h4>2. Thông tin của bạn</h4>
-                <input type="text" class="form-input" placeholder="Họ và tên">
-                <input type="text" class="form-input" placeholder="Số điện thoại">
-                <input type="email" class="form-input" placeholder="Email">
-                <input type="text" class="form-input" placeholder="Tên Doanh nghiệp">
-                <textarea class="form-textarea" placeholder="Vấn đề đang gặp phải và mong muốn ..."></textarea>
-
-                <h4>3. Chọn ngày và giờ</h4>
-                <input type="text" class="form-input" placeholder="dd/mm/yyyy">
-                <input type="text" class="form-input" placeholder="--:--">
-
-                <div class="btn-container-2">
-                    <button class="btn-submit">GỬI YÊU CẦU TƯ VẤN</button>
-                </div>
-            </div>
-        </section>
+            </section>
+        </form>
 
 
 
