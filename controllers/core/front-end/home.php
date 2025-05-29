@@ -47,10 +47,18 @@ $app->router("/about", 'GET', function($vars) use ($app, $jatbi, $setting) {
     echo $app->render('templates/dhv/about.html', $vars);
 }); 
 
-$app->router("/bussines-services", 'GET', function($vars) use ($app, $jatbi, $setting) {
-    echo $app->render('templates/dhv/bussines-services.html', $vars);
+$app->router("/business-services", 'GET', function($vars) use ($app, $jatbi, $setting) {
+    echo $app->render('templates/dhv/business-services.html', $vars);
 }); 
 
-$app->router("/bussines-services-detail", 'GET', function($vars) use ($app, $jatbi, $setting) {
-    echo $app->render('templates/dhv/bussines-services-detail.html', $vars);
+$app->router("/business-services-detail", 'GET', function($vars) use ($app, $jatbi, $setting) {
+    echo $app->render('templates/dhv/business-services-detail.html', $vars);
+});
+
+$app->router("/event-services", 'GET', function($vars) use ($app, $jatbi, $setting) {
+    echo $app->render('templates/dhv/event-services.html', $vars);
+});
+
+$app->router("/event-services-detail", 'GET', function($vars) use ($app, $jatbi, $setting) {
+    echo $app->render('templates/dhv/event-services-detail.html', $vars);
 });

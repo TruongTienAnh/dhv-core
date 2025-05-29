@@ -1,92 +1,6 @@
 
     <!-- Custom CSS for Cards -->
-    <style>
-        .services-area .card {
-            border: none;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            transition: transform 0.3s;
-            margin-bottom: 10%;
-        }
 
-        .services-area .card:hover {
-            transform: translateY(-5px);
-        }
-
-        .services-area .card img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-        }
-
-        .services-area .card-body {
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .services-area .card-body h6 {
-            color: #ed1c24;
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
-
-        .services-area .card-body h5 {
-            font-size: 16px;
-            font-weight: bold;
-            margin-bottom: 15px;
-            color: #333;
-        }
-
-        .services-area .card-body ol {
-            padding-left: 20px;
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 20px;
-            flex-grow: 1;
-        }
-
-        .services-area .card-body ol li {
-            margin-bottom: 8px;
-        }
-
-        .services-area .card-body .btn {
-            background-color: #ed1c24;
-            color: white;
-            font-weight: 600;
-            border-radius: 5px;
-            padding: 10px 20px;
-            text-align: center;
-            text-transform: uppercase;
-            font-size: 14px;
-            transition: background-color 0.3s;
-        }
-
-        .services-area .card-body .btn:hover {
-            background-color: #c8102e;
-        }
-
-        /* Pagination Styling */
-        .pagination .page-item.active .page-link {
-            background-color: #ed1c24;
-            border-color: #ed1c24;
-            color: white;
-        }
-
-        .pagination .page-link {
-            color: #ed1c24;
-            border: 1px solid #ddd;
-            margin: 0 5px;
-            border-radius: 5px;
-        }
-
-        .pagination .page-link:hover {
-            background-color: #f8f9fa;
-            border-color: #ddd;
-        }
-    </style>
 </head>
 
 
@@ -109,7 +23,8 @@
                                 <li class="breadcrumb-item" style="color: white;">
                                     <a href="/" style="color: white;">Trang chủ</a>
                                 </li>
-                                <li class="breadcrumb-item active" aria-current="page" style="color: white;">DOANH NGHIEP</li>
+                                 <li class="breadcrumb-item active" aria-current="page" style="color: white;">Dịch vụ</li>
+                                <li class="breadcrumb-item active" aria-current="page" style="color: white;">Tổ chức sự kiện</li>
                             </ol>
                         </nav>
                 </div>
@@ -259,18 +174,11 @@
             </div>
     </section>
 
-    <section class="services-area pt-5 pb-5">
-        <div class="container">
-            <!-- Pagination -->
-            <nav aria-label="Pagination" class="d-flex justify-content-center mt-4">
-                <ul class="pagination">
-                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item"><a class="page-link" href="#">4</a></li>
-                    <li class="page-item"><a class="page-link" href="#">5</a></li>
+                <nav aria-label="Page navigation">
+                <ul class="my-pagination justify-content-center">
+                    <li class="my-page-item active"><a class="my-page-link" href="#">1</a></li>
+                    <li class="my-page-item"><a class="my-page-link" href="#">2</a></li>
+                    <li class="my-page-item"><a class="my-page-link" href="#">3</a></li>
                 </ul>
-            </nav>
-        </div>
-    </section>
+                </nav>
     <!--====== OFFER PART ENDS ======-->
