@@ -24,182 +24,182 @@
         }
         require_once('templates/components/sidebar.html');
     });
-    //status Component
-    $app->setComponent('status', function($vars) use ($app, $setting, $jatbi) {
-        $url = isset($vars['url']) ? $vars['url'] : '';
-        $data = isset($vars['data']) ? $vars['data'] : '';
-        $permissions = isset($vars['permission']) ? $vars['permission'] : [];
-        $hasPermission = empty($permissions) || array_reduce($permissions, fn($carry, $perm) => $carry || $jatbi->permission($perm) == 'true', false);
-        if ($hasPermission) {
-            echo '<div class="form-check form-switch">
-                  <input class="form-check-input" data-action="click" data-url="'.$url.'" data-alert="true" type="checkbox" role="switch" ' . ($data=='A' ? 'checked' : '') . '>
-               </div>';
-        }
-        else {
-            echo '<div class="form-check form-switch">
-                  <input class="form-check-input" disabled type="checkbox" role="switch" ' . ($data=='A' ? 'checked' : '') . '>
-               </div>';
-        }
-    });
-    //box Component
-    $app->setComponent('box', function($vars) use ($app, $setting, $jatbi) {
-        $data = isset($vars['data']) ? $vars['data'] : '';
-        echo '<div class="form-check"><input class="form-check-input checker" type="checkbox" value="'.$data.'"></div>';
-    });
-    //action Component
-    $app->setComponent('action', function($vars) use ($app, $jatbi) {
-        if (!is_array($vars) || !isset($vars['button']) || !is_array($vars['button'])) {
-            return;
-        }
-        $buttons = $vars['button'];
-        $class = isset($vars['class']) ? $vars['class'] : '';
-        $output = '';
-        foreach ($buttons as $button) {
-            if (!is_array($button) || !isset($button['type'])) {
-                continue;
-            }
-            $name = htmlspecialchars($button['name'] ?? '');
-            $icon = $button['icon'] ?? '';
-            $class = htmlspecialchars($button['class'] ?? '');
-            $type = $button['type'] ?? 'link';
-            $permissions = $button['permission'] ?? [];
-            $action = isset($button['action']) && is_array($button['action']) 
-                ? implode(' ', array_map(fn($key, $value) => htmlspecialchars($key) . '="' . htmlspecialchars($value) . '"', array_keys($button['action']), $button['action']))
-                : '';
+        //status Component
+        $app->setComponent('status', function($vars) use ($app, $setting, $jatbi) {
+            $url = isset($vars['url']) ? $vars['url'] : '';
+            $data = isset($vars['data']) ? $vars['data'] : '';
+            $permissions = isset($vars['permission']) ? $vars['permission'] : [];
             $hasPermission = empty($permissions) || array_reduce($permissions, fn($carry, $perm) => $carry || $jatbi->permission($perm) == 'true', false);
             if ($hasPermission) {
-                if ($type === 'button') { 
-                    $output .= '<li><button ' . $action . ' class="btn dropdown-item ' . $class . '">'.$icon . $name . '</button></li>';
+                echo '<div class="form-check form-switch">
+                    <input class="form-check-input" data-action="click" data-url="'.$url.'" data-alert="true" type="checkbox" role="switch" ' . ($data=='A' ? 'checked' : '') . '>
+                </div>';
+            }
+            else {
+                echo '<div class="form-check form-switch">
+                    <input class="form-check-input" disabled type="checkbox" role="switch" ' . ($data=='A' ? 'checked' : '') . '>
+                </div>';
+            }
+        });
+        //box Component
+        $app->setComponent('box', function($vars) use ($app, $setting, $jatbi) {
+            $data = isset($vars['data']) ? $vars['data'] : '';
+            echo '<div class="form-check"><input class="form-check-input checker" type="checkbox" value="'.$data.'"></div>';
+        });
+        //action Component
+        $app->setComponent('action', function($vars) use ($app, $jatbi) {
+            if (!is_array($vars) || !isset($vars['button']) || !is_array($vars['button'])) {
+                return;
+            }
+            $buttons = $vars['button'];
+            $class = isset($vars['class']) ? $vars['class'] : '';
+            $output = '';
+            foreach ($buttons as $button) {
+                if (!is_array($button) || !isset($button['type'])) {
+                    continue;
                 }
-                elseif ($type === 'divider') { 
-                    $output .= '<li><hr class="dropdown-divider"></li>';
-                } else {
-                    $output .= '<li><a ' . $action . ' class="btn dropdown-item ' . $class . '">'.$icon . $name . '</a></li>';
+                $name = htmlspecialchars($button['name'] ?? '');
+                $icon = $button['icon'] ?? '';
+                $class = htmlspecialchars($button['class'] ?? '');
+                $type = $button['type'] ?? 'link';
+                $permissions = $button['permission'] ?? [];
+                $action = isset($button['action']) && is_array($button['action']) 
+                    ? implode(' ', array_map(fn($key, $value) => htmlspecialchars($key) . '="' . htmlspecialchars($value) . '"', array_keys($button['action']), $button['action']))
+                    : '';
+                $hasPermission = empty($permissions) || array_reduce($permissions, fn($carry, $perm) => $carry || $jatbi->permission($perm) == 'true', false);
+                if ($hasPermission) {
+                    if ($type === 'button') { 
+                        $output .= '<li><button ' . $action . ' class="btn dropdown-item ' . $class . '">'.$icon . $name . '</button></li>';
+                    }
+                    elseif ($type === 'divider') { 
+                        $output .= '<li><hr class="dropdown-divider"></li>';
+                    } else {
+                        $output .= '<li><a ' . $action . ' class="btn dropdown-item ' . $class . '">'.$icon . $name . '</a></li>';
+                    }
                 }
             }
-        }
-        if (empty($output)) {
-            return;
-        }
-        echo '<div class="dropdown">
-                <button class="btn btn-primary-light btn-sm border-0 py-1 px-2 rounded-3 small fw-bold fs-6 '.$class.'" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="ti ti-dots"></i>
+            if (empty($output)) {
+                return;
+            }
+            echo '<div class="dropdown">
+                    <button class="btn btn-primary-light btn-sm border-0 py-1 px-2 rounded-3 small fw-bold fs-6 '.$class.'" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="ti ti-dots"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end border-0 bg-body shadow-lg rounded-4 min-width" style="--min-width:100px">'
+                    . $output .
+                    '</ul>
+                </div>';
+        });
+
+
+        // Checkbox Component
+        $app->setComponent('checkbox', function($vars) {
+            $name = isset($vars['name']) ? $vars['name'] : '';
+            $label = isset($vars['label']) ? $vars['label'] : '';
+            $checked = isset($vars['checked']) ? 'checked' : '';
+            $class = isset($vars['class']) ? ' ' . htmlspecialchars($vars['class']) : '';
+            $id = isset($vars['id']) ? ' id="' . htmlspecialchars($vars['id']) . '"' : '';
+            $attr = isset($vars['attr']) ? $vars['attr'] : '';
+
+            echo '
+            <div class="form-check mb-3' . $class . '"' . $id . $attr . '>
+                <input class="form-check-input" type="checkbox" id="' . htmlspecialchars($name) . '" name="' . htmlspecialchars($name) . '" ' . $checked . '>
+                <label class="form-check-label" for="' . htmlspecialchars($name) . '">
+                    ' . htmlspecialchars($label) . '
+                </label>
+            </div>';
+        });
+        // Input Component
+        $app->setComponent('input', function($vars) {
+            $type = isset($vars['type']) ? $vars['type'] : 'text';
+            $name = isset($vars['name']) ? $vars['name'] : '';
+            $value = isset($vars['value']) ? $vars['value'] : '';
+            $placeholder = isset($vars['placeholder']) ? $vars['placeholder'] : '';
+            $class = isset($vars['class']) ? ' ' . htmlspecialchars($vars['class']) : '';
+            $id = isset($vars['id']) ? ' id="' . htmlspecialchars($vars['id']) . '"' : '';
+            $attr = isset($vars['attr']) ? $vars['attr'] : '';
+
+            echo '
+            <div class="mb-3">
+                <label for="' . htmlspecialchars($name) . '" class="form-label">' . htmlspecialchars($placeholder) . '</label>
+                <input type="' . htmlspecialchars($type) . '" class="form-control rounded-4 p-3 ' . $class . '"' . $id . ' name="' . htmlspecialchars($name) . '" value="' . htmlspecialchars($value) . '" placeholder="' . htmlspecialchars($placeholder) . '"' . $attr . '>
+            </div>';
+        });
+
+        // Textarea Component
+        $app->setComponent('textarea', function($vars) {
+            $type = isset($vars['type']) ? $vars['type'] : 'text';
+            $name = isset($vars['name']) ? $vars['name'] : '';
+            $value = isset($vars['value']) ? $vars['value'] : '';
+            $placeholder = isset($vars['placeholder']) ? $vars['placeholder'] : '';
+            $class = isset($vars['class']) ? ' ' . htmlspecialchars($vars['class']) : '';
+            $id = isset($vars['id']) ? ' id="' . htmlspecialchars($vars['id']) . '"' : '';
+            $attr = isset($vars['attr']) ? $vars['attr'] : '';
+
+            echo '
+            <div class="mb-3">
+                <label for="' . htmlspecialchars($name) . '" class="form-label">' . htmlspecialchars($placeholder) . '</label>
+                <textarea type="' . htmlspecialchars($type) . '" class="form-control rounded-4 p-3 ' . $class . '"' . $id . ' name="' . htmlspecialchars($name) . '" placeholder="' . htmlspecialchars($placeholder) . '"' . $attr . '>' . htmlspecialchars($value) . '</textarea>
+            </div>';
+        });
+        // Button Component
+        $app->setComponent('button', function($vars) {
+            $label = isset($vars['label']) ? $vars['label'] : 'Click Me';
+            $type = isset($vars['type']) ? $vars['type'] : 'button';
+            $color = isset($vars['color']) ? $vars['color'] : 'danger';
+            $id = isset($vars['id']) ? ' id="' . htmlspecialchars($vars['id']) . '"' : '';
+            $class = isset($vars['class']) ? ' ' . htmlspecialchars($vars['class']) : '';
+            $attr = isset($vars['attr']) ? $vars['attr'] : '';
+
+            echo '
+                <button type="'.$type.'" class="btn rounded-pill btn-' . htmlspecialchars($color) . $class . '"' . $id . $attr . '>' . ($label) . '</button>
+            ';
+        });
+
+        // Alert Component
+        $app->setComponent('alert', function($vars) {
+            $message = isset($vars['message']) ? $vars['message'] : 'Alert message here.';
+            $type = isset($vars['type']) ? $vars['type'] : 'info';
+            $class = isset($vars['class']) ? ' ' . htmlspecialchars($vars['class']) : '';
+            $id = isset($vars['id']) ? ' id="' . htmlspecialchars($vars['id']) . '"' : '';
+            $attr = isset($vars['attr']) ? $vars['attr'] : '';
+
+            echo '
+                <div class="alert alert-' . htmlspecialchars($type) . ' alert-dismissible fade show' . $class . '"' . $id . $attr . ' role="alert">
+                    ' . htmlspecialchars($message) . '
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>';
+        });
+
+        // Badge Component
+        $app->setComponent('badge', function($vars) {
+            $text = isset($vars['text']) ? $vars['text'] : 'Badge';
+            $type = isset($vars['type']) ? $vars['type'] : 'secondary';
+            $class = isset($vars['class']) ? ' ' . htmlspecialchars($vars['class']) : '';
+            $id = isset($vars['id']) ? ' id="' . htmlspecialchars($vars['id']) . '"' : '';
+            $attr = isset($vars['attr']) ? $vars['attr'] : '';
+            echo '<span class="badge bg-' . htmlspecialchars($type) . $class . '"' . $id . $attr . '>' . htmlspecialchars($text) . '</span>';
+        });
+
+        // Dropdown Component
+        $app->setComponent('dropdown', function($vars) {
+            $id = isset($vars['id']) ? $vars['id'] : 'dropdownMenuButton';
+            $items = isset($vars['items']) ? $vars['items'] : [];
+            $label = isset($vars['label']) ? $vars['label'] : 'Dropdown';
+            $class = isset($vars['class']) ? ' ' . htmlspecialchars($vars['class']) : '';
+            $attr = isset($vars['attr']) ? $vars['attr'] : '';
+
+            echo '<div class="dropdown' . $class . '"' . $attr . '>
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="' . htmlspecialchars($id) . '" data-bs-toggle="dropdown" aria-expanded="false">
+                    ' . htmlspecialchars($label) . '
                 </button>
-                <ul class="dropdown-menu dropdown-menu-end border-0 bg-body shadow-lg rounded-4 min-width" style="--min-width:100px">'
-                . $output .
-                '</ul>
+                <ul class="dropdown-menu" aria-labelledby="' . htmlspecialchars($id) . '">';
+                foreach ($items as $item) {
+                    echo '<li><a class="dropdown-item" href="' . htmlspecialchars($item['href']) . '">' . htmlspecialchars($item['text']) . '</a></li>';
+                }
+            echo '</ul>
             </div>';
-    });
-
-
-    // Checkbox Component
-    $app->setComponent('checkbox', function($vars) {
-        $name = isset($vars['name']) ? $vars['name'] : '';
-        $label = isset($vars['label']) ? $vars['label'] : '';
-        $checked = isset($vars['checked']) ? 'checked' : '';
-        $class = isset($vars['class']) ? ' ' . htmlspecialchars($vars['class']) : '';
-        $id = isset($vars['id']) ? ' id="' . htmlspecialchars($vars['id']) . '"' : '';
-        $attr = isset($vars['attr']) ? $vars['attr'] : '';
-
-        echo '
-        <div class="form-check mb-3' . $class . '"' . $id . $attr . '>
-            <input class="form-check-input" type="checkbox" id="' . htmlspecialchars($name) . '" name="' . htmlspecialchars($name) . '" ' . $checked . '>
-            <label class="form-check-label" for="' . htmlspecialchars($name) . '">
-                ' . htmlspecialchars($label) . '
-            </label>
-        </div>';
-    });
-    // Input Component
-    $app->setComponent('input', function($vars) {
-        $type = isset($vars['type']) ? $vars['type'] : 'text';
-        $name = isset($vars['name']) ? $vars['name'] : '';
-        $value = isset($vars['value']) ? $vars['value'] : '';
-        $placeholder = isset($vars['placeholder']) ? $vars['placeholder'] : '';
-        $class = isset($vars['class']) ? ' ' . htmlspecialchars($vars['class']) : '';
-        $id = isset($vars['id']) ? ' id="' . htmlspecialchars($vars['id']) . '"' : '';
-        $attr = isset($vars['attr']) ? $vars['attr'] : '';
-
-        echo '
-        <div class="mb-3">
-            <label for="' . htmlspecialchars($name) . '" class="form-label">' . htmlspecialchars($placeholder) . '</label>
-            <input type="' . htmlspecialchars($type) . '" class="form-control rounded-4 p-3 ' . $class . '"' . $id . ' name="' . htmlspecialchars($name) . '" value="' . htmlspecialchars($value) . '" placeholder="' . htmlspecialchars($placeholder) . '"' . $attr . '>
-        </div>';
-    });
-
-    // Textarea Component
-    $app->setComponent('textarea', function($vars) {
-        $type = isset($vars['type']) ? $vars['type'] : 'text';
-        $name = isset($vars['name']) ? $vars['name'] : '';
-        $value = isset($vars['value']) ? $vars['value'] : '';
-        $placeholder = isset($vars['placeholder']) ? $vars['placeholder'] : '';
-        $class = isset($vars['class']) ? ' ' . htmlspecialchars($vars['class']) : '';
-        $id = isset($vars['id']) ? ' id="' . htmlspecialchars($vars['id']) . '"' : '';
-        $attr = isset($vars['attr']) ? $vars['attr'] : '';
-
-        echo '
-        <div class="mb-3">
-            <label for="' . htmlspecialchars($name) . '" class="form-label">' . htmlspecialchars($placeholder) . '</label>
-            <textarea type="' . htmlspecialchars($type) . '" class="form-control rounded-4 p-3 ' . $class . '"' . $id . ' name="' . htmlspecialchars($name) . '" placeholder="' . htmlspecialchars($placeholder) . '"' . $attr . '>' . htmlspecialchars($value) . '</textarea>
-        </div>';
-    });
-    // Button Component
-    $app->setComponent('button', function($vars) {
-        $label = isset($vars['label']) ? $vars['label'] : 'Click Me';
-        $type = isset($vars['type']) ? $vars['type'] : 'button';
-        $color = isset($vars['color']) ? $vars['color'] : 'danger';
-        $id = isset($vars['id']) ? ' id="' . htmlspecialchars($vars['id']) . '"' : '';
-        $class = isset($vars['class']) ? ' ' . htmlspecialchars($vars['class']) : '';
-        $attr = isset($vars['attr']) ? $vars['attr'] : '';
-
-        echo '
-            <button type="'.$type.'" class="btn rounded-pill btn-' . htmlspecialchars($color) . $class . '"' . $id . $attr . '>' . ($label) . '</button>
-        ';
-    });
-
-    // Alert Component
-    $app->setComponent('alert', function($vars) {
-        $message = isset($vars['message']) ? $vars['message'] : 'Alert message here.';
-        $type = isset($vars['type']) ? $vars['type'] : 'info';
-        $class = isset($vars['class']) ? ' ' . htmlspecialchars($vars['class']) : '';
-        $id = isset($vars['id']) ? ' id="' . htmlspecialchars($vars['id']) . '"' : '';
-        $attr = isset($vars['attr']) ? $vars['attr'] : '';
-
-        echo '
-            <div class="alert alert-' . htmlspecialchars($type) . ' alert-dismissible fade show' . $class . '"' . $id . $attr . ' role="alert">
-                ' . htmlspecialchars($message) . '
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>';
-    });
-
-    // Badge Component
-    $app->setComponent('badge', function($vars) {
-        $text = isset($vars['text']) ? $vars['text'] : 'Badge';
-        $type = isset($vars['type']) ? $vars['type'] : 'secondary';
-        $class = isset($vars['class']) ? ' ' . htmlspecialchars($vars['class']) : '';
-        $id = isset($vars['id']) ? ' id="' . htmlspecialchars($vars['id']) . '"' : '';
-        $attr = isset($vars['attr']) ? $vars['attr'] : '';
-        echo '<span class="badge bg-' . htmlspecialchars($type) . $class . '"' . $id . $attr . '>' . htmlspecialchars($text) . '</span>';
-    });
-
-    // Dropdown Component
-    $app->setComponent('dropdown', function($vars) {
-        $id = isset($vars['id']) ? $vars['id'] : 'dropdownMenuButton';
-        $items = isset($vars['items']) ? $vars['items'] : [];
-        $label = isset($vars['label']) ? $vars['label'] : 'Dropdown';
-        $class = isset($vars['class']) ? ' ' . htmlspecialchars($vars['class']) : '';
-        $attr = isset($vars['attr']) ? $vars['attr'] : '';
-
-        echo '<div class="dropdown' . $class . '"' . $attr . '>
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="' . htmlspecialchars($id) . '" data-bs-toggle="dropdown" aria-expanded="false">
-                ' . htmlspecialchars($label) . '
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="' . htmlspecialchars($id) . '">';
-            foreach ($items as $item) {
-                echo '<li><a class="dropdown-item" href="' . htmlspecialchars($item['href']) . '">' . htmlspecialchars($item['text']) . '</a></li>';
-            }
-        echo '</ul>
-        </div>';
-    });
+        });
 
     // Card Component
     $app->setComponent('card', function($vars) {
@@ -449,6 +449,7 @@
             </tbody>
         </table>';
     });
+
     //Header Frontend Component
     $app->setComponent('header-frontend', function($vars) use ($app, $setting, $jatbi) {
         require_once('templates/components/header-frontend.html'); 

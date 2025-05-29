@@ -2,6 +2,10 @@
 if (!defined('ECLO')) die("Hacking attempt");
 $requests = [
     'home' => "controllers/core/front-end/home.php",
+    'consultation' => "controllers/core/front-end/consultation.php",
+    'contact' => "controllers/core/front-end/contact.php",
+
+
     // 'admin' => "controllers/core/back-end/admin.php",
     // 'main' => "controllers/core/back-end/main.php",
     // 'users' => "controllers/core/back-end/users.php",

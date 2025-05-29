@@ -16,7 +16,7 @@
 
     <!--====== BANNER PART ENDS ======-->
     
-       <form method="POST" action="<?= $_SERVER['REQUEST_URI'] ?>-add">
+       <form method="POST" action="<?= $_SERVER['REQUEST_URI'] ?>">
             <section class="consult-form">
                 <div class="container-2">
                     <p class="intro">
@@ -42,12 +42,12 @@
                     </div>
 
                     <div class="dropdowns">
-                        <select name="service_package" class="form-select">
+                        <select name="service_package" class="form-select" style="background: white;">
                             <option value="">Chọn gói dịch vụ</option>
                             <option value="dvdn">Dịch vụ Doanh nghiệp</option>
                             <option value="tcsk">Tổ chức sự kiện,hội thảo</option>
                         </select>
-                        <select name="consult_method" class="form-select">
+                        <select name="consult_method" class="form-select" style="background: white;">
                             <option value="">Chọn hình thức tư vấn</option>
                             <option value="online">Online</option>
                             <option value="offline">Offline</option>
@@ -55,15 +55,15 @@
                     </div>
 
                     <h4>2. Thông tin của bạn</h4>
-                    <input type="text" name="name" class="form-input" placeholder="Họ và tên">
-                    <input type="text" name="phone" class="form-input" placeholder="Số điện thoại">
-                    <input type="email" name="email" class="form-input" placeholder="Email">
-                    <input type="text" name="name_business" class="form-input" placeholder="Tên Doanh nghiệp">
-                    <textarea name="note" class="form-textarea" placeholder="Vấn đề đang gặp phải và mong muốn ..."></textarea>
+                    <input type="text" name="name" class="form-input" placeholder="Họ và tên" style="background: white;">
+                    <input type="text" name="phone" class="form-input" placeholder="Số điện thoại" style="background: white;">
+                    <input type="email" name="email" class="form-input" placeholder="Email" style="background: white;">
+                    <input type="text" name="name_business" class="form-input" placeholder="Tên Doanh nghiệp" style="background: white;">
+                    <textarea name="note" class="form-textarea" placeholder="Vấn đề đang gặp phải và mong muốn ..." style="background: white;"></textarea>
 
                     <h4>3. Chọn ngày và giờ</h4>
-                    <input type="text" name="date" class="form-input" placeholder="dd/mm/yyyy">
-                    <input type="text" name="time" class="form-input" placeholder="--:--">
+                    <input type="date" name="date" class="form-input" style="background: white;">
+                    <input type="time" name="time" class="form-input" style="background: white;">
 
                     <div class="btn-container-2">
                         <button type="submit" class="btn-submit">GỬI YÊU CẦU TƯ VẤN</button>
