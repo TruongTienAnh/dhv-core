@@ -86,6 +86,19 @@
                         'trash'          =>$jatbi->lang("Thùng rác"),
                     ]
                 ],
+                    'consultation'=>[
+                    "menu"=>$jatbi->lang("Lịch tư vấn"),
+                    "url"=>'/admin/consultation',
+                    "icon"=>'<i class="ti ti-user "></i>',
+                    "controllers"=>"controllers/core/back-end/consultation.php",
+                    "main"=>'false',
+                    "permission"=>[
+                        'consultation'=> $jatbi->lang("Lịch tư vấn"),
+                        // 'accounts.add' => $jatbi->lang("Thêm tài khoản"),
+                        // 'accounts.edit' => $jatbi->lang("Sửa tài khoản"),
+                        // 'accounts.deleted' => $jatbi->lang("Xóa tài khoản"),
+                    ]
+                ],
             ],
         ],
     ];
