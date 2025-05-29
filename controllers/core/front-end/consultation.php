@@ -64,9 +64,9 @@ $setting = $app->getValueData('setting');
             ]);
             return;
         }
-        echo $service_package ;
-        echo " " ;   
-        echo $consult_method ;
+        // echo $service_package ;
+        // echo " " ;   
+        // echo $consult_method ;
 
         // Thực hiện lưu dữ liệu
         try {
@@ -84,7 +84,7 @@ $setting = $app->getValueData('setting');
             $result = $app->insert("appointments", $insert);
 
             if (!$result) {
-                echo json_encode(["status" => "error","content" => "Không thể lưu dữ liệu."]);
+                echo json_encode(["status" => "error","content" => $jatbi->lang("Không thể lưu dữ liệu.")]);
                 return;
             }
 
