@@ -5,8 +5,6 @@ $setting = $app->getValueData('setting');
 
 $app->router("/admin/consultation", 'GET', function($vars) use ($app, $jatbi, $setting) {
     $vars['title'] = $jatbi->lang("Lịch Tư Vấn");
-    $vars['add'] = '/manager/employee-add';
-    $vars['deleted'] = '/manager/employee-deleted';
     echo $app->render('templates/backend/consultation/consultation.html', $vars);
 })->setPermissions(['consultation']);
 
@@ -33,7 +31,6 @@ $app->router("/admin/consultation", 'POST', function($vars) use ($app, $jatbi) {
                 "phone[~]" => $searchValue,
                 "email[~]" => $searchValue,
                 "name_business[~]" => $searchValue,
-                "note[~]" => $searchValue
             ]
         ],
         "LIMIT" => [$start, $length],

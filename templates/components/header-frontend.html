@@ -81,81 +81,91 @@
     <!--====== HEADER PART START ======-->
 
     <header class="header-area">
-        <div class="header-top">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-lg-6 col-md-7 col-sm-5">
-                        <div class="header-logo d-flex align-items-center justify-content-center justify-content-sm-start">
-                            <div class="logo"><a href="index.html"><img src="<?=$setting['template']?>/assets-frontend/images/Media/CORE 1 copy.png" alt="logo"></a></div>
-                            <form class="d-none d-md-inline-block" action="#">
-                                <div class="input-box">
-                                    <i class="fal fa-search"></i>
-                                    <input type="text" placeholder="Search Your keyword">
-                                </div>
-                            </form>
+    <div class="header-top">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-6 col-md-7 col-sm-5">
+                    <div class="header-logo d-flex align-items-center justify-content-center justify-content-sm-start">
+                        <div class="logo">
+                            <a href="index.html"><img src="<?=$setting['template']?>/assets-frontend/images/Media/CORE 1 copy.png" alt="logo"></a>
                         </div>
-                    </div>
-                    <div class="col-lg-6 col-md-5 col-sm-7" style="align-content: center;">
-                        <div class="header-btns d-flex align-items-center justify-content-center justify-content-sm-end">
-                            <div class="trial-btns">
-                                <a href="/login"><i class="fas fa-right-to-bracket"></i> Đăng nhập</a>
+                        <form class="d-none d-md-inline-block" action="#">
+                            <div class="input-box">
+                                <i class="fal fa-search"></i>
+                                <input type="text" placeholder="Search Your keyword">
                             </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Nút đăng nhập desktop -->
+                <div class="col-lg-6 col-md-5 col-sm-7" style="align-content: center;">
+                    <div class="header-btns d-none d-lg-flex align-items-center justify-content-center justify-content-sm-end">
+                        <div class="trial-btns">
+                            <a href="/login"><i class="fas fa-right-to-bracket"></i> Đăng nhập</a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="header-menu">
-            <div class="navigation">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <nav class="navbar navbar-expand-lg">
-                                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarFive" aria-controls="navbarFive" aria-expanded="false" aria-label="Toggle navigation">
-                                    <span class="toggler-icon"></span>
-                                    <span class="toggler-icon"></span>
-                                    <span class="toggler-icon"></span>
-                                </button> <!-- navbar toggler -->
-                                <div class="collapse navbar-collapse sub-menu-bar" id="navbarFive">
-                                    <ul class="navbar-nav mr-auto">
-                                        <li class="nav-item">
-                                            <a class="page-scroll" href="/">Trang chủ</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="page-scroll" href="/about">Giới Thiệu</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="page-scroll" href="/">Dịch vụ <i class="fal fa-angle-down"></i></a>
-                                            <ul class="sub-menu">
-                                                <li><a href="/bussines-services">Doanh nghiệp</a></li>
-                                                <li><a href="our-events.html">Tổ chức sự kiện</a></li>
-                                            </ul>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="page-scroll" href="/news">Tin tức và Dự án <i class="fal fa-angle-down"></i></a>
-                                            <ul class="sub-menu">
-                                                <li><a href="/news">Tin tức</a></li>
-                                                <li><a href="/project">Dự án</a></li>
-                                            </ul>
-                                        </li>              
-                                        <li class="nav-item">
-                                            <a class="page-scroll" href="/library">Thư viện số</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="page-scroll" href="/consultation">Đặt lịch tư vấn</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="page-scroll" href="/contact">Liên hệ</a>
-                                        </li>
-                                    </ul>
-                                </div>
+    </div>
 
-                            </nav> <!-- navbar -->
-                        </div>
-                    </div> <!-- row -->
-                </div> <!-- container -->
-            </div>
+    <div class="header-menu">
+        <div class="navigation">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <nav class="navbar navbar-expand-lg">
+                            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarFive" aria-controls="navbarFive" aria-expanded="false" aria-label="Toggle navigation">
+                                <span class="toggler-icon"></span>
+                                <span class="toggler-icon"></span>
+                                <span class="toggler-icon"></span>
+                            </button>
+
+                            <div class="collapse navbar-collapse sub-menu-bar" id="navbarFive">
+                                <ul class="navbar-nav mr-auto">
+                                    <li class="nav-item">
+                                        <a class="page-scroll" href="/">Trang chủ</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="page-scroll" href="/about">Giới Thiệu</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="page-scroll" href="/">Dịch vụ <i class="fal fa-angle-down"></i></a>
+                                        <ul class="sub-menu">
+                                            <li><a href="/bussines-services">Doanh nghiệp</a></li>
+                                            <li><a href="our-events.html">Tổ chức sự kiện</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="page-scroll" href="/news">Tin tức và Dự án <i class="fal fa-angle-down"></i></a>
+                                        <ul class="sub-menu">
+                                            <li><a href="/news">Tin tức</a></li>
+                                            <li><a href="/project">Dự án</a></li>
+                                        </ul>
+                                    </li>              
+                                    <li class="nav-item">
+                                        <a class="page-scroll" href="/library">Thư viện số</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="page-scroll" href="/consultation">Đặt lịch tư vấn</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="page-scroll" href="/contact">Liên hệ</a>
+                                    </li>
+                                    <li class="nav-item d-block d-lg-none">
+                                        <a class="page-scroll" href="/login" style="color: #ed1c24;"><i class="fas fa-right-to-bracket"></i> Đăng nhập</a>
+                                    </li>
+                                </ul>
+                            </div>
+
+                        </nav> 
+                    </div>
+                </div> 
+            </div> 
         </div>
-    </header>
+    </div>
+</header>
+
 
     <!--====== HEADER PART ENDS ======-->

@@ -99,6 +99,19 @@
                         // 'accounts.deleted' => $jatbi->lang("Xóa tài khoản"),
                     ]
                 ],
+                    'contact'=>[
+                    "menu"=>$jatbi->lang("Liên hệ"),
+                    "url"=>'/admin/contact',
+                    "icon"=>'<i class="ti ti-user "></i>',
+                    "controllers"=>"controllers/core/back-end/contact.php",
+                    "main"=>'false',
+                    "permission"=>[
+                        'contact'=> $jatbi->lang("Liên hệ"),
+                        // 'accounts.add' => $jatbi->lang("Thêm tài khoản"),
+                        // 'accounts.edit' => $jatbi->lang("Sửa tài khoản"),
+                        // 'accounts.deleted' => $jatbi->lang("Xóa tài khoản"),
+                    ]
+                ],
             ],
         ],
     ];
