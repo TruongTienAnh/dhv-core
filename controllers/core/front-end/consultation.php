@@ -6,6 +6,7 @@ $setting = $app->getValueData('setting');
     $app->router("/consultation", 'POST', function($vars) use ($app, $jatbi, $setting) {
         $app->header(['Content-Type' => 'application/json']);
 
+
         // Lấy dữ liệu và xử lý XSS
         $name            = $app->xss($_POST['name'] ?? '');
         $phone           = $app->xss($_POST['phone'] ?? '');
@@ -64,10 +65,6 @@ $setting = $app->getValueData('setting');
             ]);
             return;
         }
-        // echo $service_package ;
-        // echo " " ;   
-        // echo $consult_method ;
-
         // Thực hiện lưu dữ liệu
         try {
             $insert = [

@@ -4,7 +4,9 @@ $jatbi = new Jatbi($app);
 $setting = $app->getValueData('setting');
 
 $app->router("/contact", 'POST', function($vars) use ($app, $jatbi, $setting) {
-    $app->header(['Content-Type' => 'application/json']);
+    // $app->header(['Content-Type' => 'application/json']);
+    header(['Content-Type' => 'application/json']);
+
 
     // Lấy dữ liệu và xử lý XSS
     $name     = $app->xss($_POST['name'] ?? '');
@@ -30,8 +32,6 @@ $app->router("/contact", 'POST', function($vars) use ($app, $jatbi, $setting) {
         echo json_encode(["status" => "error", "content" => "Xác minh reCAPTCHA thất bại."]);
         return;
 }
-
-
 
     // Kiểm tra dữ liệu bắt buộc
     if (empty($name) || empty($phone) ) {
