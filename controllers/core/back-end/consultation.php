@@ -82,7 +82,7 @@ $app->router("/admin/consultation", 'POST', function($vars) use ($app, $jatbi) {
                         'type' => 'button',
                         'name' => $jatbi->lang("Xóa"),
                         'permission' => ['consultation'],
-                        'action' => ['data-url' => '/admin/consultation-delete?id=' . $data['id'], 'data-action' => 'modal']
+                        'action' => ['data-url' => '/admin/consultation-deleted?id=' . $data['id'], 'data-action' => 'modal']
                     ]
                 ]
             ])
@@ -98,4 +98,81 @@ $app->router("/admin/consultation", 'POST', function($vars) use ($app, $jatbi) {
 })->setPermissions(['consultation']);
 
 
+$app->router("/admin/consultation-deleted", 'GET', function($vars) use ($app, $jatbi) {
+    $vars['title'] = $jatbi->lang("Xóa");
+    echo $app->render('templates/common/deleted.html', $vars, 'global');
+})->setPermissions(['consultation']);
 
+$app->router("/admin/consultation-deleted", 'POST', function($vars) use ($app, $jatbi) {
+    $app->header([
+        'Content-Type' => 'application/json',
+    ]);
+
+    // Kiểm tra xem có 'id' hay 'box' trong request không
+    $snList = [];
+
+    if (!empty($_GET['id'])) {
+        $snList[] = $app->xss($_GET['id']);
+    } elseif (!empty($_GET['box'])) {
+        $snList = array_map('trim', explode(',', $app->xss($_GET['box'])));
+    }
+
+    if (empty($snList)) {
+        echo json_encode(["status" => "error", "content" => "Thiếu ID nhân viên để xóa"]);
+        return;
+    }
+
+    try {
+        $headers = [
+            'Authorization: Bearer your_token',
+            'Content-Type: application/x-www-form-urlencoded'
+        ];
+
+        $deletedCount = 0;
+        $errors = [];
+
+        foreach ($snList as $sn) {
+            if (empty($sn)) continue; // Bỏ qua nếu có giá trị rỗng
+
+            // Xóa khỏi database
+            $app->delete("employee", ["sn" => $sn]);
+
+            // Gửi yêu cầu xóa từ API
+            $apiData = [
+                'deviceKey' => '77ed8738f236e8df86',
+                'secret' => '123456',
+                'sn' => $sn,
+            ];
+
+            $response = $app->apiPost(
+                'http://camera.ellm.io:8190/api/person/delete', 
+                $apiData, 
+                $headers
+            );
+
+            $apiResponse = json_decode($response, true);
+
+            if (!empty($apiResponse['success']) && $apiResponse['success'] === true) {
+                $deletedCount++;
+            } else {
+                $errorMessage = $apiResponse['msg'] ?? "Không rõ lỗi";
+                $errors[] = "SN $sn: " . $errorMessage;
+            }
+        }
+
+        if (!empty($errors)) {
+            echo json_encode([
+                "status" => "error",
+                "content" => "Một số nhân viên xóa thất bại",
+                "errors" => $errors
+            ]);
+        } else {
+            echo json_encode([
+                "status" => "success",
+                "content" => "Đã xóa thành công $deletedCount nhân viên"
+            ]);
+        }
+    } catch (Exception $e) {
+        echo json_encode(["status" => "error", "content" => "Lỗi: " . $e->getMessage()]);
+    }
+})->setPermissions(['consultation']);
