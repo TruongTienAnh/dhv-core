@@ -4,16 +4,28 @@ $jatbi = new Jatbi($app);
 $setting = $app->getValueData('setting');
 
 $libraryHandler = function($vars) use ($app, $jatbi, $setting) {
-    $slug = $vars['slug'] ?? 'van-hoa';
+    $slug = $vars['slug'] ?? '';
 
-    $category = $app->get("categories", "*", [
-        "slug" => $slug
-    ]);
-
-    if (!$category) {
-        http_response_code(404);
-        echo "Danh mục không tồn tại.";
-        return;
+    if (empty($slug)) {
+        // Lấy danh mục đầu tiên nếu slug rỗng
+        $category = $app->get("categories", "*", [
+            "ORDER" => ["id" => "ASC"]
+        ]);
+        if (!$category) {
+            http_response_code(404);
+            echo "Không có danh mục nào.";
+            return;
+        }
+    } else {
+        // Tìm danh mục theo slug
+        $category = $app->get("categories", "*", [
+            "slug" => $slug
+        ]);
+        if (!$category) {
+            http_response_code(404);
+            echo "Danh mục không tồn tại.";
+            return;
+        }
     }
 
     // Phân trang
@@ -58,6 +70,7 @@ $libraryHandler = function($vars) use ($app, $jatbi, $setting) {
         'total_pages' => $totalPages
     ]);
 };
+    
 
 // Đăng ký 2 route riêng biệt, dùng chung handler
 $app->router("/library", 'GET', $libraryHandler);
