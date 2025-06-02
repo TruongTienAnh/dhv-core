@@ -40,7 +40,7 @@
                 <div class="blog-side-about white-bg" style="box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);">
                     <div class="post-header-box bg-white">
                     <!-- Tiêu đề -->
-                    <h3 class="fw-bold mb-4" style="color: black; font-weight: bold;">Giấy phép đăng ký kinh doanh (GPKD)</h3>
+                    <h3 class="fw-bold mb-4" style="color: black; font-weight: bold;"><?= htmlspecialchars($document['title']) ?></h3>
 
                     <!-- Thông tin meta -->
                     <div class="post-meta d-flex align-items-center text-muted small">
@@ -93,25 +93,26 @@
                 </div>
 
                 <!-- Danh mục -->
-                <div class="blog-side-about white-bg mt-40" style="box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);">
+                <div class="blog-side-about white-bg mt-40">
                     <div class="about-title">
                     <h4 class="title">Danh mục</h4>
                     </div>
                     <div class="blog-categories-content mt-35">
-                    <ul>
-                        <li><a href="#">Nhân sự <span>2</span></a></li>
-                        <li><a href="#">Khởi nghiệp <span>3</span></a></li>
-                        <li><a href="#">Vận hành <span>1</span></a></li>
-                        <li><a href="#">Tuyển dụng <span>2</span></a></li>
-                        <li><a href="#">Văn hoá <span>3</span></a></li>
-                        <li><a href="#">Chiến lược <span>4</span></a></li>
-                        <li><a href="#">Đào tạo <span>2</span></a></li>
-                        <li><a href="#">Thương hiệu <span>1</span></a></li>
-                        <li><a href="#">Pháp lý <span>3</span></a></li>
-                    </ul>
+                        <ul>
+                            <?php foreach ($categories as $cat): ?>
+                                <li>
+                                    <a 
+                                        href="/library/<?= htmlspecialchars($cat['slug']) ?>"
+                                        class="<?= ($current_category['id'] ?? 0) == $cat['id'] ? 'active' : '' ?>"
+                                    >
+                                        <?= htmlspecialchars($cat['name']) ?> 
+                                        <span><?= $cat['total'] ?></span>
+                                    </a>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
                     </div>
                 </div>
-
                 </div>
             </div>
 

@@ -112,6 +112,29 @@
                         // 'accounts.deleted' => $jatbi->lang("Xóa tài khoản"),
                     ]
                 ],
+                    'library'=>[
+                    "menu"=>$jatbi->lang("Thư viện số"),
+                    "url"=>'/library',
+                    "icon"=>'<i class="ti ti-library "></i>',
+                    "sub"=>[
+                        'categories'   => [
+                            "name"  => $jatbi->lang("Danh mục"),
+                            "router"    => '/admin/library/categories',
+                            "icon"  => '<i class="fas fa-ban"></i>',
+                        ],
+                        'library'  => [
+                            "name"  => $jatbi->lang("Thư viện số"),
+                            "router"    => '/admin/library',
+                            "icon"  => '<i class="fa fa-list-alt"></i>',
+                        ],
+                    ],
+                    "controllers"=>"controllers/core/back-end/library.php",
+                    "main"=>'false',
+                    "permission"=>[
+                        'library'       =>$jatbi->lang("Thư viện số"),
+                        'categories'   =>$jatbi->lang("Danh mục"),
+                    ]
+                ],
             ],
         ],
     ];
