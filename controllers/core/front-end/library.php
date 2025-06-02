@@ -63,26 +63,27 @@ $libraryHandler = function($vars) use ($app, $jatbi, $setting) {
 $app->router("/library", 'GET', $libraryHandler);
 $app->router("/library/{slug}", 'GET', $libraryHandler);
 
-$app->router("/library-detail", 'GET', function($vars) use ($app) {
-    $id = $_GET['id'] ?? null;
+$app->router("/library-detail/{slug}", 'GET', function($vars) use ($app) {
+    $slug = $vars['slug'] ?? null;
 
-    if (!$id) {
+    if (!$slug) {
         http_response_code(400);
-        echo "Thiếu ID tài liệu.";
+        echo "Thiếu slug tài liệu.";
         return;
     }
 
+    // Truy vấn theo slug
     $documents = $app->select("resources", "*", [
-        "id" => $id
+        "slug" => $slug
     ]);
-    
+
     if (!$documents) {
         http_response_code(404);
         echo "Tài liệu không tồn tại.";
         return;
     }
 
-    $document = $documents[0]; 
+    $document = $documents[0];
 
     // Lấy danh mục để hiển thị sidebar
     $categories = $app->select("categories", [
@@ -106,4 +107,5 @@ $app->router("/library-detail", 'GET', function($vars) use ($app) {
         'categories' => $categories ?? []
     ]);
 });
+    
 

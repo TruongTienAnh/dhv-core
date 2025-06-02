@@ -3,6 +3,14 @@ if (!defined('ECLO')) die("Hacking attempt");
 $jatbi = new Jatbi($app);
 $setting = $app->getValueData('setting');
 
+function generateSlug($str) {
+    $str = strtolower(trim($str));
+    $str = preg_replace('/[^\p{L}\p{Nd}]+/u', '-', $str); 
+    $str = preg_replace('/-+/', '-', $str); 
+    return trim($str, '-');
+}
+
+
 $app->router("/admin/library", 'GET', function($vars) use ($app, $jatbi, $setting) {
     $vars['title'] = $jatbi->lang("Thư viện số");
     echo $app->render('templates/backend/library/library.html', $vars);
@@ -96,7 +104,7 @@ $app->router("/admin/library", 'POST', function($vars) use ($app, $jatbi) {
 
   //Thêm library
     $app->router("/admin/library-add", 'GET', function($vars) use ($app, $jatbi, $setting) {
-        $vars['title'] = $jatbi->lang("Thêm thư viện số");
+        $vars['title1'] = $jatbi->lang("Thêm thư viện số");
         $vars['categories'] = $app->select("categories", ['id', 'name']);
         echo $app->render('templates/backend/library/library-post.html', $vars, 'global');
     })->setPermissions(['library']);
@@ -112,10 +120,12 @@ $app->router("/admin/library", 'POST', function($vars) use ($app, $jatbi) {
 
 
         // Kiểm tra dữ liệu bắt buộc
-        if (empty($title) || empty($description) || empty($category)) {
+        if (empty($title) || empty($category)) {
             echo json_encode(["status" => "error", "content" => $jatbi->lang("Vui lòng không để trống các trường bắt buộc")]);
             return;
         }
+
+        $slug = generateSlug($title);
 
         // Xử lý upload file (ví dụ lưu vào thư mục /uploads/)
         // $uploadDir = __DIR__ . '/../../uploads/library/';
@@ -133,9 +143,10 @@ $app->router("/admin/library", 'POST', function($vars) use ($app, $jatbi) {
         $insert = [
             "title" => $title,
             "description" => $description,
-            "file_url" => $filename, 
+            "file_url" => '', 
             "id_category" => $category,
             "created_at" => date("Y-m-d H:i:s"),
+            "slug" => $slug,
         ];
 
         try {
@@ -221,13 +232,10 @@ $app->router("/admin/library-edit", 'GET', function($vars) use ($app, $jatbi) {
     }
 
     // Lấy dữ liệu thư viện từ DB
-    $vars['data'] = $app->select("resources", "*", ["id" => $id]);
+    $vars['data'] = $app->select("resources", "*", ["id" => $id])[0] ?? null;
 
     // Lấy danh sách danh mục
     $vars['categories'] = $app->select("categories", ["id", "name"],);
-
-    // $vars['data']['edit'] = true;
-    var_dump($vars['data']);
 
     if ($vars['data']) {
         echo $app->render('templates/backend/library/library-post.html', $vars, 'global');
@@ -235,6 +243,72 @@ $app->router("/admin/library-edit", 'GET', function($vars) use ($app, $jatbi) {
         echo $app->render('templates/common/error-modal.html', $vars, 'global');
     }
 })->setPermissions(['library']);
+
+$app->router("/admin/library-edit", 'POST', function($vars) use ($app, $jatbi) {
+    $app->header(['Content-Type' => 'application/json']);
+
+    // Lấy ID thư viện từ request
+    $id = isset($_POST['id']) ? $app->xss($_POST['id']) : null;
+    if (!$id) {
+        echo json_encode(["status" => "error", "content" => $jatbi->lang("ID không hợp lệ")]);
+        return;
+    }
+
+    // Lấy dữ liệu cũ từ DB
+    $data = $app->select("resources", "*", ["id" => $id]);
+    if (!$data) {
+        echo json_encode(["status" => "error", "content" => $jatbi->lang("Không tìm thấy dữ liệu")]);
+        return;
+    }
+
+    // Lấy dữ liệu từ form
+    $title = isset($_POST['title']) ? $app->xss($_POST['title']) : '';
+    $description = isset($_POST['description']) ? $app->xss($_POST['description']) : '';
+    $category = isset($_POST['category']) ? $app->xss($_POST['category']) : '';
+    $create_at = isset($_POST['create_at']) ? $app->xss($_POST['create_at']) : '';
+
+
+
+    // Kiểm tra dữ liệu bắt buộc
+    if (empty($title) || empty($description) || empty($category) || empty($create_at)) {
+        echo json_encode(["status" => "error", "content" => $jatbi->lang("Vui lòng điền đầy đủ thông tin")]);
+        return;
+    }
+
+    // Xử lý upload file nếu có
+    if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
+        $uploadDir = 'uploads/library/';
+        $fileName = basename($_FILES['file']['name']);
+        $targetFile = $uploadDir . time() . "_" . $fileName;
+
+        if (move_uploaded_file($_FILES['file']['tmp_name'], $targetFile)) {
+            $filePath = $targetFile;
+        } else {
+            echo json_encode(["status" => "error", "content" => $jatbi->lang("Tải file thất bại")]);
+            return;
+        }
+    } else {
+        $filePath = $data['file'] ?? null; // Giữ nguyên file cũ nếu không upload
+    }
+
+    // Dữ liệu cập nhật
+    $update = [
+        "title" => $title,
+        "description" => $description,
+        "file_url" => $filePath,
+        "id_category" => $category,
+        "created_at" => $create_at,
+    ];
+
+    try {
+        $app->update("resources", $update, ["id" => $id]);
+
+        echo json_encode(["status" => "success", "content" => $jatbi->lang("Cập nhật dữ liệu thành công")]);
+    } catch (Exception $e) {
+        echo json_encode(["status" => "error", "content" => "Lỗi: " . $e->getMessage()]);
+    }
+})->setPermissions(['library']);
+
 
 
 
