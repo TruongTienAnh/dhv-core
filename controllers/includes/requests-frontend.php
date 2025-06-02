@@ -4,6 +4,7 @@ $requests = [
     'home' => "controllers/core/front-end/home.php",
     'consultation' => "controllers/core/front-end/consultation.php",
     'contact' => "controllers/core/front-end/contact.php",
+    'services' => "controllers/core/front-end/services.php",
 
 
     // 'admin' => "controllers/core/back-end/admin.php",
