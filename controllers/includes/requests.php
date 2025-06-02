@@ -99,14 +99,14 @@
                         // 'accounts.deleted' => $jatbi->lang("Xóa tài khoản"),
                     ]
                 ],
-                    'contact'=>[
-                    "menu"=>$jatbi->lang("Liên hệ"),
-                    "url"=>'/admin/contact',
-                    "icon"=>'<i class="ti ti-user "></i>',
-                    "controllers"=>"controllers/core/back-end/contact.php",
+                    'categories'=>[
+                    "menu"=>$jatbi->lang("Danh mục"),
+                    "url"=>'/admin/categories',
+                    "icon"=>'<i class="ti ti-category"></i>',
+                    "controllers"=>"controllers/core/back-end/categories.php",
                     "main"=>'false',
                     "permission"=>[
-                        'contact'=> $jatbi->lang("Liên hệ"),
+                        'categories'=> $jatbi->lang("Danh mục"),
                         // 'accounts.add' => $jatbi->lang("Thêm tài khoản"),
                         // 'accounts.edit' => $jatbi->lang("Sửa tài khoản"),
                         // 'accounts.deleted' => $jatbi->lang("Xóa tài khoản"),
@@ -114,25 +114,28 @@
                 ],
                     'library'=>[
                     "menu"=>$jatbi->lang("Thư viện số"),
-                    "url"=>'/library',
+                    "url"=>'/admin/library',
                     "icon"=>'<i class="ti ti-library "></i>',
-                    "sub"=>[
-                        'categories'   => [
-                            "name"  => $jatbi->lang("Danh mục"),
-                            "router"    => '/admin/library/categories',
-                            "icon"  => '<i class="fas fa-ban"></i>',
-                        ],
-                        'library'  => [
-                            "name"  => $jatbi->lang("Thư viện số"),
-                            "router"    => '/admin/library',
-                            "icon"  => '<i class="fa fa-list-alt"></i>',
-                        ],
-                    ],
                     "controllers"=>"controllers/core/back-end/library.php",
                     "main"=>'false',
                     "permission"=>[
-                        'library'       =>$jatbi->lang("Thư viện số"),
-                        'categories'   =>$jatbi->lang("Danh mục"),
+                        'library'=> $jatbi->lang("Thư viện số"),
+                        // 'accounts.add' => $jatbi->lang("Thêm tài khoản"),
+                        // 'accounts.edit' => $jatbi->lang("Sửa tài khoản"),
+                        // 'accounts.deleted' => $jatbi->lang("Xóa tài khoản"),
+                    ]
+                ],
+                    'contact'=>[
+                    "menu"=>$jatbi->lang("Liên hệ"),
+                    "url"=>'/admin/contact',
+                    "icon"=>'<i class="ti ti-contact"></i>',
+                    "controllers"=>"controllers/core/back-end/contact.php",
+                    "main"=>'false',
+                    "permission"=>[
+                        'contact'=> $jatbi->lang("Liên hệ"),
+                        // 'accounts.add' => $jatbi->lang("Thêm tài khoản"),
+                        // 'accounts.edit' => $jatbi->lang("Sửa tài khoản"),
+                        // 'accounts.deleted' => $jatbi->lang("Xóa tài khoản"),
                     ]
                 ],
             ],
