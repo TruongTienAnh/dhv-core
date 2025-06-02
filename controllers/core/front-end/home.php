@@ -51,7 +51,7 @@ $app->router("/business-services", 'GET', function($vars) use ($app, $jatbi, $se
     echo $app->render('templates/dhv/business-services.html', $vars);
 }); 
 
-$app->router("/business-services-detail", 'GET', function($vars) use ($app, $jatbi, $setting) {
+$app->router("/bussines-services-detail", 'GET', function($vars) use ($app, $jatbi, $setting) {
     echo $app->render('templates/dhv/business-services-detail.html', $vars);
 });
 
