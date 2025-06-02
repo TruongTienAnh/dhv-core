@@ -10,22 +10,21 @@
 					<div class="row g-3">
 						<div class="col-lg-12">
 
-							<!-- <div class="mb-3">
-								<label class="fw-bold text-body mb-2"><?= $jatbi->lang("Tiêu đề") ?> <span class="text-danger">*</span></label>
-								<input type="text" name="title" class="form-control py-3 rounded-4 bg-body-tertiary" 
-									placeholder="<?= $jatbi->lang("Tiêu đề") ?>" value="<?= $data['title'] ?? '' ?>" 
-							</div> -->
+							<div class="mb-3 d-none">
+								<label class="fw-bold text-body mb-2"><?=$jatbi->lang("Mã Thư viện")?> <span class="text-danger">*</span></label>
+								<input type="text" name="id" class="form-control py-3 rounded-4 bg-body-tertiary" placeholder="<?=$jatbi->lang("Mã thư viện")?>" value="<?=$data['id'] ?? ''?>">
+							</div>
 
+	
 							<div class="mb-3 ">
 								<label class="fw-bold text-body mb-2"><?=$jatbi->lang("Tiêu đề")?> <span class="text-danger">*</span></label>
 								<input type="text" name="title" class="form-control py-3 rounded-4 bg-body-tertiary" placeholder="<?=$jatbi->lang("Tiêu đề")?>" value="<?=$data['title'] ?? ''?>">
 							</div> 
 
-							<div class="mb-3">
-								<label class="fw-bold text-body mb-2"><?= $jatbi->lang("Mô tả") ?> <span class="text-danger">*</span></label>
-								<input type="text" name="description" class="form-control py-3 rounded-4 bg-body-tertiary" 
-									placeholder="<?= $jatbi->lang("Mô tả") ?<" value="<?= $data['description'] ?? '' ?>">
-							</div>
+							<div class="mb-3 ">
+								<label class="fw-bold text-body mb-2"><?=$jatbi->lang("Mô tả")?> <span class="text-danger">*</span></label>
+								<input type="text" name="description" class="form-control py-3 rounded-4 bg-body-tertiary" placeholder="<?=$jatbi->lang("Mô tả")?>" value="<?=$data['description'] ?? ''?>">
+							</div> 
 
                             <div class="mb-3">
                                 <label class="fw-bold text-body mb-2"><?= $jatbi->lang("File") ?> <span class="text-danger">*</span></label>
@@ -39,12 +38,13 @@
 									<option value=""><?= $jatbi->lang("Chọn danh mục") ?></option>
                                     <?php foreach ($categories as $category): ?>
                                         <option value="<?= $category['id'] ?>" 
-                                            <?= isset($data['category']) && $data['category'] == $category['id'] ? 'selected' : '' ?>>
+                                            <?= isset($data['id_category']) && $data['id_category'] == $category['id'] ? 'selected' : '' ?>>
                                             <?= $category['name'] ?>
                                         </option>
                                     <?php endforeach; ?>
 								</select>
 							</div>
+
 
                             <div class="mb-3">
 								    <label class="fw-bold text-body mb-2"><?= $jatbi->lang("Ngày đăng") ?> <span class="text-danger">*</span></label>

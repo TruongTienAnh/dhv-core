@@ -50,7 +50,7 @@
                         <?php if (!empty($documents)): ?>
                             <?php foreach ($documents as $doc): ?>
                                 <?php if (!empty($doc['id'])): ?>
-                                    <a href="/library-detail?id=<?= $doc['id'] ?>" class="legal-item d-block text-decoration-none text-dark">
+                                    <a href="/library-detail/<?= htmlspecialchars($doc['slug']) ?>" class="legal-item d-block text-decoration-none text-dark">
                                         <?= htmlspecialchars($doc['title']) ?>
                                     </a>
                                 <?php else: ?>
