@@ -1,207 +1,114 @@
-    <!--====== BANNER PART START ======-->
-
+<!--====== BANNER PART START ======-->
 <section class="banner-area bg_cover mt-80" style="background-image: url(<?=$setting['template']?>/assets-frontend/images/Media/trangchu/Banner\ chính.jpg)">
     <div class="container">
         <div class="row justify-content-center align-items-center" style="height: 100vh;">
             <div class="col-lg-7 text-center">
                 <div class="banner-content">
                     <h3 class="title">CORE</h3>
-                        <nav aria-label="breadcrumb">
-                            <ol class="breadcrumb" style="
-                                background-color: transparent;
-                                font-size: 30px;
-                                display: flex;
-                                justify-content: center;
-                            ">
-                                <li class="breadcrumb-item" style="color: white;">
-                                    <a href="/" style="color: white;">Trang chủ</a>
-                                </li>
-                                <li class="breadcrumb-item active" aria-current="page" style="color: white;">TIN TỨC</li>
-                            </ol>
-                        </nav>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb" style="
+                            background-color: transparent;
+                            font-size: 30px;
+                            display: flex;
+                            justify-content: center;
+                        ">
+                            <li class="breadcrumb-item" style="color: white;">
+                                <a href="/" style="color: white;">Trang chủ</a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page" style="color: white;"><?= $title?></li>
+                        </ol>
+                    </nav>
                 </div>
             </div>
         </div>
     </div>
 </section>
+<!--====== BANNER PART ENDS ======-->
 
-    <!--====== BANNER PART ENDS ======-->
-
-    <!--====== BLOG STANDARD PART START ======-->
-
-        <section class="blog-standard-area gray-bg pt-80 pb-120">
-            <div class="container">
-                <div class="row justify-content-center">
-                    <!-- Bài viết + Sidebar -->
-                    <div class="col-lg-8">
-                        <div class="blog-standard">
-                            <h3 class="section-title text-start mb-40">VĂN HÓA >>></h3>
-                            <div class="row justify-content-center">
-                                <!-- Bài viết 1 -->
-                                    <div class="col-lg-6 col-md-6 col-sm-9">
-                                        <div class="single-blog-grid">
-                                            <!-- Label nằm trên cùng -->
-                                            <div class="blog-label">VĂN HÓA</div>
-
-                                            <!-- Hình ảnh -->
-                                            <div class="blog-thumb">
-                                                <img src="<?=$setting['template']?>/assets-frontend/images/blog-grid-1.jpg" alt="blog">
-                                            </div>
-
-                                            <!-- Nội dung -->
-                                            <div class="blog-content">
-                                                <h4 class="post-title">VĂN HÓA DOANH NGHIỆP LÀ GÌ?</h4>
-                                                <p class="post-desc">
-                                                    Văn hóa doanh nghiệp là tổng hợp các giá trị, niềm tin, hành vi, thái độ và chuẩn mực được chia sẻ và chấp nhận bởi tất cả các thành viên ...
-                                                </p>
-                                                <hr>
-                                                    <a href="/news-detail" class="read-more-btn">XEM THÊM</a>
-                                            </div>
-                                        </div>
-                                    </div>
-
-
-                                <!-- Bài viết 1 -->
-                                    <div class="col-lg-6 col-md-6 col-sm-9">
-                                        <div class="single-blog-grid">
-                                            <!-- Label nằm trên cùng -->
-                                            <div class="blog-label">VĂN HÓA</div>
-
-                                            <!-- Hình ảnh -->
-                                            <div class="blog-thumb">
-                                                <img src="<?=$setting['template']?>/assets-frontend/images/blog-grid-1.jpg" alt="blog">
-                                            </div>
-
-                                            <!-- Nội dung -->
-                                            <div class="blog-content">
-                                                <h4 class="post-title">VĂN HÓA DOANH NGHIỆP LÀ GÌ?</h4>
-                                                <p class="post-desc">
-                                                    Văn hóa doanh nghiệp là tổng hợp các giá trị, niềm tin, hành vi, thái độ và chuẩn mực được chia sẻ và chấp nhận bởi tất cả các thành viên ...
-                                                </p>
-                                                <hr>
-                                                    <a href="/news-detail" class="read-more-btn">XEM THÊM</a>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                            </div>
-                        </div>
-                        <div class="blog-standard">
-                        <h3 class="section-title text-start mb-40">VĂN HÓA >>></h3>
+<!--====== BLOG STANDARD PART START ======-->
+<section class="blog-standard-area gray-bg pt-80 pb-120">
+    <div class="container">
+        <div class="row justify-content-center">
+            <!-- Bài viết + Sidebar -->
+            <div class="col-lg-8">
+                <?php foreach ($category_posts as $category_data): ?>
+                    <div class="blog-standard">
+                        <h3 class="section-title text-start mb-40"><?= mb_strtoupper($category_data['category']['name'], 'UTF-8')?> >>></h3>
                         <div class="row justify-content-center">
-                            <!-- Bài viết 1 -->
+                            <?php foreach ($category_data['posts'] as $post): ?>
+                                <!-- Bài viết -->
                                 <div class="col-lg-6 col-md-6 col-sm-9">
                                     <div class="single-blog-grid">
                                         <!-- Label nằm trên cùng -->
-                                        <div class="blog-label">VĂN HÓA</div>
+                                        <div class="blog-label"><?= mb_strtoupper($category_data['category']['name'], 'UTF-8') ?></div>
 
                                         <!-- Hình ảnh -->
                                         <div class="blog-thumb">
-                                            <img src="<?=$setting['template']?>/assets-frontend/images/blog-grid-1.jpg" alt="blog">
+                                            <img src="<?=$setting['template']?>/assets-frontend/images/<?= $post['image_url'] ?>" alt="blog">
                                         </div>
 
                                         <!-- Nội dung -->
                                         <div class="blog-content">
-                                            <h4 class="post-title">VĂN HÓA DOANH NGHIỆP LÀ GÌ?</h4>
+                                            <h4 class="post-title"><?= mb_strtoupper($post['title'], 'UTF-8') ?></h4>
                                             <p class="post-desc">
-                                                Văn hóa doanh nghiệp là tổng hợp các giá trị, niềm tin, hành vi, thái độ và chuẩn mực được chia sẻ và chấp nhận bởi tất cả các thành viên ...
+                                                <?= substr(strip_tags($post['content']), 0, 150) . '...' ?>
                                             </p>
                                             <hr>
-                                            <a href="/news-detail" class="read-more-btn">XEM THÊM</a>
+                                            <a href="/news-detail/<?= $post['slug'] ?>" class="read-more-btn">XEM THÊM</a>
                                         </div>
                                     </div>
                                 </div>
-
-
-                            <!-- Bài viết 1 -->
-                                <div class="col-lg-6 col-md-6 col-sm-9">
-                                    <div class="single-blog-grid">
-                                        <!-- Label nằm trên cùng -->
-                                        <div class="blog-label">VĂN HÓA</div>
-
-                                        <!-- Hình ảnh -->
-                                        <div class="blog-thumb">
-                                            <img src="<?=$setting['template']?>/assets-frontend/images/blog-grid-1.jpg" alt="blog">
-                                        </div>
-
-                                        <!-- Nội dung -->
-                                        <div class="blog-content">
-                                            <h4 class="post-title">VĂN HÓA DOANH NGHIỆP LÀ GÌ?</h4>
-                                            <p class="post-desc">
-                                                Văn hóa doanh nghiệp là tổng hợp các giá trị, niềm tin, hành vi, thái độ và chuẩn mực được chia sẻ và chấp nhận bởi tất cả các thành viên ...
-                                            </p>
-                                            <hr>
-                                            <a href="/news-detail" class="read-more-btn">XEM THÊM</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                
+                            <?php endforeach; ?>
                         </div>
-                        </div>
-                        <!-- Phân trang -->
-                        <!-- <nav aria-label="Page navigation example">
-                            <ul class="pagination">
-                            <li class="page-item">
-                                <a class="page-link" href="#" aria-label="Previous">
-                                <span aria-hidden="true"><i class="fal fa-angle-double-left"></i></span>
-                                </a>
-                            </li>
-                            <li class="page-item"><a class="page-link active" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                            <li class="page-item"><a class="page-link" href="#">...</a></li>
-                            <li class="page-item"><a class="page-link" href="#">10</a></li>
-                            <li class="page-item">
-                                <a class="page-link" href="#" aria-label="Next">
-                                <span aria-hidden="true"><i class="fal fa-angle-double-right"></i></span>
-                                </a>
-                            </li>
-                            </ul>
-                        </nav> -->
                     </div>
+                <?php endforeach; ?>
+            </div>
 
-                <!-- Sidebar -->
-                <div class="col-lg-4 col-md-6 col-sm-8">
-                    <div class="blog-sidebar ml-10">
+            <!-- Sidebar -->
+            <div class="col-lg-4 col-md-6 col-sm-8">
+                <div class="blog-sidebar ml-10">
                     <div class="blog-side-about white-bg">
                         <div class="about-title">
-                        <h4 class="title">Tìm kiếm</h4>
+                            <h4 class="title">Tìm kiếm</h4>
                         </div>
                         <div class="blog-Search-content text-center">
-                        <form action="#">
-                            <div class="input-box">
-                            <input type="text" placeholder="Tìm kiếm bài viết...">
-                            <button type="button" style="border-radius: 30px;color: white; "><i class="fas fa-search"></i></button>
-                            </div>
-                        </form>
+                            <form action="#">
+                                <div class="input-box">
+                                    <input type="text" placeholder="Tìm kiếm bài viết...">
+                                    <button type="button" style="border-radius: 30px;color: white;"><i class="fas fa-search"></i></button>
+                                </div>
+                            </form>
                         </div>
                     </div>
 
                     <div class="blog-side-about white-bg mt-40">
                         <div class="about-title">
-                        <h4 class="title">Danh mục</h4>
+                            <h4 class="title">Danh mục</h4>
                         </div>
                         <div class="blog-categories-content mt-35">
-                        <ul>
-                            <li><a href="#">Nhân sự <span>2</span></a></li>
-                            <li><a href="#">Khởi nghiệp <span>3</span></a></li>
-                            <li><a href="#">Vận hành <span>1</span></a></li>
-                            <li><a href="#">Tuyển dụng <span>2</span></a></li>
-                            <li><a href="#">Văn hoá <span>3</span></a></li>
-                            <li><a href="#">Chiến lược <span>4</span></a></li>
-                            <li><a href="#">Đào tạo <span>2</span></a></li>
-                            <li><a href="#">Thương hiệu <span>1</span></a></li>
-                            <li><a href="#">Pháp lý <span>3</span></a></li>
-                        </ul>
+                            <ul>
+                                <?php
+                                // Lấy tất cả danh mục để hiển thị trong sidebar
+                                $all_categories = $app->select("categories", [
+                                    "[>]news" => ["id" => "category_id"]
+                                ], [
+                                    "categories.name",
+                                    "categories.slug",
+                                    "count" => $app->raw("COUNT(news.id)")
+                                ], [
+                                    "news.status" => 'A',
+                                    "GROUP" => "categories.id"
+                                ]);
+                                foreach ($all_categories as $category):
+                                ?>
+                                    <li><a href="/news/<?= $category['slug'] ?>"><?= $category['name'] ?> <span><?= $category['count'] ?></span></a></li>
+                                <?php endforeach; ?>
+                            </ul>
                         </div>
                     </div>
-
-                    </div>
-                </div>
                 </div>
             </div>
-        </section>
-
-    <!--====== BLOG STANDARD PART ENDS ======-->
-    
-
+        </div>
+    </div>
+</section>
+<!--====== BLOG STANDARD PART ENDS ======-->
