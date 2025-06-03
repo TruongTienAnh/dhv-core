@@ -9,6 +9,9 @@ $requests = [
 
     'services' => "controllers/core/front-end/services.php",
 
+    'news' => "controllers/core/front-end/news.php",
+    'projects' => "controllers/core/front-end/projects.php",
+
 
 
     // 'admin' => "controllers/core/back-end/admin.php",

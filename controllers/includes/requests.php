@@ -86,6 +86,38 @@
                         'trash'          =>$jatbi->lang("Thùng rác"),
                     ]
                 ],
+                'news-project'=>[
+                    "menu"=>$jatbi->lang("Tin tức - Dự án"),
+                    "url"=>'/admin/news',
+                    "icon"=>'<i class="ti ti-user "></i>',
+                    "sub"=>[
+                        'news'      =>[
+                            "name"  => $jatbi->lang("Tin tức"),
+                            "router"=> '/admin/news',
+                            "icon"  => '<i class="ti ti-news"></i>',
+                        ],
+                        'projects'    =>[
+                            "name"  => $jatbi->lang("Dự án"),
+                            "router"=> '/admin/projects',
+                            "icon"  => '<i class="ti ti-briefcase"></i>',
+                        ],
+                    ],
+                    "controllers" => [
+                        "controllers/core/back-end/news.php",
+                        "controllers/core/back-end/projects.php",  
+                    ],
+                    "main"=>'false',
+                    "permission"=>[
+                        'news'=> $jatbi->lang("Tin tức"),
+                        'news.add' => $jatbi->lang("Thêm tin tức"),
+                        'news.edit' => $jatbi->lang("Sửa tin tức"),
+                        'news.deleted' => $jatbi->lang("Xóa tin tức"),
+                        'projects'=> $jatbi->lang("Dự án"),
+                        'projects.add' => $jatbi->lang("Thêm Dự án"),
+                        'projects.edit' => $jatbi->lang("Sửa Dự án"),   
+                        'projects.deleted' => $jatbi->lang("Xóa Dự án"),
+                    ]
+                ],
                     'consultation'=>[
                     "menu"=>$jatbi->lang("Lịch tư vấn"),
                     "url"=>'/admin/consultation',
@@ -141,12 +173,48 @@
             ],
         ],
     ];
+    // foreach($requests as $request){
+    //     foreach($request['item'] as $key_item =>  $items){
+    //         $setRequest[] = [
+    //             "key" => $key_item,
+    //             "controllers" =>  $items['controllers'],
+    //         ];
+    //         if($items['main']!='true'){
+    //             $SelectPermission[$items['menu']] = $items['permission'];
+    //         }
+    //         if (isset($items['permission']) && is_array($items['permission'])) {
+    //             foreach($items['permission'] as $key_per => $per) {
+    //                 $userPermissions[] = $key_per; 
+    //             }
+    //         }
+    //     }
+    // }
     foreach($requests as $request){
         foreach($request['item'] as $key_item =>  $items){
-            $setRequest[] = [
-                "key" => $key_item,
-                "controllers" =>  $items['controllers'],
-            ];
+            if (is_array($items['controllers'])) {
+                foreach($items['controllers'] as $controller) {
+                    $setRequest[] = [
+                        "key" => $key_item,
+                        "controllers" => $controller,
+                    ];
+                }
+            } else {
+                $setRequest[] = [
+                    "key" => $key_item,
+                    "controllers" => $items['controllers'],
+                ];
+            }
+            // Thêm controllers từ sub
+            if (isset($items['sub']) && is_array($items['sub'])) {
+                foreach ($items['sub'] as $sub_key => $sub_item) {
+                    if (isset($sub_item['controllers'])) {
+                        $setRequest[] = [
+                            "key" => $sub_key,
+                            "controllers" => $sub_item['controllers'],
+                        ];
+                    }
+                }
+            }
             if($items['main']!='true'){
                 $SelectPermission[$items['menu']] = $items['permission'];
             }

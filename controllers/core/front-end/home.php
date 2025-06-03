@@ -7,9 +7,9 @@ $app->router("/", 'GET', function($vars) use ($app, $jatbi, $setting) {
     echo $app->render('templates/dhv/index.html', $vars);
 });
 
-$app->router("/news", 'GET', function($vars) use ($app, $jatbi, $setting) {
-    echo $app->render('templates/dhv/news.html', $vars);
-}); 
+// $app->router("/news", 'GET', function($vars) use ($app, $jatbi, $setting) {
+//     echo $app->render('templates/dhv/news.html', $vars);
+// }); 
 
 $app->router("/contact", 'GET', function($vars) use ($app, $jatbi, $setting) {
     echo $app->render('templates/dhv/contact.html', $vars);
@@ -19,9 +19,9 @@ $app->router("/consultation", 'GET', function($vars) use ($app, $jatbi, $setting
     echo $app->render('templates/dhv/consultation.html', $vars);
 }); 
 
-$app->router("/project", 'GET', function($vars) use ($app, $jatbi, $setting) {
-    echo $app->render('templates/dhv/project.html', $vars);
-}); 
+// $app->router("/project", 'GET', function($vars) use ($app, $jatbi, $setting) {
+//     echo $app->render('templates/dhv/project.html', $vars);
+// }); 
 
 // $app->router("/login", 'GET', function($vars) use ($app, $jatbi, $setting) {
 //     echo $app->render('templates/dhv/login.html', $vars);
