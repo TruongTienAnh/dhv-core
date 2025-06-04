@@ -1419,7 +1419,7 @@ p {
       border: 2px solid #ebecf6;
       height: 80px;
       align-items: center;
-      padding: 0 50px; }
+      padding: 0 25px; }
       @media (max-width: 767px) {
         .dream-course-area .dream-course-content .dream-course-search {
           height: auto;

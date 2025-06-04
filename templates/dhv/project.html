@@ -1,37 +1,32 @@
-
-    <!--====== BANNER PART START ======-->
-
+<!--====== BANNER PART START ======-->
 <section class="banner-area bg_cover mt-80" style="background-image: url(<?=$setting['template']?>/assets-frontend/images/Media/trangchu/Banner\ chính.jpg)">
     <div class="container">
         <div class="row justify-content-center align-items-center" style="height: 100vh;">
             <div class="col-lg-7 text-center">
                 <div class="banner-content">
                     <h3 class="title">CORE</h3>
-                        <nav aria-label="breadcrumb">
-                            <ol class="breadcrumb" style="
-                                background-color: transparent;
-                                font-size: 30px;
-                                display: flex;
-                                justify-content: center;
-                            ">
-                                <li class="breadcrumb-item" style="color: white;">
-                                    <a href="/" style="color: white;">Trang chủ</a>
-                                </li>
-                                <li class="breadcrumb-item active" aria-current="page" style="color: white;">DỰ ÁN</li>
-                            </ol>
-                        </nav>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb" style="
+                            background-color: transparent;
+                            font-size: 30px;
+                            display: flex;
+                            justify-content: center;
+                        ">
+                            <li class="breadcrumb-item" style="color: white;">
+                                <a href="/" style="color: white;">Trang chủ</a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page" style="color: white;">DỰ ÁN</li>
+                        </ol>
+                    </nav>
                 </div>
             </div>
         </div>
     </div>
 </section>
+<!--====== BANNER PART ENDS ======-->
 
-    <!--====== BANNER PART ENDS ======-->
-
-
-    <!--====== SERVICES  PART START ======-->
-
-    <div class="dream-course-area">
+<!--====== SERVICES PART START ======-->
+<div class="dream-course-area">
     <div class="container">
         <div class="row">
             <div class="col-lg-12">
@@ -39,14 +34,14 @@
                     <div class="dream-course-title text-center">
                         <span>Tìm kiếm dự án của bạn</span>
                     </div>
-                    <form action="#">
+                    <form action="/projects" method="GET">
                         <div class="dream-course-search d-flex">
                             <div class="input-box">
                                 <i class="fal fa-search"></i>
-                                <input type="text" placeholder="Tìm kiếm dịch vụ">
+                                <input type="text" name="search" placeholder="Tìm kiếm dự án" value="<?= $search_query ?>">
                             </div>
                             <div class="dream-course-btn">
-                                <button type="button">Tìm kiếm</button>
+                                <button type="submit">Tìm kiếm</button>
                             </div>
                         </div>
                     </form>
@@ -56,30 +51,71 @@
     </div>
 </div>
 
+<!--====== PROJECTS LIST PART START ======-->
 <section class="course-2-grid-area pt-90 pb-120">
     <div class="row justify-content-center">
         <div class="col-lg-9">
             <div class="row">
-                <div class="col-lg-12">
-                    <div class="single-course-2-list white-bg mt-30 d-flex flex-md-row flex-column align-items-stretch">
-                        <div class="course-2-list-thumb">
-                            <img src="<?=$setting['template']?>/assets-frontend/images/Media/5.2.Dự án/Banner chính.jpg" alt="Ảnh dự án">
-                        </div>
-                        <div class="courses-2-content">
-                            <h4 class="title">Tên dự án:</h4>
-                            <p>Xây dựng Bộ Giá trị Cốt lõi và Văn hóa Ứng xử cho Công ty ABC (ngành Thương mại)</p>
-
-                            <h4 class="title"> Thời gian thực hiện:</h4>
-                            <p>Tháng 01 - 02/2025</p>
-
-                            <a href="/project-detail" class="detail-btn mt-3">Xem chi tiết</a>
-                        </div>
+                <?php if (empty($projects)): ?>
+                    <div class="col-lg-12 text-center">
+                        <p>Không tìm thấy dự án nào<?= !empty($search_query) ? ' phù hợp với từ khóa "' . htmlspecialchars($search_query) . '"' : '' ?>.</p>
                     </div>
-                </div>
+                <?php else: ?>
+                    <?php foreach ($projects as $project): ?>
+                        <div class="col-lg-12">
+                            <div class="single-course-2-list white-bg mt-30 d-flex flex-md-row flex-column align-items-stretch">
+                                <div class="course-2-list-thumb">
+                                    <img src="<?=$setting['template']?>/assets-frontend/images/Media/5.2.Dự án/<?= $project['image_url'] ?>" alt="Ảnh dự án <?= htmlspecialchars($project['title']) ?>">
+                                </div>
+                                <div class="courses-2-content">
+                                    <h4 class="title">Tên dự án:</h4>
+                                    <p><?= $project['title'] ?> <?= !empty($project['industry']) ? '(ngành ' . htmlspecialchars($project['industry']) . ')' : '' ?></p>
+
+                                    <h4 class="title">Thời gian thực hiện:</h4>
+                                    <p>Tháng <?= date('m/Y', strtotime($project['start_date'])) . ' - ' . date('m/Y', strtotime($project['end_date'])) ?></p>
+
+                                    <a href="/project-detail/<?= $project['slug'] ?>" class="detail-btn mt-3">Xem chi tiết</a>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </div>
+
+            <!-- Phân trang -->
+            <?php if ($total_pages > 1): ?>
+                <div class="pagination mt-40 text-center">
+                    <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                        <a href="/projects?page=<?= $i ?>&search=<?= urlencode( $search_query) ?>" class="<?= $i === $current_page ? 'active' : '' ?>"><?= $i ?></a>
+                    <?php endfor; ?>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 </section>
+<!--====== PROJECTS LIST PART ENDS ======-->
 
-    
-
+<!-- CSS cho phân trang và thông báo không tìm thấy -->
+<style>
+.pagination {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+}
+.pagination a {
+    display: inline-block;
+    padding: 8px 12px;
+    margin: 0 4px;
+    text-decoration: none;
+    color: #333;
+    background-color: #f1f1f1;
+    border-radius: 4px;
+}
+.pagination a.active {
+    background-color: #ed1c24;
+    color: white;
+}
+.pagination a:hover:not(.active) {
+    background-color: #ddd;
+}
+</style>
