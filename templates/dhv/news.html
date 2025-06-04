@@ -29,39 +29,88 @@
 <section class="blog-standard-area gray-bg pt-80 pb-120">
     <div class="container">
         <div class="row justify-content-center">
-            <!-- Bài viết + Sidebar -->
+            <!-- Bài viết -->
             <div class="col-lg-8">
-                <?php foreach ($category_posts as $category_data): ?>
-                    <div class="blog-standard">
-                        <h3 class="section-title text-start mb-40"><?= mb_strtoupper($category_data['category']['name'], 'UTF-8')?> >>></h3>
-                        <div class="row justify-content-center">
-                            <?php foreach ($category_data['posts'] as $post): ?>
-                                <!-- Bài viết -->
-                                <div class="col-lg-6 col-md-6 col-sm-9">
-                                    <div class="single-blog-grid">
-                                        <!-- Label nằm trên cùng -->
-                                        <div class="blog-label"><?= mb_strtoupper($category_data['category']['name'], 'UTF-8') ?></div>
-
-                                        <!-- Hình ảnh -->
-                                        <div class="blog-thumb">
-                                            <img src="<?=$setting['template']?>/assets-frontend/images/<?= $post['image_url'] ?>" alt="blog">
-                                        </div>
-
-                                        <!-- Nội dung -->
-                                        <div class="blog-content">
-                                            <h4 class="post-title"><?= mb_strtoupper($post['title'], 'UTF-8') ?></h4>
-                                            <p class="post-desc">
-                                                <?= substr(strip_tags($post['content']), 0, 150) . '...' ?>
-                                            </p>
-                                            <hr>
-                                            <a href="/news-detail/<?= $post['slug'] ?>" class="read-more-btn">XEM THÊM</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            <?php endforeach; ?>
-                        </div>
+                <?php if (!empty($search_query)): ?>
+                    <div class="search-result mb-40">
+                        <h4>Kết quả tìm kiếm cho: "<?= $search_query ?>"</h4>
                     </div>
-                <?php endforeach; ?>
+                <?php endif; ?>
+
+                <?php if (empty($category_posts) && !empty($search_query)): ?>
+                    <div class="no-results text-center mb-40">
+                        <p>Không tìm thấy bài viết nào phù hợp với từ khóa "<?= $search_query ?>".</p>
+                    </div>
+                <?php else: ?>
+                    <?php 
+                    $current_category = null;
+                    $post_count = 0;
+                    $row_open = false;
+                    foreach ($category_posts as $data):
+                        $category = $data['category'];
+                        $post = $data['post'];
+
+                        if ($current_category !== $category['name']) {
+                            if ($current_category !== null) {
+                                if ($post_count > 0) {
+                                    echo '</div>';
+                                    $post_count = 0;
+                                }
+                                echo '</div>';
+                            }
+                            $current_category = $category['name'];
+                            echo '<div class="blog-standard">';
+                            echo '<h3 class="section-title text-start mb-40">' . mb_strtoupper($category['name'], 'UTF-8') . ' >>></h3>';
+                        }
+
+                        if ($post_count == 0) {
+                            echo '<div class="row justify-content-center">';
+                            $row_open = true;
+                        }
+                    ?>
+                        <div class="col-lg-6 col-md-6 col-sm-9">
+                            <div class="single-blog-grid">
+                                <div class="blog-label"><?= mb_strtoupper($category['name'], 'UTF-8') ?></div>
+                                <div class="blog-thumb">
+                                    <img src="<?= $setting['template'] ?>/assets-frontend/images/<?= $post['image_url'] ?>" alt="blog">
+                                </div>
+                                <div class="blog-content">
+                                    <h4 class="post-title"><?= mb_strtoupper($post['title'], 'UTF-8') ?></h4>
+                                    <p class="post-desc"><?= substr(strip_tags($post['content']), 0, 150) . '...' ?></p>
+                                    <hr>
+                                    <a href="/news-detail/<?= $post['slug'] ?>" class="read-more-btn">XEM THÊM</a>
+                                </div>
+                            </div>
+                        </div>
+                    <?php 
+                        $post_count++;
+                        if ($post_count == 2) {
+                            echo '</div>';
+                            $row_open = false;
+                            $post_count = 0;
+                        }
+                    ?>
+                    <?php endforeach; ?>
+
+                    <?php 
+                    if ($post_count > 0) {
+                        echo '</div>';
+                        $row_open = false;
+                    }
+                    if ($current_category !== null) {
+                        echo '</div>';
+                    }
+                    ?>
+                <?php endif; ?>
+
+                <!-- Phân trang -->
+                <?php if ($total_pages > 1): ?>
+                    <div class="pagination mt-40 text-center">
+                        <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                            <a href="/news?page=<?= $i ?>&search=<?= urlencode($search_query) ?>" class="<?= $i === $current_page ? 'active' : '' ?>"><?= $i ?></a>
+                        <?php endfor; ?>
+                    </div>
+                <?php endif; ?>
             </div>
 
             <!-- Sidebar -->
@@ -72,10 +121,10 @@
                             <h4 class="title">Tìm kiếm</h4>
                         </div>
                         <div class="blog-Search-content text-center">
-                            <form action="#">
+                            <form action="/news" method="GET">
                                 <div class="input-box">
-                                    <input type="text" placeholder="Tìm kiếm bài viết...">
-                                    <button type="button" style="border-radius: 30px;color: white;"><i class="fas fa-search"></i></button>
+                                    <input type="text" name="search" placeholder="Tìm kiếm bài viết..." value="<?= htmlspecialchars($search_query) ?>">
+                                    <button type="submit" style="border-radius: 30px;color: white;"><i class="fas fa-search"></i></button>
                                 </div>
                             </form>
                         </div>
@@ -88,7 +137,6 @@
                         <div class="blog-categories-content mt-35">
                             <ul>
                                 <?php
-                                // Lấy tất cả danh mục để hiển thị trong sidebar
                                 $all_categories = $app->select("categories", [
                                     "[>]news" => ["id" => "category_id"]
                                 ], [
@@ -112,3 +160,42 @@
     </div>
 </section>
 <!--====== BLOG STANDARD PART ENDS ======-->
+
+<!-- CSS cho phân trang -->
+<style>
+.pagination {
+    text-align: center; /* Đảm bảo căn giữa theo chiều ngang */
+    display: flex; /* Sử dụng flexbox để căn giữa các nút */
+    justify-content: center; /* Căn giữa các phần tử con */
+}
+.pagination a {
+    display: inline-block;
+    padding: 8px 12px;
+    margin: 0 4px;
+    text-decoration: none;
+    color: #333;
+    background-color: #f1f1f1;
+    border-radius: 4px;
+}
+
+.pagination a.active {
+    background-color: #ed1c24;
+    color: white;
+}
+
+.pagination a:hover:not(.active) {
+    background-color: #ddd;
+}
+
+/* Search Result và No Results */
+.search-result h4 {
+    font-size: 20px;
+    color: #0b2154;
+    margin-bottom: 20px;
+}
+
+.no-results p {
+    font-size: 16px;
+    color: #666;
+}
+</style>

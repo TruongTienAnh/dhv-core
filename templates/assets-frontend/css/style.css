@@ -1424,7 +1424,8 @@ p {
         .dream-course-area .dream-course-content .dream-course-search {
           height: auto;
           padding: 30px 50px;
-          display: block !important; } }
+          display: block !important; } 
+        }
       @media only screen and (min-width: 576px) and (max-width: 767px) {
         .dream-course-area .dream-course-content .dream-course-search {
           height: 80px;
