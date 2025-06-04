@@ -107,8 +107,7 @@
                 <?php if ($total_pages > 1): ?>
                     <div class="pagination mt-40 text-center">
                         <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                            <a href="/news?page=<?= $i ?>&search=<?= urlencode($search_query) ?>" class="<?= $i === $current_page ? 'active' : '' ?>"><?= $i ?></a>
-                        <?php endfor; ?>
+                            <a href="/news<?= $category_slug ? '/' . $category_slug : '' ?>?page=<?= $i ?>&search=<?= urlencode($search_query) ?>" class="<?= $i === $current_page ? 'active' : '' ?>"><?= $i ?></a>                        <?php endfor; ?>
                     </div>
                 <?php endif; ?>
             </div>
@@ -121,8 +120,7 @@
                             <h4 class="title">Tìm kiếm</h4>
                         </div>
                         <div class="blog-Search-content text-center">
-                            <form action="/news" method="GET">
-                                <div class="input-box">
+                            <form action="/news<?= $category_slug ? '/' . $category_slug : '' ?>" method="GET">                                <div class="input-box">
                                     <input type="text" name="search" placeholder="Tìm kiếm bài viết..." value="<?= htmlspecialchars($search_query) ?>">
                                     <button type="submit" style="border-radius: 30px;color: white;"><i class="fas fa-search"></i></button>
                                 </div>

@@ -3,7 +3,8 @@ if (!defined('ECLO')) die("Hacking attempt");
 $jatbi = new Jatbi($app);
 $setting = $app->getValueData('setting');
 
-$app->router("/news", 'GET', function($vars) use ($app, $jatbi, $setting) {
+// Hàm chung để lấy bài viết, phân trang và xử lý tìm kiếm
+$newsHandler = function($vars) use ($app, $jatbi, $setting) {
     // Tiêu đề trang
     $vars['title'] = $jatbi->lang('Tin tức');
 
@@ -13,7 +14,23 @@ $app->router("/news", 'GET', function($vars) use ($app, $jatbi, $setting) {
 
     // Lấy từ khóa tìm kiếm
     $searchQuery = isset($_GET['search']) ? trim($_GET['search']) : '';
-    $vars['search_query'] = $searchQuery; // Truyền từ khóa tìm kiếm vào template
+    $vars['search_query'] = $searchQuery;
+
+    // Lấy slug danh mục từ URL (nếu có)
+    $categorySlug = $vars['slug'] ?? '';
+
+    // Nếu không có slug, hiển thị tất cả danh mục; nếu có slug, chỉ lấy danh mục tương ứng
+    $categoryId = null;
+    if (!empty($categorySlug)) {
+        $category = $app->get("categories", ["id"], ["slug" => $categorySlug]);
+        if (!$category) {
+            http_response_code(404);
+            echo "Danh mục không tồn tại.";
+            return;
+        }
+        $categoryId = $category['id'];
+    }
+    $vars['category_slug'] = $categorySlug;
 
     // Truy vấn tất cả danh mục, sắp xếp theo tổng views giảm dần
     $all_categories = $app->select("categories", [
@@ -28,6 +45,13 @@ $app->router("/news", 'GET', function($vars) use ($app, $jatbi, $setting) {
         "GROUP" => "categories.id",
         "ORDER" => ["total_views" => "DESC"]
     ]);
+
+    // Lọc danh mục nếu có categoryId
+    if ($categoryId !== null) {
+        $all_categories = array_filter($all_categories, function($category) use ($categoryId) {
+            return $category['id'] == $categoryId;
+        });
+    }
 
     // Lấy tất cả bài viết theo từng danh mục, sắp xếp theo views
     $all_posts = [];
@@ -74,7 +98,7 @@ $app->router("/news", 'GET', function($vars) use ($app, $jatbi, $setting) {
     $currentPagePosts = [];
     $postIndex = array_fill(0, count($all_posts), 0);
     $categoriesOnPage = [];
-    $currentCatIndex = 0; // Theo dõi danh mục hiện tại đang xử lý
+    $currentCatIndex = 0;
     $totalPosts = 0;
 
     while ($currentCatIndex < count($all_posts)) {
@@ -82,16 +106,13 @@ $app->router("/news", 'GET', function($vars) use ($app, $jatbi, $setting) {
         $posts = $category_data['posts'];
         $category = $category_data['category'];
 
-        // Số bài còn lại trong danh mục này
         $remainingPosts = count($posts) - $postIndex[$currentCatIndex];
 
-        // Nếu danh mục này đã hết bài, chuyển sang danh mục tiếp theo
         if ($remainingPosts <= 0) {
             $currentCatIndex++;
             continue;
         }
 
-        // Kiểm tra số danh mục đã có trên trang hiện tại
         if (!in_array($category['id'], $categoriesOnPage)) {
             if ($currentCategoryCount >= 2) {
                 if ($currentPostCount > 0) {
@@ -107,7 +128,6 @@ $app->router("/news", 'GET', function($vars) use ($app, $jatbi, $setting) {
             $currentCategoryCount++;
         }
 
-        // Số bài cần thêm để lấp đầy trang hiện tại
         $postsNeeded = $perPage - $currentPostCount;
 
         if ($postsNeeded <= 0) {
@@ -120,10 +140,8 @@ $app->router("/news", 'GET', function($vars) use ($app, $jatbi, $setting) {
             continue;
         }
 
-        // Số bài có thể thêm từ danh mục này
         $postsToAdd = min($remainingPosts, $postsNeeded);
 
-        // Thêm bài viết vào trang hiện tại
         for ($i = 0; $i < $postsToAdd; $i++) {
             $currentPagePosts[] = [
                 'category' => $category,
@@ -133,12 +151,10 @@ $app->router("/news", 'GET', function($vars) use ($app, $jatbi, $setting) {
             $currentPostCount++;
         }
 
-        // Nếu danh mục hiện tại đã hết bài, chuyển sang danh mục tiếp theo
         if ($postIndex[$currentCatIndex] >= count($posts)) {
             $currentCatIndex++;
         }
 
-        // Nếu đã đủ 4 bài, chuyển sang trang mới
         if ($currentPostCount >= $perPage) {
             $postsPerPage[$page] = $currentPagePosts;
             $page++;
@@ -149,20 +165,16 @@ $app->router("/news", 'GET', function($vars) use ($app, $jatbi, $setting) {
         }
     }
 
-    // Nếu còn bài viết trong trang cuối, thêm vào
     if ($currentPostCount > 0) {
         $postsPerPage[$page] = $currentPagePosts;
     }
 
-    // Tính tổng số bài viết
     foreach ($all_posts as $category_data) {
         $totalPosts += $category_data['total_posts'];
     }
 
-    // Tính tổng số trang
     $totalPages = ceil($totalPosts / $perPage);
 
-    // Lấy bài viết cho trang hiện tại
     $category_posts = isset($postsPerPage[$currentPage]) ? $postsPerPage[$currentPage] : [];
 
     // Truyền dữ liệu vào template
@@ -173,5 +185,9 @@ $app->router("/news", 'GET', function($vars) use ($app, $jatbi, $setting) {
     $vars['app'] = $app;
 
     echo $app->render('templates/dhv/news.html', $vars);
-});
+};
+
+// Đăng ký 2 route riêng biệt, dùng chung handler
+$app->router("/news", 'GET', $newsHandler);
+$app->router("/news/{slug}", 'GET', $newsHandler);
 ?>
