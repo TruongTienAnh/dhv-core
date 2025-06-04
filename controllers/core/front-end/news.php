@@ -46,6 +46,14 @@ $newsHandler = function($vars) use ($app, $jatbi, $setting) {
         "ORDER" => ["total_views" => "DESC"]
     ]);
 
+    // Kiểm tra nếu không có danh mục
+    if (empty($all_categories)) {
+        $vars['category_posts'] = [];
+        $vars['total_pages'] = 0;
+        echo $app->render('templates/dhv/news.html', $vars);
+        return;
+    }
+
     // Lọc danh mục nếu có categoryId
     if ($categoryId !== null) {
         $all_categories = array_filter($all_categories, function($category) use ($categoryId) {
@@ -169,10 +177,8 @@ $newsHandler = function($vars) use ($app, $jatbi, $setting) {
         $postsPerPage[$page] = $currentPagePosts;
     }
 
-    foreach ($all_posts as $category_data) {
-        $totalPosts += $category_data['total_posts'];
-    }
-
+    // Tối ưu: Tính tổng số bài viết trực tiếp
+    $totalPosts = $app->count("news", ["status" => 'A']);
     $totalPages = ceil($totalPosts / $perPage);
 
     $category_posts = isset($postsPerPage[$currentPage]) ? $postsPerPage[$currentPage] : [];

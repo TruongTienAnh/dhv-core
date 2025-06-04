@@ -107,7 +107,15 @@
                 <?php if ($total_pages > 1): ?>
                     <div class="pagination mt-40 text-center">
                         <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                            <a href="/news<?= $category_slug ? '/' . $category_slug : '' ?>?page=<?= $i ?>&search=<?= urlencode($search_query) ?>" class="<?= $i === $current_page ? 'active' : '' ?>"><?= $i ?></a>                        <?php endfor; ?>
+                            <?php
+                            $slugPart = '';
+                            if (!empty($category_slug)) {
+                                $validCategory = $app->get("categories", ["slug"], ["slug" => $category_slug]);
+                                $slugPart = $validCategory ? '/' . $category_slug : '';
+                            }
+                            ?>
+                            <a href="/news<?= $slugPart ?>?page=<?= $i ?>&search=<?= urlencode($search_query) ?>" class="<?= $i === $current_page ? 'active' : '' ?>"><?= $i ?></a>
+                        <?php endfor; ?>
                     </div>
                 <?php endif; ?>
             </div>
@@ -120,8 +128,9 @@
                             <h4 class="title">Tìm kiếm</h4>
                         </div>
                         <div class="blog-Search-content text-center">
-                            <form action="/news<?= $category_slug ? '/' . $category_slug : '' ?>" method="GET">                                <div class="input-box">
-                                    <input type="text" name="search" placeholder="Tìm kiếm bài viết..." value="<?= htmlspecialchars($search_query) ?>">
+                            <form action="/news<?= $category_slug ? '/' . $category_slug : '' ?>" method="GET">
+                                <div class="input-box">
+                                    <input type="text" name="search" placeholder="Tìm kiếm bài viết..." value="<?= $search_query ?>">
                                     <button type="submit" style="border-radius: 30px;color: white;"><i class="fas fa-search"></i></button>
                                 </div>
                             </form>
@@ -147,7 +156,7 @@
                                 ]);
                                 foreach ($all_categories as $category):
                                 ?>
-                                    <li><a href="/news/<?= $category['slug'] ?>"><?= $category['name'] ?> <span><?= $category['count'] ?></span></a></li>
+                                    <li><a href="/news/<?= $category['slug'] ?>" class="<?= $category_slug === $category['slug'] ? 'active' : '' ?>"><?= $category['name'] ?> <span><?= $category['count'] ?></span></a></li>
                                 <?php endforeach; ?>
                             </ul>
                         </div>
@@ -195,5 +204,13 @@
 .no-results p {
     font-size: 16px;
     color: #666;
+}
+
+.blog-categories-content ul li a.active {
+    color: #ed1c24;
+    font-weight: bold;
+}
+.blog-categories-content ul li a:hover {
+    color: #ed1c24;
 }
 </style>
