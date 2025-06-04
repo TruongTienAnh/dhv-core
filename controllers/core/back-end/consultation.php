@@ -104,75 +104,53 @@ $app->router("/admin/consultation-deleted", 'GET', function($vars) use ($app, $j
 })->setPermissions(['consultation']);
 
 $app->router("/admin/consultation-deleted", 'POST', function($vars) use ($app, $jatbi) {
-    $app->header([
-        'Content-Type' => 'application/json',
-    ]);
+        $app->header(['Content-Type' => 'application/json']);
 
-    // Kiểm tra xem có 'id' hay 'box' trong request không
-    $snList = [];
+        $idList = [];
 
-    if (!empty($_GET['id'])) {
-        $snList[] = $app->xss($_GET['id']);
-    } elseif (!empty($_GET['box'])) {
-        $snList = array_map('trim', explode(',', $app->xss($_GET['box'])));
-    }
+        if (!empty($_GET['id'])) {
+            $idList[] = $app->xss($_GET['id']);
+        } elseif (!empty($_GET['box'])) {
+            $idList = array_map('trim', explode(',', $app->xss($_GET['box'])));
+        }
 
-    if (empty($snList)) {
-        echo json_encode(["status" => "error", "content" => "Thiếu ID nhân viên để xóa"]);
-        return;
-    }
+        if (empty($idList)) {
+            echo json_encode(["status" => "error", "content" => $jatbi->lang("Thiếu ID lịch để xóa")]);
+            return;
+        }
 
-    try {
-        $headers = [
-            'Authorization: Bearer your_token',
-            'Content-Type: application/x-www-form-urlencoded'
-        ];
+        try {
+            $deletedCount = 0;
+            $errors = [];
 
-        $deletedCount = 0;
-        $errors = [];
+            foreach ($idList as $id) {
+                if (empty($id)) continue;
 
-        foreach ($snList as $sn) {
-            if (empty($sn)) continue; // Bỏ qua nếu có giá trị rỗng
+                $deleted = $app->delete("appointments", ["id" => $id]);
 
-            // Xóa khỏi database
-            $app->delete("employee", ["sn" => $sn]);
-
-            // Gửi yêu cầu xóa từ API
-            $apiData = [
-                'deviceKey' => '77ed8738f236e8df86',
-                'secret' => '123456',
-                'sn' => $sn,
-            ];
-
-            $response = $app->apiPost(
-                'http://camera.ellm.io:8190/api/person/delete', 
-                $apiData, 
-                $headers
-            );
-
-            $apiResponse = json_decode($response, true);
-
-            if (!empty($apiResponse['success']) && $apiResponse['success'] === true) {
-                $deletedCount++;
-            } else {
-                $errorMessage = $apiResponse['msg'] ?? "Không rõ lỗi";
-                $errors[] = "SN $sn: " . $errorMessage;
+                if ($deleted) {
+                    $deletedCount++;
+                } else {
+                    $errors[] = $id;
+                }
             }
-        }
 
-        if (!empty($errors)) {
-            echo json_encode([
-                "status" => "error",
-                "content" => "Một số nhân viên xóa thất bại",
-                "errors" => $errors
-            ]);
-        } else {
-            echo json_encode([
-                "status" => "success",
-                "content" => "Đã xóa thành công $deletedCount nhân viên"
-            ]);
+            if (!empty($errors)) {
+                echo json_encode([
+                    "status" => "error",
+                    "content" => $jatbi->lang("Một số thư viện xóa thất bại"),
+                    "errors" => $errors
+                ]);
+            } else {
+                echo json_encode([
+                    "status" => "success",
+                    "content" => $jatbi->lang("Đã xóa thành công") . " $deletedCount " . $jatbi->lang("thư viện")
+                ]);
+            }
+
+        } catch (Exception $e) {
+            echo json_encode(["status" => "error", "content" => "Lỗi: " . $e->getMessage()]);
         }
-    } catch (Exception $e) {
-        echo json_encode(["status" => "error", "content" => "Lỗi: " . $e->getMessage()]);
-    }
-})->setPermissions(['consultation']);
+    })->setPermissions(['consultation']);
+
+    

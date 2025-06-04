@@ -3148,7 +3148,7 @@ p {
   }
 
   .footer-area .footer-item .footer-list-area .footer-list ul li a:hover {
-    color: #f16001;
+    color: red;
     opacity: 1;
   }
 
