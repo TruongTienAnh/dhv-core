@@ -72,9 +72,59 @@ $libraryHandler = function($vars) use ($app, $jatbi, $setting) {
 };
     
 
-// Đăng ký 2 route riêng biệt, dùng chung handler
+// Đăng ký 2 route riêng biệt, dùng chung handler   
 $app->router("/library", 'GET', $libraryHandler);
 $app->router("/library/{slug}", 'GET', $libraryHandler);
+
+$app->router("/library-detail/library-add", 'GET', function($vars) use ($app, $jatbi, $setting) {
+    $vars['title'] = $jatbi->lang("Tải tài liệu");
+    echo $app->render('templates/dhv/library-post.html', $vars, 'global');
+});
+
+$app->router("/library-detail/library-add", 'POST', function($vars) use ($app, $jatbi) {
+    $app->header(['Content-Type' => 'application/json']);
+
+    $name = $app->xss($_POST['name'] ?? '');
+    $phone = $app->xss($_POST['phone'] ?? '');
+    $email = $app->xss($_POST['email'] ?? '');
+    $slug = $app->xss($_POST['slug'] ?? '');
+
+    echo $slug ;
+    exit ;
+
+
+    if (empty($name) || empty($phone) || empty($email)) {
+        echo json_encode(["status" => "error", "content" => $jatbi->lang("Vui lòng không để trống")]);
+        return;
+    }
+
+    // Kiểm tra định dạng email hợp lệ
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        echo json_encode(["status" => "error", "content" => $jatbi->lang("Email không hợp lệ")]);
+        return;
+    }
+
+    // Lưu dữ liệu vào DB
+    $insert = [
+        "name" => $name,
+        "phone" => $phone,
+        "email" => $email,
+        
+    ];
+
+    try {
+        $app->insert("appointments", $insert);
+        echo json_encode([
+            "status" => "success",
+            "content" => $jatbi->lang("Tải thành công"),
+            "file" => "/path/to/your/file.pdf" 
+        ]);
+    } catch (Exception $e) {
+        echo json_encode(["status" => "error", "content" => "Lỗi: " . $e->getMessage()]);
+    }
+
+});
+
 
 $app->router("/library-detail/{slug}", 'GET', function($vars) use ($app) {
     $slug = $vars['slug'] ?? null;
@@ -120,5 +170,4 @@ $app->router("/library-detail/{slug}", 'GET', function($vars) use ($app) {
         'categories' => $categories ?? []
     ]);
 });
-    
 
