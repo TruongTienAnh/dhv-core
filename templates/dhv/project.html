@@ -1,121 +1,118 @@
-<!--====== BANNER PART START ======-->
-<section class="banner-area bg_cover mt-80" style="background-image: url(<?=$setting['template']?>/assets-frontend/images/Media/trangchu/Banner\ chính.jpg)">
+<!--====== PAGE TITLE PART START ======-->
+<div class="page-title bg_cover mt-80 pt-140 pb-140" style="background-image: url(<?=$setting['template']?>/assets-frontend/images/Media/trangchu/Banner\ chính.jpg)">
     <div class="container">
-        <div class="row justify-content-center align-items-center" style="height: 100vh;">
-            <div class="col-lg-7 text-center">
-                <div class="banner-content">
+        <div class="row justify-content-center">
+            <div class="col-lg-12">
+                <div class="page-title-item text-center">
                     <h3 class="title">CORE</h3>
                     <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb" style="
-                            background-color: transparent;
-                            font-size: 30px;
-                            display: flex;
-                            justify-content: center;
-                        ">
-                            <li class="breadcrumb-item" style="color: white;">
-                                <a href="/" style="color: white;">Trang chủ</a>
-                            </li>
-                            <li class="breadcrumb-item active" aria-current="page" style="color: white;">DỰ ÁN</li>
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
+                            <li class="breadcrumb-item active" aria-current="page"><?=$title ?? "Dự án"?></li>
                         </ol>
                     </nav>
                 </div>
             </div>
         </div>
     </div>
-</section>
-<!--====== BANNER PART ENDS ======-->
-
-<!--====== SERVICES PART START ======-->
-<div class="dream-course-area">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="dream-course-content">
-                    <div class="dream-course-title text-center">
-                        <span>Tìm kiếm dự án của bạn</span>
-                    </div>
-                    <form action="/projects" method="GET">
-                        <div class="dream-course-search d-flex">
-                            <div class="input-box">
-                                <i class="fal fa-search"></i>
-                                <input type="text" name="search" placeholder="Tìm kiếm dự án" value="<?= $search_query ?>">
-                            </div>
-                            <div class="dream-course-btn">
-                                <button type="submit">Tìm kiếm</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
+<!--====== PAGE TITLE PART ENDS ======-->
 
-<!--====== PROJECTS LIST PART START ======-->
-<section class="course-2-grid-area pt-90 pb-120">
-    <div class="row justify-content-center">
-        <div class="col-lg-9">
-            <div class="row">
-                <?php if (empty($projects)): ?>
-                    <div class="col-lg-12 text-center">
-                        <p>Không tìm thấy dự án nào<?= !empty($search_query) ? ' phù hợp với từ khóa "' . htmlspecialchars($search_query) . '"' : '' ?>.</p>
-                    </div>
-                <?php else: ?>
-                    <?php foreach ($projects as $project): ?>
-                        <div class="col-lg-12">
-                            <div class="single-course-2-list white-bg mt-30 d-flex flex-md-row flex-column align-items-stretch">
-                                <div class="course-2-list-thumb">
-                                    <img src="<?=$setting['template']?>/assets-frontend/images/Media/5.2.Dự án/<?= $project['image_url'] ?>" alt="Ảnh dự án <?= htmlspecialchars($project['title']) ?>">
+<!--====== COURSE GRID PART START ======-->
+<section class="course-grid-area pt-90 pb-120">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-9">
+                <div class="course-grid mt-30">
+                    <div class="course-grid-top d-sm-flex d-block justify-content-between align-items-center">
+                        <div class="course-filter d-block align-items-center d-sm-flex">
+                            <form action="/projects" method="GET">
+                                <select name="industry" onchange="this.form.submit()">
+                                    <option value="">Tất cả ngành</option>
+                                    <?php foreach ($industries as $industry): ?>
+                                        <option value="<?=$industry?>" <?=$industry_filter === $industry ? 'selected' : ''?>><?=$industry?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </form>
+                            <form action="/projects" method="GET">
+                                <input type="hidden" name="industry" value="<?=$industry_filter?>">
+                                <div class="input-box">
+                                    <i class="fal fa-search"></i>
+                                    <input type="text" placeholder="Tìm kiếm" name="search" value="<?=$search_query?>">
                                 </div>
-                                <div class="courses-2-content">
-                                    <h4 class="title">Tên dự án:</h4>
-                                    <p><?= $project['title'] ?> <?= !empty($project['industry']) ? '(ngành ' . htmlspecialchars($project['industry']) . ')' : '' ?></p>
-
-                                    <h4 class="title">Thời gian thực hiện:</h4>
-                                    <p>Tháng <?= date('m/Y', strtotime($project['start_date'])) . ' - ' . date('m/Y', strtotime($project['end_date'])) ?></p>
-
-                                    <a href="/project-detail/<?= $project['slug'] ?>" class="detail-btn mt-3">Xem chi tiết</a>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <?php if (empty($projects)): ?>
+                        <div class="col-lg-12 text-center">
+                            <p>Không tìm thấy dự án nào<?=!empty($search_query) ? ' phù hợp với từ khóa "' . $search_query . '"' : ''?><?=!empty($industry_filter) ? ' trong ngành "' . $industry_filter . '"' : ''?>.</p>
+                        </div>
+                    <?php else: ?>
+                        <?php foreach ($projects as $project): ?>
+                            <div class="col-lg-12">
+                                <div class="single-course-list white-bg mt-30 d-flex align-items-center flex-wrap">
+                                    <div class="course-list-thumb">
+                                        <img src="<?=$setting['template']?>/assets-frontend/images/Media/5.2.Dự án/<?=$project['image_url']?>" alt="Ảnh dự án <?=$project['title']?>">
+                                    </div>
+                                    <div class="courses-content">
+                                        <a href="/project-detail/<?=$project['slug']?>">
+                                            <h4 class="title"><?=$project['title']?> <?=!empty($project['industry']) ? '(ngành ' . $project['industry'] . ')' : ''?></h4>
+                                        </a>
+                                        <p><?=$project['excerpt'] ?? ''?></p>
+                                        <div class="courses-info d-flex justify-content-between">
+                                            <div class="item">
+                                                <p><?=$project['client_name'] ?? ''?></p>
+                                            </div>
+                                        </div>
+                                        <ul>
+                                            <li><i class="fal fa-calendar-alt"></i> Tháng <?=$project['start_date']?> - <?=$project['end_date']?></li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
+                <?php if ($total_pages > 1): ?>
+                    <div class="col-lg-12">
+                        <div class="pagination-item d-flex justify-content-center mt-50">
+                            <nav aria-label="Page navigation example">
+                                <ul class="pagination">
+                                    <?php if ($current_page > 1): ?>
+                                        <li class="page-item">
+                                            <a class="page-link" href="/projects?page=<?=$current_page - 1?>&search=<?=urlencode($search_query)?>&industry=<?=urlencode($industry_filter)?>" aria-label="Previous">
+                                                <span aria-hidden="true"><i class="fal fa-arrow-left"></i></span>
+                                            </a>
+                                        </li>
+                                    <?php endif; ?>
+                                    <?php for ($i = max(1, $current_page - 2); $i <= min($total_pages, $current_page + 2); $i++): ?>
+                                        <li class="page-item">
+                                            <a class="page-link <?=$i === $current_page ? 'active' : ''?>" href="/projects?page=<?=$i?>&search=<?=urlencode($search_query)?>&industry=<?=urlencode($industry_filter)?>"><?=$i?></a>
+                                        </li>
+                                    <?php endfor; ?>
+                                    <?php if ($current_page < $total_pages - 2): ?>
+                                        <li class="page-item">
+                                            <a class="page-link" href="#">...</a>
+                                        </li>
+                                        <li class="page-item">
+                                            <a class="page-link" href="/projects?page=<?=$total_pages?>&search=<?=urlencode($search_query)?>&industry=<?=urlencode($industry_filter)?>"><?=$total_pages?></a>
+                                        </li>
+                                    <?php endif; ?>
+                                    <?php if ($current_page < $total_pages): ?>
+                                        <li class="page-item">
+                                            <a class="page-link" href="/projects?page=<?=$current_page + 1?>&search=<?=urlencode($search_query)?>&industry=<?=urlencode($industry_filter)?>" aria-label="Next">
+                                                <span aria-hidden="true"><i class="fal fa-arrow-right"></i></span>
+                                            </a>
+                                        </li>
+                                    <?php endif; ?>
+                                </ul>
+                            </nav>
                         </div>
-                    <?php endforeach; ?>
+                    </div>
                 <?php endif; ?>
             </div>
-
-            <!-- Phân trang -->
-            <?php if ($total_pages > 1): ?>
-                <div class="pagination mt-40 text-center">
-                    <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                        <a href="/projects?page=<?= $i ?>&search=<?= urlencode( $search_query) ?>" class="<?= $i === $current_page ? 'active' : '' ?>"><?= $i ?></a>
-                    <?php endfor; ?>
-                </div>
-            <?php endif; ?>
         </div>
-    </div>
-</section>
-<!--====== PROJECTS LIST PART ENDS ======-->
-
-<!-- CSS cho phân trang và thông báo không tìm thấy -->
-<style>
-.pagination {
-    text-align: center;
-    display: flex;
-    justify-content: center;
-}
-.pagination a {
-    display: inline-block;
-    padding: 8px 12px;
-    margin: 0 4px;
-    text-decoration: none;
-    color: #333;
-    background-color: #f1f1f1;
-    border-radius: 4px;
-}
-.pagination a.active {
-    background-color: #ed1c24;
-    color: white;
-}
-.pagination a:hover:not(.active) {
-    background-color: #ddd;
-}
-</style>
+    </section>
+<!--====== COURSE GRID PART ENDS ======-->
