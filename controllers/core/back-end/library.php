@@ -50,9 +50,6 @@ function generateSlug($str) {
     return $str;
 }
 
-
-
-
 $app->router("/admin/library", 'GET', function($vars) use ($app, $jatbi, $setting) {
     $vars['title'] = $jatbi->lang("Thư viện số");
     echo $app->render('templates/backend/library/library.html', $vars);

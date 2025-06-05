@@ -1,5 +1,12 @@
     <!--====== BANNER PART START ======-->
-
+<?php
+$slug = ''; 
+$segments = explode('/', trim($_SERVER['REQUEST_URI'], '/'));
+if (count($segments) > 1) {
+    $slug = $segments[count($segments) - 1]; // lấy phần cuối của URL
+}
+$dataUrl = "library-add/" . $slug;
+?>
 <section class="banner-area bg_cover mt-80" style="background-image: url(<?=$setting['template']?>/assets-frontend/images/Media/trangchu/Banner\ chính.jpg)">
     <div class="container">
         <div class="row justify-content-center align-items-center" style="height: 100vh;">
@@ -66,7 +73,7 @@
                 </div>
                         <!-- Nút tải tài liệu -->
                     <div class="text-center mt-40 mb-40">
-                        <button type="button" class="btn btn-download-doc px-5 py-3 fw-bold"  data-action="modal" data-url="library-add" data-bs-toggle="modal" data-bs-target=".modal-load">
+                        <button type="button" class="btn btn-download-doc px-5 py-3 fw-bold"  data-action="modal"  data-url="<?= htmlspecialchars($dataUrl) ?>"  data-bs-toggle="modal" data-bs-target=".modal-load">
                             Tải tài liệu miễn phí
                         </button> 
                     </div>
