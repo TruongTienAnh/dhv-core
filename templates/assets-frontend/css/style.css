@@ -23,7 +23,7 @@
 ===========================*/
 @import url("https://fonts.googleapis.com/css?family=Karla:400,400i,700,700i|Montserrat:300,300i,400,400i,500,500i,600,600i,700,900|Philosopher:400,700,700i&amp;display=swap");
 body {
-  font-family: "Karla", sans-serif;
+  /* font-family: "Karla", sans-serif; */
   font-weight: normal;
   font-style: normal;
   color: #6b93aa;
@@ -426,8 +426,8 @@ p {
   .header-area .header-top .trial-btns a {
     height: 50px;
     line-height: 50px;
-    border: 2px solid #ff9595;
-    color: #ff9595;
+    border: 2px solid red;
+    color: red;
     padding: 0 50px;
     border-radius: 30px;
     margin-left: 45px;
@@ -1852,10 +1852,10 @@ p {
     top: -160px;
     height: 60px;
     width: 60px;
-    border-radius: 50%;
+    /* border-radius: 50%; */
     text-align: center;
     line-height: 56px;
-    border: 2px solid #ebecf6;
+    /* border: 2px solid #ebecf6; */
     color: #87a1c1;
     cursor: pointer;
     -webkit-transition: all 0.3s ease-out 0s;
@@ -1871,10 +1871,11 @@ p {
       .advance-courses-area .courses-active .slick-arrow {
         top: -100px; } }
     .advance-courses-area .courses-active .slick-arrow:hover {
-      background: #f16001;
+      /* background: #f16001; */
       color: #fff;
-      border-color: #f16001;
-      box-shadow: 0px 8px 16px 0px rgba(241, 96, 1, 0.2); }
+      /* border-color: #f16001; */
+      /* box-shadow: 0px 8px 16px 0px rgba(241, 96, 1, 0.2);  */
+    }
     .advance-courses-area .courses-active .slick-arrow.prev {
       right: 95px; }
     .advance-courses-area .courses-active .slick-arrow.next {
@@ -1887,8 +1888,8 @@ p {
       z-index: 9;
       color: #fff; }
       .advance-courses-area.advance-courses-area-2 .courses-active .slick-arrow:hover {
-        background: #00ffd8;
-        border-color: #00ffd8;
+        /* background: #00ffd8;
+        border-color: #00ffd8; */
         color: #001b61; }
       .advance-courses-area.advance-courses-area-2 .courses-active .slick-arrow.prev {
         left: -65px; }
@@ -2347,7 +2348,7 @@ p {
 ===========================*/
 .counter-area {
   position: relative;
-  padding-top: 260px;
+  padding-top: 160px;
   padding-bottom: 117px;
   background-attachment: fixed;
   background-repeat: no-repeat;
@@ -2656,10 +2657,10 @@ p {
     transform: translateY(-50%);
     height: 60px;
     width: 60px;
-    border-radius: 50%;
+    /* border-radius: 50%; */
     text-align: center;
     line-height: 56px;
-    border: 3px solid #e9ecff;
+    /* border: 3px solid #e9ecff; */
     color: #001b61;
     font-size: 20px;
     cursor: pointer;
@@ -2772,7 +2773,7 @@ p {
     width: 30%;
     top: 0;
     height: 100%;
-    background-image: url(../images/community-bg.jpg);
+    background-image: url(../images/Media/trangchu/2.jpg);
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center; }
@@ -2805,7 +2806,7 @@ p {
         line-height: 46px;
         padding-bottom: 30px; } }
     .community-area .community-content .title span {
-      color: #53cfa5; }
+      color: red; }
   .community-area .community-content p {
     font-size: 18px;
     line-height: 32px; }
@@ -2833,13 +2834,13 @@ p {
         color: #6b93aa; }
     .community-area .community-content .input-box button {
       position: absolute;
-      right: 33px;
+      /* right: 33px; */
       top: 50%;
       transform: translateY(-50%);
       line-height: 60px;
       height: 60px;
       padding: 0 50px;
-      background: #8976ff;
+      background: red;
       color: #fff;
       border-radius: 40px;
       border: 0;

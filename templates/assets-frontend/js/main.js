@@ -57,8 +57,8 @@ $(function () {
         autoplay: true,
         autoplaySpeed: 5000,
         arrows: true,
-        prevArrow: '<span class="prev"><i class="fal fa-arrow-left"></i></span>',
-        nextArrow: '<span class="next"><i class="fal fa-arrow-right"></i></span>',
+        prevArrow: '<span class="prev"><i class="fa fa-caret-left" aria-hidden="true" style="font-size: 70px;"></i></span>',
+        nextArrow: '<span class="next"><i class="fa fa-caret-right" aria-hidden="true" style="font-size: 70px;"></i></span>',
         speed: 1500,
         slidesToShow: 3,
         slidesToScroll: 1,
@@ -141,15 +141,14 @@ $(function () {
 
 
     //===== seller Active slick slider
-
     $('.testimonials-active').slick({
         dots: false,
         infinite: true,
         autoplay: true,
         autoplaySpeed: 5000,
         arrows: true,
-        prevArrow: '<span class="prev"><i class="fal fa-arrow-left"></i></span>',
-        nextArrow: '<span class="next"><i class="fal fa-arrow-right"></i></span>',
+        prevArrow: '<span class="prev"><i class="fa fa-caret-left" aria-hidden="true" style="font-size: 70px;"></i></span>',
+        nextArrow: '<span class="next"><i class="fa fa-caret-right" aria-hidden="true" style="font-size: 70px;"></i></span>',
         speed: 1500,
         slidesToShow: 1,
         slidesToScroll: 1,
@@ -401,3 +400,5 @@ $(function () {
 
 
 });
+
+
