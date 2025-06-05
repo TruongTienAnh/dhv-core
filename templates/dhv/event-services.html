@@ -17,7 +17,8 @@
                                 <a href="/" style="color: white;">Trang chủ</a>
                             </li>
                             <li class="breadcrumb-item active" aria-current="page" style="color: white;">Dịch vụ</li>
-                            <li class="breadcrumb-item active" aria-current="page" style="color: white;">Tổ chức sự kiện</li>
+                            <li class="breadcrumb-item active" aria-current="page" style="color: white;">Tổ chức sự kiện
+                            </li>
                         </ol>
                     </nav>
                 </div>
@@ -60,35 +61,44 @@
     <div class="container">
         <div class="row" id="serviceList">
             <?php if (!empty($services_data)): ?>
-                <?php foreach ($services_data as $data): ?>
-                    <div class="col-lg-4 col-md-6 col-sm-8">
-                        <div class="card">
-                            <div class="single-courses">
-                                <div class="courses-thumb">
-                                    <img src="<?= $setting['template']?>/assets-frontend/images/services/<?=$data['image']; ?>" alt="courses">
-                                    <div class="corses-thumb-title">
-                                        <span><?php echo htmlspecialchars($data['category_name']); ?></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <h5><?php echo htmlspecialchars($data['title']); ?></h5>
-                                <ol>
-                                    <?php foreach ($data['description_items'] as $item): ?>
-                                        <?php if (!empty($item)): ?>
-                                            <li><?php echo htmlspecialchars($item); ?></li>
-                                        <?php endif; ?>
-                                    <?php endforeach; ?>
-                                </ol>
-                                <a href="/services-detail/<?php echo htmlspecialchars($data['slug']); ?>" class="btn">XEM THÊM</a>
+            <?php foreach ($services_data as $data): ?>
+            <div class="col-lg-4 col-md-6 col-sm-8">
+                <div class="card">
+                    <div class="single-courses">
+                        <div class="courses-thumb">
+                            <img src="<?=$setting['template']?>/<?= htmlspecialchars($data['image']) ?>">
+                            <div class="corses-thumb-title">
+                                <span>
+                                    <?php echo htmlspecialchars($data['category_name']); ?>
+                                </span>
                             </div>
                         </div>
                     </div>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <div class="col-12 text-center">
-                    <p><?php echo $content ?? 'Không có dịch vụ nào để hiển thị.'; ?></p>
+                    <div class="card-body">
+                        <h5>
+                            <?php echo htmlspecialchars($data['title']); ?>
+                        </h5>
+                        <ol>
+                            <?php foreach ($data['description_items'] as $item): ?>
+                            <?php if (!empty($item)): ?>
+                            <li>
+                                <?php echo htmlspecialchars($item); ?>
+                            </li>
+                            <?php endif; ?>
+                            <?php endforeach; ?>
+                        </ol>
+                        <a href="/services-detail/<?php echo htmlspecialchars($data['slug']); ?>" class="btn">XEM
+                            THÊM</a>
+                    </div>
                 </div>
+            </div>
+            <?php endforeach; ?>
+            <?php else: ?>
+            <div class="col-12 text-center">
+                <p>
+                    <?php echo $content ?? 'Không có dịch vụ nào để hiển thị.'; ?>
+                </p>
+            </div>
             <?php endif; ?>
         </div>
     </div>
@@ -97,9 +107,11 @@
 <nav aria-label="Page navigation">
     <ul class="my-pagination justify-content-center">
         <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-            <li class="my-page-item <?= $i == $current_page ? 'active' : '' ?>">
-                <a class="my-page-link" href="?page=<?= $i ?>"><?= $i ?></a>
-            </li>
+        <li class="my-page-item <?= $i == $current_page ? 'active' : '' ?>">
+            <a class="my-page-link" href="?page=<?= $i ?>">
+                <?= $i ?>
+            </a>
+        </li>
         <?php endfor; ?>
     </ul>
 </nav>

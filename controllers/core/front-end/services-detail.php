@@ -1,10 +1,11 @@
 <?php
-if (!defined('ECLO')) die("Hacking attempt");
+if (!defined('ECLO'))
+    die("Hacking attempt");
 $jatbi = new Jatbi($app);
 $setting = $app->getValueData('setting');
 
 // Route cho chi tiết dịch vụ
-$app->router("/services-detail/{slug}", 'GET', function($vars) use ($app, $jatbi, $setting) {
+$app->router("/services-detail/{slug}", 'GET', function ($vars) use ($app, $jatbi, $setting) {
     $slug = $vars['slug'] ?? null;
 
     if (!$slug) {
@@ -16,7 +17,8 @@ $app->router("/services-detail/{slug}", 'GET', function($vars) use ($app, $jatbi
     // Truy vấn theo slug
     $services = $app->select("services", [
         "[>]services_detail" => ["id" => "service_id"],
-        "[>]categories" => ["category_id" => "id"]
+        "[>]categories" => ["category_id" => "id"],
+        "[>]author_boxes" => ["services_detail.author_box_id" => "id"]
     ], [
         "services.id",
         "services.image",
@@ -31,15 +33,19 @@ $app->router("/services-detail/{slug}", 'GET', function($vars) use ($app, $jatbi
         "services_detail.original_min_price",
         "services_detail.original_max_price",
         "services_detail.discount",
+        "services_detail.object",
         "services_detail.content",
         "services_detail.author_box_id",
         "services_detail.service_id",
-        "categories.name(category_name)"
+        "categories.name(category_name)",
+        "author_boxes.name(author_name)",
+        "author_boxes.image_url(author_image)",
+        "author_boxes.content(author_content)"
     ], [
         "services.slug" => $slug,
         "LIMIT" => 1
     ]);
-    
+
 
     if (!$services) {
         http_response_code(404);
@@ -64,7 +70,7 @@ $app->router("/services-detail/{slug}", 'GET', function($vars) use ($app, $jatbi
     $service_detail['image'] = $relative_image_path;
 
     // Xử lý đánh giá sao
-    $rate = (int)($service_detail['rate'] ?? 0);
+    $rate = (int) ($service_detail['rate'] ?? 0);
     $service_detail['stars'] = str_repeat('<i class="fas fa-star star text-2xl"></i>', $rate);
 
     // Lấy danh sách danh mục để hiển thị sidebar (nếu cần)

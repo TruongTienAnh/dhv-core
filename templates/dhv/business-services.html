@@ -68,8 +68,9 @@
                         <div class="card">
                             <div class="single-courses">
                                 <div class="courses-thumb">
-                                    <!-- Hiển thị hình ảnh từ cột image trong DB -->
-                                    <img src="<?= $setting['template']?>/assets-frontend/images/services/<?=$data['image']; ?>" alt="courses">
+            
+                                    <!-- <img src="<?= $setting['template']?>/uploads/services/<?=$data['image']; ?>" alt="courses"> -->
+                                    <img src="<?=$setting['template']?>/<?= htmlspecialchars($data['image']) ?>" >
                                     <div class="corses-thumb-title">
                                         <span><?php echo htmlspecialchars($data['category_name']); ?></span>
                                     </div>
