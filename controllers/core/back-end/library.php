@@ -70,7 +70,7 @@ $app->router("/admin/library", 'POST', function($vars) use ($app, $jatbi) {
     $orderDir = strtoupper($_POST['order'][0]['dir'] ?? 'DESC');
 
     // Danh sách cột theo bảng library để order
-    $validColumns = ["checkbox", "title", "description", "file_url", "name", "action"];
+    $validColumns = ["checkbox", "title", "description", "file_url","img_url", "name", "action"];
     $orderColumn = $validColumns[$orderColumnIndex] ?? "title";
 
     // Điều kiện tìm kiếm (chỉ điều kiện WHERE)
@@ -96,6 +96,7 @@ $app->router("/admin/library", 'POST', function($vars) use ($app, $jatbi) {
         "resources.title",
         "resources.description",
         "resources.file_url",
+        "resources.img_url",
         "resources.id_category",
         "resources.created_at",
         "categories.name",
@@ -108,6 +109,7 @@ $app->router("/admin/library", 'POST', function($vars) use ($app, $jatbi) {
             "title" => $data['title'],
             "description" => $data['description'],
             "file_url" => $data['file_url'],
+            "img_url" => $data['img_url'],
             "name" => $data['name'],
             "created_at" => $data['created_at'],
             "action" => $app->component("action", [
@@ -145,62 +147,66 @@ $app->router("/admin/library", 'POST', function($vars) use ($app, $jatbi) {
 
 
   //Thêm library
-    $app->router("/admin/library-add", 'GET', function($vars) use ($app, $jatbi, $setting) {
-        $vars['title1'] = $jatbi->lang("Thêm thư viện số");
-        $vars['categories'] = $app->select("categories", ['id', 'name']);
-        echo $app->render('templates/backend/library/library-post.html', $vars, 'global');
-    })->setPermissions(['library']);
-    
-    $app->router("/admin/library-add", 'POST', function($vars) use ($app, $jatbi) {
-        $app->header(['Content-Type' => 'application/json']);
+//Thêm library
+$app->router("/admin/library-add", 'GET', function($vars) use ($app, $jatbi, $setting) {
+    $vars['title1'] = $jatbi->lang("Thêm thư viện số");
+    $vars['categories'] = $app->select("categories", ['id', 'name']);
+    echo $app->render('templates/backend/library/library-post.html', $vars, 'global');
+})->setPermissions(['library']);
 
-        // Lấy dữ liệu từ form (xử lý XSS)
-        $title = $app->xss($_POST['title'] ?? '');
-        $description = $app->xss($_POST['description']??'');
-        $category = $app->xss($_POST['category']??'');
-        $filename = isset($_FILES['file']) ? $_FILES['file'] : null;
+$app->router("/admin/library-add", 'POST', function($vars) use ($app, $jatbi) {
+    $app->header(['Content-Type' => 'application/json']);
 
+    $title = $app->xss($_POST['title'] ?? '');
+    $description = $app->xss($_POST['description'] ?? '');
+    $category = $app->xss($_POST['category'] ?? '');
+    $pdfFile = $_FILES['file'] ?? null;
+    $imgFile = $_FILES['image'] ?? null;
 
-        // Kiểm tra dữ liệu bắt buộc
-        if (empty($title) || empty($category)) {
-            echo json_encode(["status" => "error", "content" => $jatbi->lang("Vui lòng không để trống các trường bắt buộc")]);
-            return;
-        }
+    if (empty($title) || empty($category) || !$pdfFile || !$imgFile) {
+        echo json_encode(["status" => "error", "content" => $jatbi->lang("Vui lòng không để trống các trường bắt buộc")]);
+        return;
+    }
 
-        $slug = generateSlug($title);
+    $slug = generateSlug($title);
+    $uploadDir = __DIR__ . '/../../uploads/library/';
+    if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
 
-        // Xử lý upload file (ví dụ lưu vào thư mục /uploads/)
-        // $uploadDir = __DIR__ . '/../../uploads/library/';
-        // $filename = time() . '_' . basename($file['name']);
-        // $targetFile = $uploadDir . $filename;
+    // Lưu file PDF
+    $pdfFilename = time() . '_' . basename($pdfFile['name']);
+    $pdfPath = $uploadDir . $pdfFilename;
+    if (!move_uploaded_file($pdfFile['tmp_name'], $pdfPath)) {
+        echo json_encode(["status" => "error", "content" => $jatbi->lang("Tải file PDF thất bại")]);
+        return;
+    }
 
-        // if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
+    // Lưu ảnh minh họa
+    $imgExt = pathinfo($imgFile['name'], PATHINFO_EXTENSION);
+    $imgFilename = time() . '_cover.' . $imgExt;
+    $imgPath = $uploadDir . $imgFilename;
+    if (!move_uploaded_file($imgFile['tmp_name'], $imgPath)) {
+        echo json_encode(["status" => "error", "content" => $jatbi->lang("Tải ảnh minh họa thất bại")]);
+        return;
+    }
 
-        // if (!move_uploaded_file($file['tmp_name'], $targetFile)) {
-        //     echo json_encode(["status" => "error", "content" => $jatbi->lang("Tải file thất bại")]);
-        //     return;
-        // }
+    // Lưu dữ liệu vào DB
+    $insert = [
+        "title" => $title,
+        "description" => $description,
+        "file_url" => 'uploads/library/' . $pdfFilename,
+        "img_url" => 'uploads/library/' . $imgFilename,
+        "id_category" => $category,
+        "created_at" => date("Y-m-d H:i:s"),
+        "slug" => $slug,
+    ];
 
-        // Chuẩn bị dữ liệu lưu
-        $insert = [
-            "title" => $title,
-            "description" => $description,
-            "file_url" => '', 
-            "id_category" => $category,
-            "created_at" => date("Y-m-d H:i:s"),
-            "slug" => $slug,
-        ];
-
-        try {
-
-            // Lưu vào DB (bảng `library`)
-            $app->insert("resources", $insert);
-
-            echo json_encode(["status" => "success", "content" => $jatbi->lang("Thêm thành công")]);
-        } catch (Exception $e) {
-            echo json_encode(["status" => "error", "content" => "Lỗi: " . $e->getMessage()]);
-        }
-    })->setPermissions(['library']);
+    try {
+        $app->insert("resources", $insert);
+        echo json_encode(["status" => "success", "content" => $jatbi->lang("Thêm thành công")]);
+    } catch (Exception $e) {
+        echo json_encode(["status" => "error", "content" => "Lỗi: " . $e->getMessage()]);
+    }
+})->setPermissions(['library']);
 
 
 

@@ -49,6 +49,11 @@
     margin-bottom: 15px;
     margin-top: 40px;
     line-height: 1.4;
+    display: -webkit-box; /* Tạo box để giới hạn số dòng */
+    -webkit-line-clamp: 2; /* Giới hạn tối đa 2 dòng */
+    -webkit-box-orient: vertical; /* Định hướng box theo chiều dọc */
+    overflow: hidden; /* Ẩn phần văn bản vượt quá */
+    text-overflow: ellipsis; /* Thêm dấu ... khi văn bản bị cắt */
 }
 
 .post-desc {

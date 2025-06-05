@@ -1,6 +1,6 @@
 /* CSS cho course-grid-area */
 .course-2-grid-area {
-    padding-top: 90px;
+    padding-top: 20px;
     padding-bottom: 120px;
 }
 
@@ -127,7 +127,7 @@
 }
 
 .dream-course-area .dream-course-content .dream-course-search {
-    padding: 0 25px;
+    /* padding: 0 25px; */
 }
 
 .author-box {
