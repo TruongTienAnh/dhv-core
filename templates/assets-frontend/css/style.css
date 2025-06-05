@@ -5691,7 +5691,7 @@ p {
       transform: translateY(-50%);
       height: 4px;
       width: 18px;
-      background: red; }
+      background: #39bdb2; }
     .blog-standard-area .blog-sidebar .blog-side-about .about-title .title::after {
       position: absolute;
       content: '';
@@ -5700,7 +5700,7 @@ p {
       transform: translateY(-50%);
       height: 4px;
       width: 4px;
-      background: red; }
+      background: #39bdb2; }
   .blog-standard-area .blog-sidebar .blog-side-about .blog-about-content {
     padding-top: 33px; }
     .blog-standard-area .blog-sidebar .blog-side-about .blog-about-content .title {
@@ -5752,7 +5752,7 @@ p {
       top: 0;
       right: 0;
       height: 100%;
-      background: red;
+      background: #06f;
       color: #fff;
       border: 0;
       line-height: 60px;

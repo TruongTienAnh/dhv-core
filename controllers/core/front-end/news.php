@@ -18,11 +18,12 @@ $newsHandler = function($vars) use ($app, $jatbi, $setting) {
 
     // Lấy slug danh mục từ URL (nếu có)
     $categorySlug = $vars['slug'] ?? '';
+    $vars['category_slug'] = $categorySlug;
 
     // Nếu không có slug, hiển thị tất cả danh mục; nếu có slug, chỉ lấy danh mục tương ứng
     $categoryId = null;
     if (!empty($categorySlug)) {
-        $category = $app->get("categories", ["id"], ["slug" => $categorySlug]);
+        $category = $app->get("categories_news", ["id"], ["slug" => $categorySlug, "deleted" => 0, "status" => 'A']);
         if (!$category) {
             http_response_code(404);
             echo "Danh mục không tồn tại.";
@@ -30,21 +31,32 @@ $newsHandler = function($vars) use ($app, $jatbi, $setting) {
         }
         $categoryId = $category['id'];
     }
-    $vars['category_slug'] = $categorySlug;
 
-    // Truy vấn tất cả danh mục, sắp xếp theo tổng views giảm dần
-    $all_categories = $app->select("categories", [
+    // Truy vấn tất cả danh mục, chỉ lấy danh mục có deleted = 0 và status = 'A', sắp xếp theo tổng views giảm dần
+    $all_categories = $app->select("categories_news", [
         "[>]news" => ["id" => "category_id"]
     ], [
-        "categories.id",
-        "categories.name",
-        "categories.slug",
-        "total_views" => $app->raw("SUM(news.views)")
+        "categories_news.id",
+        "categories_news.name",
+        "categories_news.slug",
+        "total_views" => $app->raw("SUM(news.views)"),
+        "count" => $app->raw("COUNT(news.id)")
     ], [
+        "categories_news.deleted" => 0,
+        "categories_news.status" => 'A',
         "news.status" => 'A',
-        "GROUP" => "categories.id",
+        "news.deleted" => 0,
+        "GROUP" => "categories_news.id",
         "ORDER" => ["total_views" => "DESC"]
     ]);
+
+    // Chuẩn hóa dữ liệu danh mục
+    foreach ($all_categories as &$category) {
+        $category['name'] = mb_strtoupper($category['name'], 'UTF-8');
+        $category['count'] = (int)$category['count'];
+    }
+    unset($category); // Hủy tham chiếu
+    $vars['all_categories'] = $all_categories;
 
     // Kiểm tra nếu không có danh mục
     if (empty($all_categories)) {
@@ -54,134 +66,77 @@ $newsHandler = function($vars) use ($app, $jatbi, $setting) {
         return;
     }
 
-    // Lọc danh mục nếu có categoryId
+    // Xây dựng điều kiện truy vấn
+    $conditions = [
+        "news.status" => 'A',
+        "news.deleted" => 0,
+        "category_id" => $app->select("categories_news", "id", [
+            "deleted" => 0,
+            "status" => 'A'
+        ])
+    ];
     if ($categoryId !== null) {
-        $all_categories = array_filter($all_categories, function($category) use ($categoryId) {
-            return $category['id'] == $categoryId;
-        });
+        $conditions["category_id"] = $categoryId;
     }
-
-    // Lấy tất cả bài viết theo từng danh mục, sắp xếp theo views
-    $all_posts = [];
-    foreach ($all_categories as $category) {
-        $conditions = [
-            "category_id" => $category['id'],
-            "status" => 'A',
-            "ORDER" => ["views" => "DESC"]
+    if (!empty($searchQuery)) {
+        $conditions["OR"] = [
+            "news.title[~]" => "%{$searchQuery}%",
+            "news.content[~]" => "%{$searchQuery}%"
         ];
-
-        // Nếu có từ khóa tìm kiếm, thêm điều kiện tìm kiếm vào truy vấn
-        if (!empty($searchQuery)) {
-            $conditions["OR"] = [
-                "title[~]" => "%{$searchQuery}%",
-                "content[~]" => "%{$searchQuery}%"
-            ];
-        }
-
-        $posts = $app->select("news", [
-            "id",
-            "title",
-            "slug",
-            "content",
-            "image_url",
-            "views",
-            "published_at",
-            "category_id"
-        ], $conditions);
-
-        if (!empty($posts)) {
-            $all_posts[] = [
-                'category' => $category,
-                'posts' => $posts,
-                'total_posts' => count($posts)
-            ];
-        }
     }
 
-    // Phân trang thủ công: tối đa 4 bài/trang, tối đa 2 danh mục/trang, ưu tiên hết bài của danh mục hiện tại
-    $postsPerPage = [];
-    $page = 1;
-    $currentPostCount = 0;
-    $currentCategoryCount = 0;
-    $currentPagePosts = [];
-    $postIndex = array_fill(0, count($all_posts), 0);
-    $categoriesOnPage = [];
-    $currentCatIndex = 0;
-    $totalPosts = 0;
-
-    while ($currentCatIndex < count($all_posts)) {
-        $category_data = $all_posts[$currentCatIndex];
-        $posts = $category_data['posts'];
-        $category = $category_data['category'];
-
-        $remainingPosts = count($posts) - $postIndex[$currentCatIndex];
-
-        if ($remainingPosts <= 0) {
-            $currentCatIndex++;
-            continue;
-        }
-
-        if (!in_array($category['id'], $categoriesOnPage)) {
-            if ($currentCategoryCount >= 2) {
-                if ($currentPostCount > 0) {
-                    $postsPerPage[$page] = $currentPagePosts;
-                    $page++;
-                    $currentPagePosts = [];
-                    $currentPostCount = 0;
-                    $currentCategoryCount = 0;
-                    $categoriesOnPage = [];
-                }
-            }
-            $categoriesOnPage[] = $category['id'];
-            $currentCategoryCount++;
-        }
-
-        $postsNeeded = $perPage - $currentPostCount;
-
-        if ($postsNeeded <= 0) {
-            $postsPerPage[$page] = $currentPagePosts;
-            $page++;
-            $currentPagePosts = [];
-            $currentPostCount = 0;
-            $currentCategoryCount = 0;
-            $categoriesOnPage = [];
-            continue;
-        }
-
-        $postsToAdd = min($remainingPosts, $postsNeeded);
-
-        for ($i = 0; $i < $postsToAdd; $i++) {
-            $currentPagePosts[] = [
-                'category' => $category,
-                'post' => $posts[$postIndex[$currentCatIndex]]
-            ];
-            $postIndex[$currentCatIndex]++;
-            $currentPostCount++;
-        }
-
-        if ($postIndex[$currentCatIndex] >= count($posts)) {
-            $currentCatIndex++;
-        }
-
-        if ($currentPostCount >= $perPage) {
-            $postsPerPage[$page] = $currentPagePosts;
-            $page++;
-            $currentPagePosts = [];
-            $currentPostCount = 0;
-            $currentCategoryCount = 0;
-            $categoriesOnPage = [];
-        }
-    }
-
-    if ($currentPostCount > 0) {
-        $postsPerPage[$page] = $currentPagePosts;
-    }
-
-    // Tối ưu: Tính tổng số bài viết trực tiếp
-    $totalPosts = $app->count("news", ["status" => 'A']);
+    // Tính tổng số bài viết
+    $totalPosts = $app->count("news", "id", [
+        "AND" => $conditions
+    ]);
     $totalPages = ceil($totalPosts / $perPage);
 
-    $category_posts = isset($postsPerPage[$currentPage]) ? $postsPerPage[$currentPage] : [];
+    // Lấy bài viết cho trang hiện tại
+    $posts = $app->select("news", [
+        "[>]categories_news" => ["category_id" => "id"]
+    ], [
+        "news.id",
+        "news.title",
+        "news.slug",
+        "news.excerpt",
+        "news.content",
+        "news.image_url",
+        "news.views",
+        "news.published_at",
+        "news.category_id",
+        "categories_news.name(category_name)",
+        "categories_news.slug(category_slug)"
+    ], [
+        "AND" => $conditions,
+        "LIMIT" => [($currentPage - 1) * $perPage, $perPage],
+        "ORDER" => ["news.views" => "DESC"]
+    ]);
+
+    // Chuẩn hóa dữ liệu bài viết
+    $category_posts = [];
+    foreach ($posts as $post) {
+        $category_posts[] = [
+            'category' => [
+                'id' => $post['category_id'],
+                'name' => mb_strtoupper($post['category_name'], 'UTF-8'),
+                'slug' => $post['category_slug']
+            ],
+            'post' => [
+                'id' => $post['id'],
+                'title' => mb_strtoupper($post['title'], 'UTF-8'),
+                'slug' => $post['slug'],
+                'excerpt' => isset($post['excerpt']) && $post['excerpt'] 
+                    ? $post['excerpt'] 
+                    : (isset($post['excerpt']) 
+                        ? substr(strip_tags((string)$post['excerpt']), 0, 150) . '...' 
+                        : ''),
+                'content' => substr(strip_tags($post['content']), 0, 150) . '...',
+                'image_url' => $post['image_url'] ?: 'blog-grid-1.jpg',
+                'views' => (int)($post['views'] ?? 0),
+                'published_at' => $post['published_at'] ? date('d/m/Y', strtotime($post['published_at'])) : ''
+            ]
+        ];
+    }
 
     // Truyền dữ liệu vào template
     $vars['category_posts'] = $category_posts;
@@ -196,4 +151,104 @@ $newsHandler = function($vars) use ($app, $jatbi, $setting) {
 // Đăng ký 2 route riêng biệt, dùng chung handler
 $app->router("/news", 'GET', $newsHandler);
 $app->router("/news/{slug}", 'GET', $newsHandler);
+
+// Hàm xử lý chi tiết bài viết
+$newsDetailHandler = function($vars) use ($app, $jatbi, $setting) {
+    // Lấy slug bài viết từ URL
+    $postSlug = $vars['slug'] ?? '';
+    if (empty($postSlug)) {
+        http_response_code(404);
+        echo "Bài viết không tồn tại.";
+        return;
+    }
+
+    // Lấy chi tiết bài viết
+    $post = $app->get("news", [
+        "[>]categories_news" => ["category_id" => "id"]
+    ], [
+        "news.id",
+        "news.title",
+        "news.slug",
+        "news.excerpt",
+        "news.content",
+        "news.image_url",
+        "news.views",
+        "news.published_at",
+        "news.category_id",
+        "categories_news.name(category_name)",
+        "categories_news.slug(category_slug)"
+    ], [
+        "news.slug" => $postSlug,
+        "news.status" => 'A',
+        "news.deleted" => 0,
+        "categories_news.status" => 'A',
+        "categories_news.deleted" => 0
+    ]);
+
+    if (!$post) {
+        http_response_code(404);
+        echo "Bài viết không tồn tại.";
+        return;
+    }
+
+    // Chuẩn hóa dữ liệu bài viết
+    $post_data = [
+        'id' => $post['id'],
+        'title' => mb_strtoupper($post['title'], 'UTF-8'),
+        'slug' => $post['slug'],
+        'content' => $post['content'], // Giữ nguyên HTML
+        'excerpt' => isset($post['excerpt']) && $post['excerpt'] 
+            ? $post['excerpt'] 
+            : (isset($post['excerpt']) 
+                ? substr(strip_tags((string)$post['excerpt']), 0, 150) . '...' 
+                : ''),
+        'image_url' => $post['image_url'] ?: 'blog-grid-1.jpg',
+        'views' => (int)($post['views'] ?? 0),
+        'published_at' => $post['published_at'] ? date('d/m/Y', strtotime($post['published_at'])) : '',
+        'category' => [
+            'id' => $post['category_id'],
+            'name' => mb_strtoupper($post['category_name'], 'UTF-8'),
+            'slug' => $post['category_slug']
+        ]
+    ];
+
+    // Lấy tất cả danh mục cho sidebar
+    $all_categories = $app->select("categories_news", [
+        "[>]news" => ["id" => "category_id"]
+    ], [
+        "categories_news.id",
+        "categories_news.name",
+        "categories_news.slug",
+        "total_views" => $app->raw("SUM(news.views)"),
+        "count" => $app->raw("COUNT(news.id)")
+    ], [
+        "categories_news.deleted" => 0,
+        "categories_news.status" => 'A',
+        "news.status" => 'A',
+        "news.deleted" => 0,
+        "GROUP" => "categories_news.id",
+        "ORDER" => ["total_views" => "DESC"]
+    ]);
+
+    // Chuẩn hóa dữ liệu danh mục
+    foreach ($all_categories as &$category) {
+        $category['name'] = mb_strtoupper($category['name'], 'UTF-8');
+        $category['count'] = (int)$category['count'];
+    }
+    unset($category);
+
+    // Truyền dữ liệu vào template
+    $vars['title'] = $post_data['title'];
+    $vars['post'] = $post_data;
+    $vars['all_categories'] = $all_categories;
+    $vars['category_slug'] = $post_data['category']['slug'];
+    $vars['search_query'] = '';
+    $vars['setting'] = $setting;
+    $vars['app'] = $app;
+
+    echo $app->render('templates/dhv/news-detail.html', $vars);
+};  
+
+$app->router("/news-detail/{slug}", 'GET', $newsDetailHandler);
+
 ?>

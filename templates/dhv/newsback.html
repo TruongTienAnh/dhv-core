@@ -1,0 +1,216 @@
+<!--====== BANNER PART START ======-->
+<section class="banner-area bg_cover mt-80" style="background-image: url(<?=$setting['template']?>/assets-frontend/images/Media/trangchu/Banner\ chính.jpg)">
+    <div class="container">
+        <div class="row justify-content-center align-items-center" style="height: 100vh;">
+            <div class="col-lg-7 text-center">
+                <div class="banner-content">
+                    <h3 class="title">CORE</h3>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb" style="
+                            background-color: transparent;
+                            font-size: 30px;
+                            display: flex;
+                            justify-content: center;
+                        ">
+                            <li class="breadcrumb-item" style="color: white;">
+                                <a href="/" style="color: white;">Trang chủ</a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page" style="color: white;"><?= $title?></li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--====== BANNER PART ENDS ======-->
+
+<!--====== BLOG STANDARD PART START ======-->
+<section class="blog-standard-area gray-bg pt-80 pb-120">
+    <div class="container">
+        <div class="row justify-content-center">
+            <!-- Bài viết -->
+            <div class="col-lg-8">
+                <?php if (!empty($search_query)): ?>
+                    <div class="search-result mb-40">
+                        <h4>Kết quả tìm kiếm cho: "<?= $search_query ?>"</h4>
+                    </div>
+                <?php endif; ?>
+
+                <?php if (empty($category_posts) && !empty($search_query)): ?>
+                    <div class="no-results text-center mb-40">
+                        <p>Không tìm thấy bài viết nào phù hợp với từ khóa "<?= $search_query ?>".</p>
+                    </div>
+                <?php else: ?>
+                    <?php 
+                    $current_category = null;
+                    $post_count = 0;
+                    $row_open = false;
+                    foreach ($category_posts as $data):
+                        $category = $data['category'];
+                        $post = $data['post'];
+
+                        if ($current_category !== $category['name']) {
+                            if ($current_category !== null) {
+                                if ($post_count > 0) {
+                                    echo '</div>';
+                                    $post_count = 0;
+                                }
+                                echo '</div>';
+                            }
+                            $current_category = $category['name'];
+                            echo '<div class="blog-standard">';
+                            echo '<h3 class="section-title text-start mb-40">' . mb_strtoupper($category['name'], 'UTF-8') . ' >>></h3>';
+                        }
+
+                        if ($post_count == 0) {
+                            echo '<div class="row justify-content-center">';
+                            $row_open = true;
+                        }
+                    ?>
+                        <div class="col-lg-6 col-md-6 col-sm-9">
+                            <div class="single-blog-grid">
+                                <div class="blog-label"><?= mb_strtoupper($category['name'], 'UTF-8') ?></div>
+                                <div class="blog-thumb">
+                                    <img src="<?= $setting['template'] ?>/assets-frontend/images/<?= $post['image_url'] ?>" alt="blog">
+                                </div>
+                                <div class="blog-content">
+                                    <h4 class="post-title"><?= mb_strtoupper($post['title'], 'UTF-8') ?></h4>
+                                    <p class="post-desc"><?= substr(strip_tags($post['content']), 0, 150) . '...' ?></p>
+                                    <hr>
+                                    <a href="/news-detail/<?= $post['slug'] ?>" class="read-more-btn">XEM THÊM</a>
+                                </div>
+                            </div>
+                        </div>
+                    <?php 
+                        $post_count++;
+                        if ($post_count == 2) {
+                            echo '</div>';
+                            $row_open = false;
+                            $post_count = 0;
+                        }
+                    ?>
+                    <?php endforeach; ?>
+
+                    <?php 
+                    if ($post_count > 0) {
+                        echo '</div>';
+                        $row_open = false;
+                    }
+                    if ($current_category !== null) {
+                        echo '</div>';
+                    }
+                    ?>
+                <?php endif; ?>
+
+                <!-- Phân trang -->
+                <?php if ($total_pages > 1): ?>
+                    <div class="pagination mt-40 text-center">
+                        <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                            <?php
+                            $slugPart = '';
+                            if (!empty($category_slug)) {
+                                $validCategory = $app->get("categories", ["slug"], ["slug" => $category_slug]);
+                                $slugPart = $validCategory ? '/' . $category_slug : '';
+                            }
+                            ?>
+                            <a href="/news<?= $slugPart ?>?page=<?= $i ?>&search=<?= urlencode($search_query) ?>" class="<?= $i === $current_page ? 'active' : '' ?>"><?= $i ?></a>
+                        <?php endfor; ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4 col-md-6 col-sm-8">
+                <div class="blog-sidebar ml-10">
+                    <div class="blog-side-about white-bg">
+                        <div class="about-title">
+                            <h4 class="title">Tìm kiếm</h4>
+                        </div>
+                        <div class="blog-Search-content text-center">
+                            <form action="/news<?= $category_slug ? '/' . $category_slug : '' ?>" method="GET">
+                                <div class="input-box">
+                                    <input type="text" name="search" placeholder="Tìm kiếm bài viết..." value="<?= $search_query ?>">
+                                    <button type="submit" style="border-radius: 30px;color: white;"><i class="fas fa-search"></i></button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="blog-side-about white-bg mt-40">
+                        <div class="about-title">
+                            <h4 class="title">Danh mục</h4>
+                        </div>
+                        <div class="blog-categories-content mt-35">
+                            <ul>
+                                <?php
+                                $all_categories = $app->select("categories", [
+                                    "[>]news" => ["id" => "category_id"]
+                                ], [
+                                    "categories.name",
+                                    "categories.slug",
+                                    "count" => $app->raw("COUNT(news.id)")
+                                ], [
+                                    "news.status" => 'A',
+                                    "GROUP" => "categories.id"
+                                ]);
+                                foreach ($all_categories as $category):
+                                ?>
+                                    <li><a href="/news/<?= $category['slug'] ?>" class="<?= $category_slug === $category['slug'] ? 'active' : '' ?>"><?= $category['name'] ?> <span><?= $category['count'] ?></span></a></li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--====== BLOG STANDARD PART ENDS ======-->
+
+<!-- CSS cho phân trang -->
+<style>
+.pagination {
+    text-align: center; /* Đảm bảo căn giữa theo chiều ngang */
+    display: flex; /* Sử dụng flexbox để căn giữa các nút */
+    justify-content: center; /* Căn giữa các phần tử con */
+}
+.pagination a {
+    display: inline-block;
+    padding: 8px 12px;
+    margin: 0 4px;
+    text-decoration: none;
+    color: #333;
+    background-color: #f1f1f1;
+    border-radius: 4px;
+}
+
+.pagination a.active {
+    background-color: #ed1c24;
+    color: white;
+}
+
+.pagination a:hover:not(.active) {
+    background-color: #ddd;
+}
+
+/* Search Result và No Results */
+.search-result h4 {
+    font-size: 20px;
+    color: #0b2154;
+    margin-bottom: 20px;
+}
+
+.no-results p {
+    font-size: 16px;
+    color: #666;
+}
+
+.blog-categories-content ul li a.active {
+    color: #ed1c24;
+    font-weight: bold;
+}
+.blog-categories-content ul li a:hover {
+    color: #ed1c24;
+}
+</style>

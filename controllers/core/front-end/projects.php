@@ -58,4 +58,60 @@ $projectHandler = function($vars) use ($app, $jatbi, $setting) {
 
 // Đăng ký route
 $app->router("/projects", 'GET', $projectHandler);
+
+
+$projectDetailHandler = function($vars) use ($app, $jatbi, $setting) {
+    // Lấy slug từ URL
+    $slug = $vars['slug'] ?? '';
+
+    // Nếu không có slug, trả về 404
+    if (empty($slug)) {
+        http_response_code(404);
+        echo "Không tìm thấy dự án.";
+        return;
+    }
+
+    // Lấy thông tin dự án theo slug
+    $project = $app->get("projects", [
+        "id",
+        "title",
+        "slug",
+        "client_name",
+        "description",
+        "start_date",
+        "end_date",
+        "image_url",
+        "industry",
+    ], [
+        "slug" => $slug,
+        "status" => 'A'
+    ]);
+
+    // Nếu không tìm thấy dự án, trả về 404
+    if (!$project) {
+        http_response_code(404);
+        echo "Dự án không tồn tại.";
+        return;
+    }
+
+    // Lấy danh sách hình ảnh của dự án từ bảng project_images
+    $projectImages = $app->select("project_images", [
+        "image_url",
+        "caption"
+    ], [
+        "project_id" => $project['id'],
+        "status" => 'A'
+    ]);
+
+    // Truyền dữ liệu vào template
+    $vars['project'] = $project;
+    $vars['project_images'] = $projectImages;
+    $vars['setting'] = $setting;
+    $vars['app'] = $app;
+
+    echo $app->render('templates/dhv/project-detail.html', $vars);
+};
+
+// Đăng ký route
+$app->router("/project-detail/{slug}", 'GET', $projectDetailHandler);
 ?>
