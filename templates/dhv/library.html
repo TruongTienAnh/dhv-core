@@ -1,30 +1,23 @@
 
     <!--====== BANNER PART START ======-->
 
-<section class="banner-area bg_cover mt-80" style="background-image: url(<?=$setting['template']?>/assets-frontend/images/Media/trangchu/Banner\ chính.jpg)">
-    <div class="container">
-        <div class="row justify-content-center align-items-center" style="height: 100vh;">
-            <div class="col-lg-7 text-center">
-                <div class="banner-content">
-                    <h3 class="title">CORE</h3>
+    <div class="page-title bg_cover mt-80 pt-140 pb-140" style="background-image: url(<?=$setting['template']?>/assets-frontend/images/Media/trangchu/Banner\ chính.jpg)">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-5">
+                    <div class="page-title-item text-center">
+                        <h3 class="title">CORE</h3>
                         <nav aria-label="breadcrumb">
-                            <ol class="breadcrumb" style="
-                                background-color: transparent;
-                                font-size: 30px;
-                                display: flex;
-                                justify-content: center;
-                            ">
-                                <li class="breadcrumb-item" style="color: white;">
-                                    <a href="/" style="color: white;">Trang chủ</a>
-                                </li>
-                                <li class="breadcrumb-item active" aria-current="page" style="color: white;">THƯ VIỆN SỐ</li>
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="#">Trang chủ</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Thư viện số</li>
                             </ol>
                         </nav>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</section>
 
     <!--====== BANNER PART ENDS ======-->
 
@@ -35,16 +28,21 @@
             <div class="row justify-content-center">
             
             <!-- Cột bài viết -->
-            <div class="col-lg-8 d-flex flex-column justify-content-between">
+            <div class="col-lg-8 d-flex flex-column justify-content-between" style="background-color: white;">
                 
+
                 <!-- Nội dung bài viết -->
-                <div class="post mb-5">
+                    <div class="post mb-5">
                     <div class="post-header">
                         <div class="category-box">
-                            <span class="category-title">
+                        <div class="d-flex align-items-center mt-3">
+                            <div class="py-2" style=" border-radius: 6px;">
+                            <h4 class="title m-0" style="background-color: red;color: white;padding: 10px;">
                                 <?= htmlspecialchars($current_category['name'] ?? 'Danh mục không xác định') ?>
-                            </span>
+                            </div>
                         </div>
+                    </div>
+                    
 
                         <!-- Danh sách mục pháp lý -->
                         <?php if (!empty($documents)): ?>
@@ -91,7 +89,7 @@
                     <form action="#">
                         <div class="input-box">
                         <input type="text" placeholder="Tìm kiếm bài viết...">
-                        <button type="button" style="border-radius: 30px; color: white;"><i class="fas fa-search"></i></button>
+                        <button type="button" style="color: white;"><i class="fas fa-search"></i></button>
                         </div>
                     </form>
                     </div>
@@ -128,4 +126,3 @@
 
 
     <!--====== BLOG STANDARD PART ENDS ======-->
-    

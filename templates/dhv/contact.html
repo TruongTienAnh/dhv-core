@@ -1,71 +1,126 @@
 
     <!--====== BANNER PART START ======-->
 
-    <section class="banner-area bg_cover mt-80" style="background-image: url(<?=$setting['template']?>/assets-frontend/images/Media/trangchu/Banner\ chính.jpg)">
+    <div class="page-title bg_cover mt-80 pt-140 pb-140" style="background-image: url(<?=$setting['template']?>/assets-frontend/images/Media/trangchu/Banner\ chính.jpg)">
         <div class="container">
-            <div class="row justify-content-center align-items-center" style="height: 100vh;">
-                <div class="col-lg-7 text-center">
-                    <div class="banner-content">
-                        <h1 class="title">CORE</h1>
-                        <h4 style="color: white;">Trang chủ | Liên hệ</h4>
+            <div class="row justify-content-center">
+                <div class="col-lg-5">
+                    <div class="page-title-item text-center">
+                        <h3 class="title">CORE</h3>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="#">Trang chủ</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Liên hệ</li>
+                            </ol>
+                        </nav>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
 
     <!--====== BANNER PART ENDS ======-->
     
-  <section class="contact-section py-5 bg-light">
-  <div class="container bg-white p-5 rounded shadow-sm">
-    <h2 class="contact-title mb-3">Liên hệ</h2>
-    <p class="contact-subtitle mb-4" style="margin: 0px;">Vui lòng điền đầy đủ các thông tin dưới đây và Gửi để được giải đáp mọi thắc mắc của Quý vị. Chúng tôi sẽ hồi đáp trong vòng 24 giờ.</p>
+    <!--====== CONTACT INFO PART START ======-->
+     
+    <section class="contact-info-area">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 col-md-6">
+                    <div class="section-title section-title-2">
+                        <h4 class="title" style="font-size: 50px;">Thông tin <span>liên hệ</span></h4>
+                    </div>
+                    <div class="contact-info-content">
+                        <div class="single-contact-info d-flex align-items-center">
+                            <div class="info-icon">
+                                <i class="fal fa-phone"></i>
+                            </div>
+                            <div class="info-contact">
+                                <h4 class="title">Số điện thoại</h4>
+                                <span>0934827742</span>
+                            </div>
+                        </div>
+                        <div class="single-contact-info item-2 d-flex align-items-center">
+                            <div class="info-icon">
+                                <i class="fal fa-envelope"></i>
+                            </div>
+                            <div class="info-contact">
+                                <h4 class="title">Email Address</h4>
+                                <span>core@dhv.edu.vn</span>
+                            </div>
+                        </div>
+                        <div class="single-contact-info item-3 d-flex align-items-center">
+                            <div class="info-icon">
+                                <i class="fal fa-map-marker-alt"></i>
+                            </div>
+                            <div class="info-contact">
+                                <h4 class="title">Địa chỉ</h4>
+                                <span> 736 Nguyễn Trãi, Phường 11, Quận 5, TP. HCM</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6">
+                    <div class="contact-info-thumb ml-85">
+                        <img src="<?=$setting['template']?>/assets-frontend/images/contact-info-thumb-1.jpg" alt="info">
+                        <img class="item-2" src="<?=$setting['template']?>/assets-frontend/images/contact-info-thumb-2.jpg" alt="info">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section> 
+    
+    <!--====== CONTACT INFO PART ENDS ======-->
+    
+    <!--====== CONTACT ACTION PART START ======-->
+     
+    <section class="contact-action-area pt-120 pb-120">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="contact-action-item">
+                        <h2 class="title">Liên hệ</h2>
+                        <form class="contact-form" action="<?= $_SERVER['REQUEST_URI'] ?>" method="POST">
+                            <div class="input-box mt-20">
+                                <input name="name" type="text" placeholder="Họ và tên">
+                                <i class="fal fa-user"></i>
+                            </div>
+                            <div class="input-box mt-20">
+                                <input type="text" name="phone" placeholder="Số điện thoại">
+                                <i class="fal fa-phone"></i>
+                            </div>
+                            <div class="input-box mt-20">
+                                <input name="email" type="email" placeholder="Email">
+                                <i class="fal fa-envelope"></i>
+                            </div>
+                            <div class="input-box mt-20">
+                                <input name="email" type="province" placeholder="Tỉnh thành phố">
+                                <i class="fal fa-city"></i>
+                            </div>
+                            <div class="input-box mt-20">
+                                <input type="text"  name="title" placeholder="Tiêu đề" >
+                                <i class="fal fa-sign-in-alt"></i>
+                            </div>
+                            <div class="input-box mt-20">
+                                <textarea name="message" id="#" cols="30" rows="10" placeholder="Enter your message"></textarea>
+                                <i class="fal fa-edit"></i>
+                                                                  <div class="g-recaptcha mt-3" data-sitekey="6LcFPU4rAAAAAIcoLycoq_OST2uGNyPP837Misgp"></div>
 
-    <form class="contact-form" action="<?= $_SERVER['REQUEST_URI'] ?>" method="POST">
-      <div class="row g-3">
-        <div class="col-md-6">
-          <input type="text" class="form-control" name="name" placeholder="Họ & Tên" required>
+                                <button type="submit">Gửi</button>
+                            </div>
+                        </form>
+                     
+                        <p class="form-message"></p>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="col-md-6">
-          <input type="text" class="form-control" name="phone" placeholder="Số điện thoại" required>
-        </div>
-
-        <div class="col-md-6">
-          <input type="email" class="form-control" name="email" placeholder="Email" required>
-        </div>
-        <div class="col-md-6">
-          <select class="form-select" name="province" required>
-            <option value="">Chọn tỉnh thành</option>
-            <option value="Hà Nội">Hà Nội</option>
-            <option value="TP. Hồ Chí Minh">TP. Hồ Chí Minh</option>
-            <option value="Đà Nẵng">Đà Nẵng</option>
-          </select>
-        </div>
-
-        <div class="col-12">
-          <input type="text" class="form-control" name="title" placeholder="Tiêu đề" required>
-        </div>
-
-        <div class="col-12">
-          <textarea class="form-control" name="note" rows="5" placeholder="Nội dung" required></textarea>
-        </div>
-        <div class="col-12">
-        <div class="g-recaptcha mt-3" data-sitekey="6LcFPU4rAAAAAIcoLycoq_OST2uGNyPP837Misgp"></div>
-        </div>
-        <div class="col-12 text-start">
-          <button type="submit" class="btn btn-danger px-5 py-2 mt-3 fw-bold">Gửi</button>
-        </div>
-      </div>
-    </form>
-
-    <div class="map-container mt-5">
+        <div class="map">
       <iframe
         src="https://www.google.com/maps?q=736+Nguyễn+Trãi,+Phường+11,+Quận+5,+TP.HCM&output=embed"
         width="100%" height="400" style="border:0;" allowfullscreen loading="lazy"
-        referrerpolicy="no-referrer-when-downgrade"></iframe>
-    </div>
-  </div>
-</section>
+        referrerpolicy="no-referrer-when-downgrade"></iframe>        </div>
+    </section> 
 
 
 
