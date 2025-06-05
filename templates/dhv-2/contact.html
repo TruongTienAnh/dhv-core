@@ -1,0 +1,74 @@
+
+    <!--====== BANNER PART START ======-->
+
+    <section class="banner-area bg_cover mt-80" style="background-image: url(<?=$setting['template']?>/assets-frontend/images/Media/trangchu/Banner\ chính.jpg)">
+        <div class="container">
+            <div class="row justify-content-center align-items-center" style="height: 100vh;">
+                <div class="col-lg-7 text-center">
+                    <div class="banner-content">
+                        <h1 class="title">CORE</h1>
+                        <h4 style="color: white;">Trang chủ | Liên hệ</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!--====== BANNER PART ENDS ======-->
+    
+  <section class="contact-section py-5 bg-light">
+  <div class="container bg-white p-5 rounded shadow-sm">
+    <h2 class="contact-title mb-3">Liên hệ</h2>
+    <p class="contact-subtitle mb-4" style="margin: 0px;">Vui lòng điền đầy đủ các thông tin dưới đây và Gửi để được giải đáp mọi thắc mắc của Quý vị. Chúng tôi sẽ hồi đáp trong vòng 24 giờ.</p>
+
+    <form class="contact-form" action="<?= $_SERVER['REQUEST_URI'] ?>" method="POST">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <input type="text" class="form-control" name="name" placeholder="Họ & Tên" required>
+        </div>
+        <div class="col-md-6">
+          <input type="text" class="form-control" name="phone" placeholder="Số điện thoại" required>
+        </div>
+
+        <div class="col-md-6">
+          <input type="email" class="form-control" name="email" placeholder="Email" required>
+        </div>
+        <div class="col-md-6">
+          <select class="form-select" name="province" required>
+            <option value="">Chọn tỉnh thành</option>
+            <option value="Hà Nội">Hà Nội</option>
+            <option value="TP. Hồ Chí Minh">TP. Hồ Chí Minh</option>
+            <option value="Đà Nẵng">Đà Nẵng</option>
+          </select>
+        </div>
+
+        <div class="col-12">
+          <input type="text" class="form-control" name="title" placeholder="Tiêu đề" required>
+        </div>
+
+        <div class="col-12">
+          <textarea class="form-control" name="note" rows="5" placeholder="Nội dung" required></textarea>
+        </div>
+        <div class="col-12">
+        <div class="g-recaptcha mt-3" data-sitekey="6LcFPU4rAAAAAIcoLycoq_OST2uGNyPP837Misgp"></div>
+        </div>
+        <div class="col-12 text-start">
+          <button type="submit" class="btn btn-danger px-5 py-2 mt-3 fw-bold">Gửi</button>
+        </div>
+      </div>
+    </form>
+
+    <div class="map-container mt-5">
+      <iframe
+        src="https://www.google.com/maps?q=736+Nguyễn+Trãi,+Phường+11,+Quận+5,+TP.HCM&output=embed"
+        width="100%" height="400" style="border:0;" allowfullscreen loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+    

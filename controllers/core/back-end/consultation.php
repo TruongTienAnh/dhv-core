@@ -56,37 +56,37 @@ $app->router("/admin/consultation", 'POST', function($vars) use ($app, $jatbi) {
             "cancelled" => $jatbi->lang("Đã hủy")
         ];
 
-        return [
-            "checkbox" => $app->component("box", ["data" => $data['id']]),
-            "name" => $data['name'],
-            "phone" => $data['phone'],
-            "email" => $data['email'],
-            "name_business" => $data['name_business'],
-            "datetime" => date("d/m/Y H:i", strtotime($data['datetime'])),
-            "method" => $methodLabels[$data['method']] ?? $data['method'],
-            "status" => $app->component("status", [
-                "url" => "/admin/consultation-status/" . $data['id'],
-                "data" => $data['status'],
-                "permission" => ['consultation.edit']
-            ]),
-            "note" => $data['note'],
-            "action" => $app->component("action", [
-                "button" => [
-                    [
-                        'type' => 'button',
-                        'name' => $jatbi->lang("Sửa"),
-                        'permission' => ['consultation'],
-                        'action' => ['data-url' => '/admin/consultation-edit?id=' . $data['id'], 'data-action' => 'modal']
-                    ],
-                    [
-                        'type' => 'button',
-                        'name' => $jatbi->lang("Xóa"),
-                        'permission' => ['consultation'],
-                        'action' => ['data-url' => '/admin/consultation-deleted?id=' . $data['id'], 'data-action' => 'modal']
+            return [
+                "checkbox" => $app->component("box", ["data" => $data['id']]),
+                "name" => !empty($data['name']) ? $data['name'] : '–',
+                "phone" => !empty($data['phone']) ? $data['phone'] : '–',
+                "email" => !empty($data['email']) ? $data['email'] : '–',
+                "name_business" => !empty($data['name_business']) ? $data['name_business'] : '–',
+                "datetime" => !empty($data['datetime']) ? date("d/m/Y H:i", strtotime($data['datetime'])) : '–',
+                "method" => !empty($methodLabels[$data['method']]) ? $methodLabels[$data['method']] : (!empty($data['method']) ? $data['method'] : '–'),
+                "status" => $app->component("status", [
+                    "url" => "/admin/consultation-status/" . $data['id'],
+                    "data" => $data['status'] ?? '',
+                    "permission" => ['consultation.edit']
+                ]),
+                "note" => !empty($data['note']) ? $data['note'] : '–',
+                "action" => $app->component("action", [
+                    "button" => [
+                        [
+                            'type' => 'button',
+                            'name' => $jatbi->lang("Sửa"),
+                            'permission' => ['consultation'],
+                            'action' => ['data-url' => '/admin/consultation-edit?id=' . $data['id'], 'data-action' => 'modal']
+                        ],
+                        [
+                            'type' => 'button',
+                            'name' => $jatbi->lang("Xóa"),
+                            'permission' => ['consultation'],
+                            'action' => ['data-url' => '/admin/consultation-deleted?id=' . $data['id'], 'data-action' => 'modal']
+                        ]
                     ]
-                ]
-            ])
-        ];
+                ])
+            ];
     }, $datas);
 
     echo json_encode([

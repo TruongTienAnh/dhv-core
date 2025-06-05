@@ -1,0 +1,84 @@
+
+   <!--====== BANNER PART START ======-->
+
+<section class="banner-area bg_cover mt-80" style="background-image: url(<?=$setting['template']?>/assets-frontend/images/Media/trangchu/Banner\ chính.jpg)">
+    <div class="container">
+        <div class="row justify-content-center align-items-center" style="height: 100vh;">
+            <div class="col-lg-7 text-center">
+                <div class="banner-content">
+                    <h3 class="title">CORE</h3>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb" style="
+                                background-color: transparent;
+                                font-size: 30px;
+                                display: flex;
+                                justify-content: center;
+                            ">
+                                <li class="breadcrumb-item" style="color: white;">
+                                    <a href="/" style="color: white;">Trang chủ</a>
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page" style="color: white;">QUẢN TRỊ</li>
+                            </ol>
+                        </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="login-container">
+    <form class="login-form" method="POST" action="/login" id="login-form">
+        <input type="text" name="email" placeholder="Tên đăng nhập / Email" class="form-input" required>
+        <input type="password" name="password" placeholder="Mật khẩu" class="form-input" required>
+        <div class="remember-container">
+            <input type="checkbox" id="remember" name="remember" value="1">
+            <label for="remember">Ghi nhớ tài khoản</label>
+        </div>
+        <div class="btn-container">
+            <button class="btn-login" type="submit" data-action="submit" data-load="/admin" ><?=$jatbi->lang("ĐĂNG NHẬP")?></button>
+        </div>
+    </form>
+
+</div>
+
+<!-- Thêm JS để xử lý form AJAX -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.getElementById('login-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const form = this;
+    const formData = new FormData(form);
+    fetch('/login', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            Swal.fire({
+                icon: 'success',
+                title: data.content,
+                showConfirmButton: false,
+                timer: 1500
+            }).then(() => {
+                window.location.href = '/admin';
+            });
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: data.content,
+                showConfirmButton: true
+            });
+        }
+    })
+    .catch(error => {
+        Swal.fire({
+            icon: 'error',
+            title: 'Lỗi kết nối',
+            showConfirmButton: true
+        });
+    });
+});
+</script>
+
+ -->

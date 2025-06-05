@@ -72,68 +72,58 @@ $libraryHandler = function($vars) use ($app, $jatbi, $setting) {
 };
     
 
-// Đăng ký 2 route riêng biệt, dùng chung handler
+// Đăng ký 2 route riêng biệt, dùng chung handler   
 $app->router("/library", 'GET', $libraryHandler);
 $app->router("/library/{slug}", 'GET', $libraryHandler);
 
 $app->router("/library-detail/library-add", 'GET', function($vars) use ($app, $jatbi, $setting) {
-    $vars['title'] = $jatbi->lang("Tài tài liệu");
+    $vars['title'] = $jatbi->lang("Tải tài liệu");
     echo $app->render('templates/dhv/library-post.html', $vars, 'global');
 });
 
-// $app->router("/library-detail/library-add", 'POST', function($vars) use ($app, $jatbi) {
-//     $app->header(['Content-Type' => 'application/json']);
+$app->router("/library-detail/library-add", 'POST', function($vars) use ($app, $jatbi) {
+    $app->header(['Content-Type' => 'application/json']);
 
-//     $title = $app->xss($_POST['title'] ?? '');
-//     $description = $app->xss($_POST['description'] ?? '');
-//     $category = $app->xss($_POST['category'] ?? '');
-//     $pdfFile = $_FILES['file'] ?? null;
-//     $imgFile = $_FILES['image'] ?? null;
+    $name = $app->xss($_POST['name'] ?? '');
+    $phone = $app->xss($_POST['phone'] ?? '');
+    $email = $app->xss($_POST['email'] ?? '');
+    $slug = $app->xss($_POST['slug'] ?? '');
 
-//     if (empty($title) || empty($category) || !$pdfFile || !$imgFile) {
-//         echo json_encode(["status" => "error", "content" => $jatbi->lang("Vui lòng không để trống các trường bắt buộc")]);
-//         return;
-//     }
+    echo $slug ;
+    exit ;
 
-//     $slug = generateSlug($title);
-//     $uploadDir = __DIR__ . '/../../uploads/library/';
-//     if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
 
-//     // Lưu file PDF
-//     $pdfFilename = time() . '_' . basename($pdfFile['name']);
-//     $pdfPath = $uploadDir . $pdfFilename;
-//     if (!move_uploaded_file($pdfFile['tmp_name'], $pdfPath)) {
-//         echo json_encode(["status" => "error", "content" => $jatbi->lang("Tải file PDF thất bại")]);
-//         return;
-//     }
+    if (empty($name) || empty($phone) || empty($email)) {
+        echo json_encode(["status" => "error", "content" => $jatbi->lang("Vui lòng không để trống")]);
+        return;
+    }
 
-//     // Lưu ảnh minh họa
-//     $imgExt = pathinfo($imgFile['name'], PATHINFO_EXTENSION);
-//     $imgFilename = time() . '_cover.' . $imgExt;
-//     $imgPath = $uploadDir . $imgFilename;
-//     if (!move_uploaded_file($imgFile['tmp_name'], $imgPath)) {
-//         echo json_encode(["status" => "error", "content" => $jatbi->lang("Tải ảnh minh họa thất bại")]);
-//         return;
-//     }
+    // Kiểm tra định dạng email hợp lệ
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        echo json_encode(["status" => "error", "content" => $jatbi->lang("Email không hợp lệ")]);
+        return;
+    }
 
-//     // Lưu dữ liệu vào DB
-//     $insert = [
-//         "title" => $title,
-//         "description" => $description,
-//         "file_url" => 'uploads/library/' . $pdfFilename,
-//         "img_url" => 'uploads/library/' . $imgFilename,
-//         "id_category" => $category,
-//         "created_at" => date("Y-m-d H:i:s"),
-//         "slug" => $slug,
-//     ];
+    // Lưu dữ liệu vào DB
+    $insert = [
+        "name" => $name,
+        "phone" => $phone,
+        "email" => $email,
+        
+    ];
 
-//     try {
-//         $app->insert("resources", $insert);
-//         echo json_encode(["status" => "success", "content" => $jatbi->lang("Thêm thành công")]);
-//     } catch (Exception $e) {
-//         echo json_encode(["status" => "error", "content" => "Lỗi: " . $e->getMessage()]);
-//     }
-// });
+    try {
+        $app->insert("appointments", $insert);
+        echo json_encode([
+            "status" => "success",
+            "content" => $jatbi->lang("Tải thành công"),
+            "file" => "/path/to/your/file.pdf" 
+        ]);
+    } catch (Exception $e) {
+        echo json_encode(["status" => "error", "content" => "Lỗi: " . $e->getMessage()]);
+    }
+
+});
 
 
 $app->router("/library-detail/{slug}", 'GET', function($vars) use ($app) {

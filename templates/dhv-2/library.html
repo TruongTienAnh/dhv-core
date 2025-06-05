@@ -1,0 +1,131 @@
+
+    <!--====== BANNER PART START ======-->
+
+<section class="banner-area bg_cover mt-80" style="background-image: url(<?=$setting['template']?>/assets-frontend/images/Media/trangchu/Banner\ chính.jpg)">
+    <div class="container">
+        <div class="row justify-content-center align-items-center" style="height: 100vh;">
+            <div class="col-lg-7 text-center">
+                <div class="banner-content">
+                    <h3 class="title">CORE</h3>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb" style="
+                                background-color: transparent;
+                                font-size: 30px;
+                                display: flex;
+                                justify-content: center;
+                            ">
+                                <li class="breadcrumb-item" style="color: white;">
+                                    <a href="/" style="color: white;">Trang chủ</a>
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page" style="color: white;">THƯ VIỆN SỐ</li>
+                            </ol>
+                        </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+    <!--====== BANNER PART ENDS ======-->
+
+    <!--====== BLOG STANDARD PART START ======-->
+
+        <section class="blog-standard-area gray-bg pt-80 pb-120">
+        <div class="container">
+            <div class="row justify-content-center">
+            
+            <!-- Cột bài viết -->
+            <div class="col-lg-8 d-flex flex-column justify-content-between">
+                
+                <!-- Nội dung bài viết -->
+                <div class="post mb-5">
+                    <div class="post-header">
+                        <div class="category-box">
+                            <span class="category-title">
+                                <?= htmlspecialchars($current_category['name'] ?? 'Danh mục không xác định') ?>
+                            </span>
+                        </div>
+
+                        <!-- Danh sách mục pháp lý -->
+                        <?php if (!empty($documents)): ?>
+                            <?php foreach ($documents as $doc): ?>
+                                <?php if (!empty($doc['id'])): ?>
+                                    <a href="/library-detail/<?= htmlspecialchars($doc['slug']) ?>" class="legal-item d-block text-decoration-none text-dark">
+                                        <?= htmlspecialchars($doc['title']) ?>
+                                    </a>
+                                <?php else: ?>
+                                    <p class="text-danger">Tài liệu không hợp lệ (thiếu ID).</p>
+                                <?php endif; ?>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <p>Không có tài liệu nào.</p>
+                        <?php endif; ?>
+
+                    </div>
+                </div>
+
+                <!-- Phân trang -->
+                        <nav aria-label="Page navigation">
+                            <ul class="my-pagination justify-content-center">
+                                <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                                    <li class="my-page-item <?= $i === $current_page ? 'active' : '' ?>">
+                                        <a class="my-page-link" href="?page=<?= $i ?>">
+                                            <?= $i ?>
+                                        </a>
+                                    </li>
+                                <?php endfor; ?>
+                            </ul>
+                        </nav>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4 col-md-6 col-sm-8">
+                <div class="blog-sidebar ml-10">
+                
+                <!-- Ô tìm kiếm -->
+                <div class="blog-side-about white-bg">
+                    <div class="about-title">
+                    <h4 class="title">Tìm kiếm</h4>
+                    </div>
+                    <div class="blog-Search-content text-center">
+                    <form action="#">
+                        <div class="input-box">
+                        <input type="text" placeholder="Tìm kiếm bài viết...">
+                        <button type="button" style="border-radius: 30px; color: white;"><i class="fas fa-search"></i></button>
+                        </div>
+                    </form>
+                    </div>
+                </div>
+
+                <!-- Danh mục -->
+                <div class="blog-side-about white-bg mt-40">
+                    <div class="about-title">
+                    <h4 class="title">Danh mục</h4>
+                    </div>
+                    <div class="blog-categories-content mt-35">
+                        <ul>
+                            <?php foreach ($categories as $cat): ?>
+                                <li>
+                                    <a 
+                                        href="/library/<?= htmlspecialchars($cat['slug']) ?>"
+                                        class="<?= ($current_category['id'] ?? 0) == $cat['id'] ? 'active' : '' ?>"
+                                    >
+                                        <?= htmlspecialchars($cat['name']) ?> 
+                                        <span><?= $cat['total'] ?></span>
+                                    </a>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                </div>
+
+                </div>
+            </div>
+
+            </div>
+        </div>
+        </section>
+
+
+    <!--====== BLOG STANDARD PART ENDS ======-->
+    
