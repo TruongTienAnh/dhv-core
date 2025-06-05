@@ -85,7 +85,11 @@ $setting = $app->getValueData('setting');
                 return;
             }
 
-            echo json_encode(["status" => "success","content" => $jatbi->lang("Thêm thành công")]);
+        echo json_encode([
+            "status" => "appointment",
+            "content" => $jatbi->lang("Yêu cầu đã được lên lịch "),
+            "data" => $insert 
+        ]);
 
         } catch (Exception $e) {
             echo json_encode([
