@@ -146,7 +146,6 @@ $app->router("/admin/library", 'POST', function($vars) use ($app, $jatbi) {
 })->setPermissions(['library']);
 
 
-  //Thêm library
 //Thêm library
 $app->router("/admin/library-add", 'GET', function($vars) use ($app, $jatbi, $setting) {
     $vars['title1'] = $jatbi->lang("Thêm thư viện số");
