@@ -160,7 +160,7 @@
                     'contact'=>[
                     "menu"=>$jatbi->lang("Liên hệ"),
                     "url"=>'/admin/contact',
-                    "icon"=>'<i class="ti ti-contact"></i>',
+                    "icon"=>'<i class="ti ti-phone"></i>',
                     "controllers"=>"controllers/core/back-end/contact.php",
                     "main"=>'false',
                     "permission"=>[
