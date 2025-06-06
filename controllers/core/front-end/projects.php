@@ -109,6 +109,7 @@ $projectDetailHandler = function($vars) use ($app, $jatbi, $setting) {
         "slug",
         "client_name",
         "description",
+        "excerpt",
         "start_date",
         "end_date",
         "image_url",
@@ -135,6 +136,7 @@ $projectDetailHandler = function($vars) use ($app, $jatbi, $setting) {
     $project['client_name'] = $project['client_name'] ?? 'Chưa xác định';
     $project['industry'] = $project['industry'] ?? 'Chưa phân loại';
     $project['description'] = htmlspecialchars_decode($project['description'] ?? '', ENT_QUOTES);
+    $project['excerpt'] = $project['excerpt'] ?? '';
 
     // Lấy danh sách hình ảnh của dự án
     $projectImages = $app->select("project_images", [
