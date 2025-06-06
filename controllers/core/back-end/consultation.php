@@ -144,7 +144,7 @@ $app->router("/admin/consultation-deleted", 'POST', function($vars) use ($app, $
             } else {
                 echo json_encode([
                     "status" => "success",
-                    "content" => $jatbi->lang("Đã xóa thành công") . " $deletedCount " . $jatbi->lang("thư viện")
+                    "content" => $jatbi->lang("Đã xóa thành công") . " $deletedCount " . $jatbi->lang("thông tin")
                 ]);
             }
 

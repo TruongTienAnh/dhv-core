@@ -52,8 +52,13 @@ function generateSlug($str) {
 
 $app->router("/admin/library", 'GET', function($vars) use ($app, $jatbi, $setting) {
     $vars['title'] = $jatbi->lang("Thư viện số");
+
+    $categories = $app->select("categories","*");
+    $vars['categories'] = $categories;
+
+
     echo $app->render('templates/backend/library/library.html', $vars);
-})->setPermissions(['contact']);
+})->setPermissions(['library']);
 
 $app->router("/admin/library", 'POST', function($vars) use ($app, $jatbi) {
     $app->header(['Content-Type' => 'application/json']);
@@ -66,26 +71,37 @@ $app->router("/admin/library", 'POST', function($vars) use ($app, $jatbi) {
     $orderColumnIndex = $_POST['order'][0]['column'] ?? 1;
     $orderDir = strtoupper($_POST['order'][0]['dir'] ?? 'DESC');
 
-    // Danh sách cột theo bảng library để order
-    $validColumns = ["checkbox", "title", "description", "file_url","img_url", "name", "action"];
+    $validColumns = ["checkbox", "title", "description", "file_url", "img_url", "name", "action"];
     $orderColumn = $validColumns[$orderColumnIndex] ?? "title";
 
-    // Điều kiện tìm kiếm (chỉ điều kiện WHERE)
+    $Category = $_POST['category'] ?? '';
+    $dateFrom = $_POST['date_to'] ?? '';
+    $dateTo = $_POST['date_form'] ?? '';
+
+    // Điều kiện WHERE
     $where = [
         "AND" => [
             "OR" => [
                 "resources.title[~]" => $searchValue,
+                "resources.description[~]" => $searchValue,
             ]
         ],
         "LIMIT" => [$start, $length],
         "ORDER" => [$orderColumn => $orderDir]
     ];
 
-    // Đếm tổng số bản ghi thỏa điều kiện tìm kiếm
+    if (!empty($Category)) {
+        $where["AND"]["resources.id_category"] = $Category;
+    }
+    if (!empty($dateFrom)) {
+        $where["AND"]["resources.created_at[>=]"] = $dateFrom ;
+    }
+    if (!empty($dateTo)) {
+        $where["AND"]["resources.created_at[<=]"] = $dateTo ;
+    }
+
     $count = $app->count("resources", ["AND" => $where["AND"]]);
 
-
-    // Lấy dữ liệu có join bảng category, phân trang, sắp xếp
     $datas = $app->select("resources", [
         "[>]categories" => ["id_category" => "id"]
     ], [
@@ -97,9 +113,9 @@ $app->router("/admin/library", 'POST', function($vars) use ($app, $jatbi) {
         "resources.id_category",
         "resources.created_at",
         "categories.name",
-    ],$where) ?? [];
+    ], $where) ?? [];
 
-    // Format dữ liệu trả về cho DataTables
+
     $formattedData = array_map(function($data) use ($app, $jatbi) {
         return [
             "checkbox" => $app->component("box", ["data" => $data['id']]),
@@ -138,9 +154,11 @@ $app->router("/admin/library", 'POST', function($vars) use ($app, $jatbi) {
         "draw" => $draw,
         "recordsTotal" => $count,
         "recordsFiltered" => $count,
-        "data" => $formattedData
+        "data" => $formattedData,
+        "test"=>$Category
     ]);
 })->setPermissions(['library']);
+
 
 
 //Thêm library

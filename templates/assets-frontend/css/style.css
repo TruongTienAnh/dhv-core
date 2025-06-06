@@ -1683,11 +1683,11 @@ p {
       .offer-area .offer-content ul li a {
         line-height: 54px;
         border-radius: 30px;
-        background: #24ffce;
+        background: red;
         font-size: 14px;
         font-weight: 700;
-        color: #001b61;
-        border: 2px solid #24ffce;
+        /* color: #001b61; */
+        /* border: 2px solid #24ffce; */
         margin: 0 10px; }
         @media (max-width: 767px) {
           .offer-area .offer-content ul li a {

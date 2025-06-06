@@ -145,7 +145,7 @@ function dataAction(){
       if(checkbox){
         if ($(checkbox+":checked").length > 0) {    
             var boxid = [];
-            $(checkbox+':checkbox:checked').each(function(i){
+            $(checkbox+':checkbox:checked').each(function(i){   
                 boxid[i] = $(this).val();
             });
           $url = $url+'?box='+boxid;
