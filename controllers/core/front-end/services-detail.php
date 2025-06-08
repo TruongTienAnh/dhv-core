@@ -28,10 +28,8 @@ $app->router("/services-detail/{slug}", 'GET', function ($vars) use ($app, $jatb
         "services_detail.title",
         "services_detail.description_title",
         "services_detail.rate",
-        "services_detail.min_price",
-        "services_detail.max_price",
-        "services_detail.original_min_price",
-        "services_detail.original_max_price",
+        "services_detail.price",
+        "services_detail.original_price",
         "services_detail.discount",
         "services_detail.object",
         "services_detail.content",
@@ -59,7 +57,7 @@ $app->router("/services-detail/{slug}", 'GET', function ($vars) use ($app, $jatb
     $image_path = $service_detail['image'] ?? '';
     $relative_image_path = '';
     if (!empty($image_path)) {
-        $template_pos = strpos($image_path, '/templates');
+        $template_pos = strpos($image_path, '/templates/');
         if ($template_pos !== false) {
             $relative_image_path = substr($image_path, $template_pos);
             $relative_image_path = str_replace('\\', '/', $relative_image_path);

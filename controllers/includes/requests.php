@@ -170,6 +170,38 @@
                         // 'accounts.deleted' => $jatbi->lang("Xóa tài khoản"),
                     ]
                 ],
+                'services'=>[
+                    "menu"=>$jatbi->lang("Dịch vụ - Chi tiết"),
+                    "url"=>'/admin/services',
+                    "icon"=>'<i class="ti ti-user "></i>',
+                    "sub"=>[
+                        'services'      =>[
+                            "name"  => $jatbi->lang("Dịch vụ"),
+                            "router"=> '/admin/services',
+                            "icon"  => '<i class="ti ti-news"></i>',
+                        ],
+                        'services-detail'    =>[
+                            "name"  => $jatbi->lang("Chi tiết dịch vụ"),
+                            "router"=> '/admin/services-detail',
+                            "icon"  => '<i class="ti ti-briefcase"></i>',
+                        ],
+                    ],
+                    "controllers" => [
+                        "controllers/core/back-end/services.php",
+                        "controllers/core/back-end/services-detail.php",  
+                    ],
+                    "main"=>'false',
+                    "permission"=>[
+                        'services'=> $jatbi->lang("Dịch vụ"),
+                        'services.add' => $jatbi->lang("Thêm dịch vụ"),
+                        'services.edit' => $jatbi->lang("Sửa dịch vụ"),
+                        'services.deleted' => $jatbi->lang("Xóa dịch vụ"),
+                        'services-detail'=> $jatbi->lang("Chi tiết dịch vụ"),
+                        'services-detail.add' => $jatbi->lang("Thêm Chi tiết dịch vụ"),
+                        'services-detail.edit' => $jatbi->lang("Sửa Chi tiết dịch vụ"),   
+                        'services-detail.deleted' => $jatbi->lang("Xóa Chi tiết dịch vụ"),
+                    ]
+                ],
             ],
         ],
     ];
