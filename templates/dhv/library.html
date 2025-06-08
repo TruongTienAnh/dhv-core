@@ -81,19 +81,21 @@
                 <div class="blog-sidebar ml-10">
                 
                 <!-- Ô tìm kiếm -->
-                <div class="blog-side-about white-bg">
+                <div class="blog-side-about white-bg mt-40">
                     <div class="about-title">
-                    <h4 class="title">Tìm kiếm</h4>
+                        <h4 class="title">Tìm kiếm</h4>
                     </div>
+                        
                     <div class="blog-Search-content text-center">
-                    <form action="#">
-                        <div class="input-box">
-                        <input type="text" placeholder="Tìm kiếm bài viết...">
-                        <button type="button" style="color: white;"><i class="fas fa-search"></i></button>
-                        </div>
-                    </form>
+                        <form action="/library<?= !empty($current_category['slug']) ? '/' . $current_category['slug'] : '' ?>" method="GET">
+                            <div class="input-box">
+                                    <input type="text" name="search" placeholder="Tìm kiếm bài viết..." value="<?=$search_query?>">
+                                    <button type="submit"><i class="fas fa-search"></i></button>
+                            </div>
+                        </form>
                     </div>
                 </div>
+
 
                 <!-- Danh mục -->
                 <div class="blog-side-about white-bg mt-40">

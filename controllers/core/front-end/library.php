@@ -6,6 +6,9 @@ $setting = $app->getValueData('setting');
 $libraryHandler = function($vars) use ($app, $jatbi, $setting) {
     $slug = $vars['slug'] ?? '';
 
+    // Lấy từ khóa tìm kiếm
+    $searchQuery = isset($_GET['search']) ? trim($_GET['search']) : '';
+
     if (empty($slug)) {
         // Lấy danh mục đầu tiên nếu slug rỗng
         $category = $app->get("categories", "*", [
@@ -33,15 +36,26 @@ $libraryHandler = function($vars) use ($app, $jatbi, $setting) {
     $limit = 16;
     $offset = ($page - 1) * $limit;
 
-    // Tổng số tài liệu để tính tổng số trang
-    $totalDocuments = $app->count("resources", [
+    // Xây dựng điều kiện lọc tài liệu
+    $conditions = [
         "id_category" => $category['id']
-    ]);
+    ];
+
+    // Thêm điều kiện tìm kiếm nếu có từ khóa
+    if ($searchQuery !== '') {
+        $conditions["OR"] = [
+            "title[~]" => "%{$searchQuery}%",
+            "description[~]" => "%{$searchQuery}%"
+        ];
+    }
+
+    // Tổng số tài liệu để tính tổng số trang
+    $totalDocuments = $app->count("resources", $conditions);
     $totalPages = ceil($totalDocuments / $limit);
 
-    // Lấy danh sách tài liệu giới hạn theo phân trang
+    // Lấy danh sách tài liệu giới hạn theo phân trang và điều kiện tìm kiếm
     $documents = $app->select("resources", "*", [
-        "id_category" => $category['id'],
+        "AND" => $conditions,
         "LIMIT" => [$offset, $limit]
     ]);
 
@@ -52,7 +66,7 @@ $libraryHandler = function($vars) use ($app, $jatbi, $setting) {
         "categories.id",
         "categories.name",
         "categories.slug",
-        "total" => Medoo\Medoo::raw("COUNT(resources.id)")
+        "total" => $app->raw("COUNT(resources.id)")
     ], [
         "GROUP" => [
             "categories.id",
@@ -67,9 +81,11 @@ $libraryHandler = function($vars) use ($app, $jatbi, $setting) {
         'categories' => $categories ?? [],
         'current_category' => $category,
         'current_page' => $page,
-        'total_pages' => $totalPages
+        'total_pages' => $totalPages,
+        'search_query' => $searchQuery, 
     ]);
 };
+
     
 // Đăng ký 2 route riêng biệt, dùng chung handler   
 $app->router("/library", 'GET', $libraryHandler);
@@ -139,7 +155,6 @@ $app->router("/library-detail/library-add/{slug}", 'POST', function($vars) use (
         echo json_encode(["status" => "error", "content" => "Lỗi: " . $e->getMessage()]);
     }
 });
-
 
 
 $app->router("/library-detail/{slug}", 'GET', function($vars) use ($app) {
