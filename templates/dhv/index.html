@@ -68,126 +68,33 @@
    <section class="advance-courses-area advance-courses-area-2 pb-120 pt-105 bg_cover" style="background-color: #ed1c24;">
         <div class="container">
             <div class="row courses-active">
-                <div class="col-lg-4">
-                    <div class="single-courses mt-30">
-                        <div class="courses-thumb">
-                            <img src="<?=$setting['template']?>/assets-frontend/images/courses-1.jpg" alt="courses">
-                            <div class="courses-review">
-                                <span><span><i class="fas fa-star"></i>5.6</span> (1200+)</span>
-                            </div>
-                            <div class="corses-thumb-title">
-                                <span>Games, Art</span>
-                            </div>
-                        </div>
-                        <div class="courses-content">
-                            <a href="#">
-                                <h4 class="title">Discover industry leading E Learning Tools</h4>
-                            </a>
-                            <div class="courses-info d-flex justify-content-between">
-                                <div class="item">
-                                    <img src="<?=$setting['template']?>/assets-frontend/images/courses-info-thumb.png" alt="courses info">
-                                    <p>Rosalina D. William</p>
+                <?php foreach ($services as $service): ?>
+                    <div class="col-lg-4">
+                        <div class="single-courses mt-30">
+                            <div class="courses-thumb">
+                                <img src="<?=$setting['template']?>/<?= $service['service_image'] ?>" alt="courses">
+                                <div class="courses-review">
+                                    <span><i class="fas fa-star"></i><?= $service['rate'] ?></span>
                                 </div>
-                                <span>$46</span>
+                                <div class="corses-thumb-title">
+                                    <span><?= $service['category_name'] ?></span>
+                                </div>
                             </div>
-                            <ul>
-                                <li><i class="fal fa-users"></i> 23 Students</li>
-                                <li><i class="fal fa-clock"></i> 10 Hours</li>
-                                <li><i class="fal fa-comments"></i> 143</li>
-                            </ul>
+                            <div class="courses-content">
+                                <a href="#">
+                                    <h4 class="title"><?= $service['service_title'] ?></h4>
+                                </a>
+                                <div class="courses-info d-flex justify-content-between">
+                                    <div class="item">
+                                        <img src="<?= $service['author_image'] ?>" alt="courses info">
+                                        <p><?= $service['author_name'] ?></p>
+                                    </div>
+                                    <span>$46</span> <!-- Nếu có giá trong DB thì thay thế chỗ này -->
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="single-courses mt-30">
-                        <div class="courses-thumb">
-                            <img src="<?=$setting['template']?>/assets-frontend/images/courses-2.jpg" alt="courses">
-                            <div class="courses-review">
-                                <span><span><i class="fas fa-star"></i>5.6</span> (1200+)</span>
-                            </div>
-                            <div class="corses-thumb-title item-2">
-                                <span>Science</span>
-                            </div>
-                        </div>
-                        <div class="courses-content">
-                            <a href="#">
-                                <h4 class="title">The lengthy show-and-tell style post featured.</h4>
-                            </a>
-                            <div class="courses-info d-flex justify-content-between">
-                                <div class="item">
-                                    <img src="<?=$setting['template']?>/assets-frontend/images/courses-info-thumb.png" alt="courses info">
-                                    <p>Rosalina D. William</p>
-                                </div>
-                                <span>$46</span>
-                            </div>
-                            <ul>
-                                <li><i class="fal fa-users"></i> 23 Students</li>
-                                <li><i class="fal fa-clock"></i> 10 Hours</li>
-                                <li><i class="fal fa-comments"></i> 143</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="single-courses mt-30">
-                        <div class="courses-thumb">
-                            <img src="<?=$setting['template']?>/assets-frontend/images/courses-3.jpg" alt="courses">
-                            <div class="courses-review">
-                                <span><span><i class="fas fa-star"></i>5.6</span> (1200+)</span>
-                            </div>
-                            <div class="corses-thumb-title item-3">
-                                <span>Marketing</span>
-                            </div>
-                        </div>
-                        <div class="courses-content">
-                            <a href="#">
-                                <h4 class="title">The lengthy show-and-tell style post featured a long</h4>
-                            </a>
-                            <div class="courses-info d-flex justify-content-between">
-                                <div class="item">
-                                    <img src="<?=$setting['template']?>/assets-frontend/images/courses-info-thumb.png" alt="courses info">
-                                    <p>Rosalina D. William</p>
-                                </div>
-                                <span>$46</span>
-                            </div>
-                            <ul>
-                                <li><i class="fal fa-users"></i> 23 Students</li>
-                                <li><i class="fal fa-clock"></i> 10 Hours</li>
-                                <li><i class="fal fa-comments"></i> 143</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="single-courses mt-30">
-                        <div class="courses-thumb">
-                            <img src="<?=$setting['template']?>/assets-frontend/images/courses-2.jpg" alt="courses">
-                            <div class="courses-review">
-                                <span><span><i class="fas fa-star"></i>5.6</span> (1200+)</span>
-                            </div>
-                            <div class="corses-thumb-title item-2">
-                                <span>Science</span>
-                            </div>
-                        </div>
-                        <div class="courses-content">
-                            <a href="#">
-                                <h4 class="title">The lengthy show-and-tell style post featured.</h4>
-                            </a>
-                            <div class="courses-info d-flex justify-content-between">
-                                <div class="item">
-                                    <img src="<?=$setting['template']?>/assets-frontend/images/courses-info-thumb.png" alt="courses info">
-                                    <p>Rosalina D. William</p>
-                                </div>
-                                <span>$46</span>
-                            </div>
-                            <ul>
-                                <li><i class="fal fa-users"></i> 23 Students</li>
-                                <li><i class="fal fa-clock"></i> 10 Hours</li>
-                                <li><i class="fal fa-comments"></i> 143</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+                <?php endforeach; ?>
             </div>
         </div>
     </section>

@@ -78,6 +78,7 @@ $app->router("/admin/library", 'POST', function($vars) use ($app, $jatbi) {
     $dateFrom = $_POST['date_to'] ?? '';
     $dateTo = $_POST['date_form'] ?? '';
 
+
     // Điều kiện WHERE
     $where = [
         "AND" => [
@@ -94,10 +95,10 @@ $app->router("/admin/library", 'POST', function($vars) use ($app, $jatbi) {
         $where["AND"]["resources.id_category"] = $Category;
     }
     if (!empty($dateFrom)) {
-        $where["AND"]["resources.created_at[>=]"] = $dateFrom ;
+        $where["AND"]["resources.created_at[>=]"] = $dateFrom . ' 00:00:00';
     }
     if (!empty($dateTo)) {
-        $where["AND"]["resources.created_at[<=]"] = $dateTo ;
+        $where["AND"]["resources.created_at[<=]"] = $dateTo . ' 23:59:59';
     }
 
     $count = $app->count("resources", ["AND" => $where["AND"]]);
