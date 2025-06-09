@@ -125,6 +125,9 @@ $app->router("/admin/contact-add", 'POST', function($vars) use ($app, $jatbi) {
 
     $result = $app->insert("contact", $insert);
 
+    $jatbi->logs('contact', 'contact-add', $insert);
+
+
     if (!$result) {
         echo json_encode([
             "status" => "error",
@@ -174,6 +177,9 @@ $app->router("/admin/contact-delete", 'POST', function($vars) use ($app, $jatbi)
             if (empty($id)) continue;
 
             $deleted = $app->delete("contact", ["id" => $id]);
+
+            $jatbi->logs('contact', 'contact-delete', $deleted);
+
 
             if ($deleted) {
                 $deletedCount++;
@@ -260,6 +266,9 @@ $app->router("/admin/contact-edit", 'POST', function($vars) use ($app, $jatbi) {
     ];
 
     $result = $app->update("contact", $update, ["id" => $id]);
+
+    $jatbi->logs('contact', 'contact-edit', $update);
+
 
     if (!$result) {
         echo json_encode([

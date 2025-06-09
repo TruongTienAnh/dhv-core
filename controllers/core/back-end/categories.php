@@ -110,6 +110,9 @@ $app->router("/admin/categories", 'POST', function($vars) use ($app, $jatbi) {
             // Lưu vào DB (bảng `library`)
             $app->insert("categories", $insert);
 
+            $jatbi->logs('categories', 'categories-add', $insert);
+
+
             echo json_encode(["status" => "success", "content" => $jatbi->lang("Thêm thành công")]);
         } catch (Exception $e) {
             echo json_encode(["status" => "error", "content" => "Lỗi: " . $e->getMessage()]);
@@ -148,6 +151,9 @@ $app->router("/admin/categories", 'POST', function($vars) use ($app, $jatbi) {
                 if (empty($id)) continue;
 
                 $deleted = $app->delete("categories", ["id" => $id]);
+
+                $jatbi->logs('categories', 'categories-deleted', $deleted);
+
 
                 if ($deleted) {
                     $deletedCount++;
@@ -227,6 +233,8 @@ $app->router("/admin/categories-edit", 'POST', function($vars) use ($app, $jatbi
 
     try {
         $app->update("categories", $update, ["id" => $id]);
+        $jatbi->logs('categories', 'categories-update', $update);
+
         echo json_encode(["status" => "success", "content" => $jatbi->lang("Cập nhật dữ liệu thành công")]);
     } catch (Exception $e) {
         echo json_encode(["status" => "error", "content" => "Lỗi: " . $e->getMessage()]);
