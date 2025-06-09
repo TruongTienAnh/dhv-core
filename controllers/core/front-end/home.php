@@ -11,6 +11,7 @@ $app->router("/", 'GET', function($vars) use ($app, $jatbi, $setting) {
     ], [
         "services.image(service_image)",
         "services.title(service_title)",
+        "services.slug(service_slug)",
         "categories.name(category_name)",
         "author_boxes.name(author_name)",
         "author_boxes.image_url(author_image)",

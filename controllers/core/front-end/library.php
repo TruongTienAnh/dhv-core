@@ -97,16 +97,18 @@ $app->router("/library-detail/library-add/{slug}", 'GET', function($vars) use ($
 });
 
 $app->router("/library-detail/library-add/{slug}", 'POST', function($vars) use ($app, $jatbi) {
+    // Thiết lập header JSON
     $app->header(['Content-Type' => 'application/json']);
 
+    // Lấy dữ liệu từ form
     $name = $app->xss($_POST['name'] ?? '');
     $phone = $app->xss($_POST['phone'] ?? '');
     $email = $app->xss($_POST['email'] ?? '');
-
     $slug = $vars['slug'] ?? '';
 
+    // Kiểm tra dữ liệu
     if (empty($name) || empty($phone) || empty($email)) {
-        echo json_encode(["status" => "error", "content" => $jatbi->lang("Vui lòng không để trống")]);
+        echo json_encode(["status" => "error", "content" => $jatbi->lang("Vui lòng điền đầy đủ thông tin")]);
         return;
     }
 
@@ -115,33 +117,46 @@ $app->router("/library-detail/library-add/{slug}", 'POST', function($vars) use (
         return;
     }
 
-    // Lấy tài liệu theo slug
+    // Lấy thông tin tài liệu từ database
     $resources = $app->select("resources", "file_url", ["slug" => $slug]);
 
-    var_dump($resources);
-
-    // Kiểm tra xem có kết quả không
-    if (empty($resources)) {
+    // Kiểm tra kết quả truy vấn
+    if (empty($resources) || empty($resources[0])) {
         echo json_encode(["status" => "error", "content" => $jatbi->lang("Tài liệu không tồn tại")]);
         return;
     }
 
-    $link_pdf = "template/" . $resources[0];
+    // Lấy đường dẫn file
+    $file_path = $resources[0]; 
+    $upload_base_path = 'templates'; 
+    $server_file_path = $upload_base_path . '/' . ltrim($file_path, '/');
 
-    if ($link_pdf && !preg_match('#^https?://#', $link_pdf)) {
-        if (strpos($link_pdf, 'uploads/library/') !== 0) {
-            $link_pdf = '/uploads/library/' . ltrim($link_pdf, '/');
-        } else {
-            $link_pdf = '/' . ltrim($link_pdf, '/');
-        }
+    // Debug: Ghi log đường dẫn
+    error_log('Database file_path: ' . $file_path);
+    error_log('Server file path: ' . $server_file_path);
+
+    // Kiểm tra file tồn tại
+    if (!file_exists($server_file_path)) {
+        echo json_encode([
+            "status" => "error",
+            "content" => $jatbi->lang("File không tồn tại trên server"),
+            "debug" => "Checked path: $server_file_path"
+        ]);
+        return;
     }
 
+    // Tạo URL đầy đủ cho file
+    $base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
+    $link_pdf = $base_url . '/templates/' . ltrim($file_path, '/'); 
+    error_log('PDF URL: ' . $link_pdf);
 
-    // Lưu thông tin người dùng đăng ký tải
+    // Lưu thông tin người dùng
     $insert = [
         "name" => $name,
         "phone" => $phone,
         "email" => $email,
+        "slug" => $slug,
+        "created_at" => date('Y-m-d H:i:s')
     ];
 
     try {
@@ -155,7 +170,6 @@ $app->router("/library-detail/library-add/{slug}", 'POST', function($vars) use (
         echo json_encode(["status" => "error", "content" => "Lỗi: " . $e->getMessage()]);
     }
 });
-
 
 // $app->router("/library-detail/{slug}", 'GET', function($vars) use ($app) {
 //     $slug = $vars['slug'] ?? null;
