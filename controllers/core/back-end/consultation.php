@@ -144,6 +144,9 @@ $app->router("/admin/consultation-deleted", 'POST', function($vars) use ($app, $
 
                 $deleted = $app->delete("appointments", ["id" => $id]);
 
+                $jatbi->logs('appointments', 'appointments-deleted', $deleted);
+
+            
                 if ($deleted) {
                     $deletedCount++;
                 } else {
@@ -236,6 +239,8 @@ $app->router("/admin/consultation-edit", 'POST', function($vars) use ($app, $jat
     ];
 
     $result = $app->update("appointments", $update, ["id" => $id]);
+    
+    $jatbi->logs('appointments', 'appointments-edit', $update);
 
     if ($result === false) {
         echo json_encode(["status" => "error", "content" => $jatbi->lang("Không thể cập nhật dữ liệu.")]);
@@ -291,6 +296,9 @@ $app->router("/admin/consultation-add", 'POST', function($vars) use ($app, $jatb
     ];
 
     $result = $app->insert("appointments", $insert);
+
+    $jatbi->logs('appointments', 'appointments-add', $insert);
+
 
     if (!$result) {
         echo json_encode(["status" => "error", "content" => $jatbi->lang("Không thể thêm lịch tư vấn")]);
