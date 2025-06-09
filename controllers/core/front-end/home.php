@@ -23,11 +23,99 @@ $app->router("/", 'GET', function($vars) use ($app, $jatbi, $setting) {
     echo $app->render('templates/dhv/index.html', $vars);
 });
 
+$app->router("/register-post", 'GET', function($vars) use ($app, $jatbi, $setting) {
+    $vars['title'] = $jatbi->lang("Đăng ký nhận tư vấn");
+    $services = $app->select("services", ["id","title", "type"], [
+        "status" => "A",
+        "ORDER" => ["id" => "ASC"]
+    ]);
+    $vars['service_packages']= $services ;  
+
+    echo $app->render('templates/dhv/register-post.html', $vars, 'global');
+});
+
+$app->router("/register-post", 'POST', function($vars) use ($app, $jatbi, $setting) {
+    $app->header(['Content-Type' => 'application/json']);
+
+        // Lấy dữ liệu và xử lý XSS
+        $name            = $app->xss($_POST['name'] ?? '');
+        $phone           = $app->xss($_POST['phone'] ?? '');
+        $email           = $app->xss($_POST['email'] ?? '');
+        $company         = $app->xss($_POST['name_business'] ?? '');
+        $note            = $app->xss($_POST['note'] ?? '');
+        $service_package = $app->xss($_POST['service_package'] ?? '');
+        $consult_method  = $app->xss($_POST['consult_method'] ?? '');
+
+        // Kiểm tra dữ liệu bắt buộc
+        if (empty($name) || empty($phone) || empty($service_package) || empty($consult_method)) {
+            echo json_encode([
+                "status" => "error",
+                "content" => $jatbi->lang("Vui lòng điền đầy đủ thông tin bắt buộc.")
+            ]);
+            return;
+        }
+
+        // Kiểm tra định dạng email nếu có
+        if (!empty($email) && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            echo json_encode([
+                "status" => "error",
+                "content" => "Địa chỉ email không hợp lệ."
+            ]);
+            return;
+        }
+
+        // Kiểm tra định dạng số điện thoại (tùy chỉnh theo yêu cầu thực tế)
+        if (!preg_match('/^[0-9]{8,15}$/', $phone)) {
+            echo json_encode([
+                "status" => "error",
+                "content" => "Số điện thoại không hợp lệ."
+            ]);
+            return;
+        }
+
+        // Thực hiện lưu dữ liệu
+        try {
+            $insert = [
+                "name"     => $name,
+                "phone"    => $phone,
+                "email"    => $email,
+                "name_business"  => $company,
+                "note"     => $note,
+                "service"  => $service_package,
+                "method"   => $consult_method,
+            ];
+
+            $result = $app->insert("appointments", $insert);
+
+            if (!$result) {
+                echo json_encode(["status" => "error","content" => $jatbi->lang("Không thể lưu dữ liệu.")]);
+                return;
+            }
+
+        echo json_encode([
+            "status" => "success",
+            "content" => $jatbi->lang("Yêu cầu đã được lên lịch "),
+        ]);
+
+        } catch (Exception $e) {
+            echo json_encode([
+                "status" => "error",
+                "content" => "Lỗi: " . $e->getMessage()
+            ]);
+        }
+});
+
+
 $app->router("/contact", 'GET', function($vars) use ($app, $jatbi, $setting) {
     echo $app->render('templates/dhv/contact.html', $vars);
 }); 
 
 $app->router("/consultation", 'GET', function($vars) use ($app, $jatbi, $setting) {
+    $services = $app->select("services", ["id","title", "type"], [
+        "status" => "A",
+        "ORDER" => ["id" => "ASC"]
+    ]);
+    $vars['service_packages']= $services ;  
     echo $app->render('templates/dhv/consultation.html', $vars);
 }); 
 

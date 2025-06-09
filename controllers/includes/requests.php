@@ -121,7 +121,7 @@
                     'consultation'=>[
                     "menu"=>$jatbi->lang("Lịch tư vấn"),
                     "url"=>'/admin/consultation',
-                    "icon"=>'<i class="ti ti-user "></i>',
+                    "icon"=>'<i class="ti ti-calendar"></i>',
                     "controllers"=>"controllers/core/back-end/consultation.php",
                     "main"=>'false',
                     "permission"=>[

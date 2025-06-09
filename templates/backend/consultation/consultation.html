@@ -70,8 +70,6 @@
       </div>
     </div>
   </div>
-  <?php if($jatbi->permission(['employee.deleted']) == 'true' ||
-  $jatbi->permission(['employee.add']) == 'true'){ ?>
   <div
     class="position-fixed bottom right z-3 dropup-center dropup"
     style="--bottom: 20px; --right: 20px"
@@ -88,7 +86,6 @@
       class="dropdown-menu min-width bg-transparent border-0 justify-content-center p-2"
       style="--min-width: 100%"
     >
-      <?php if($jatbi->permission(['employee.deleted']) == 'true'){ ?>
       <li class="my-2">
         <a
           class="btn rounded-circle btn-danger width height d-flex justify-content-center align-items-center p-1"
@@ -100,8 +97,7 @@
           <i class="ti ti-trash fs-3" aria-hidden="true"></i>
         </a>
       </li>
-      <?php } ?>
-      <?php if($jatbi->permission(['employee.add']) == 'true'){ ?>
+
       <li class="my-2">
         <a
           class="btn rounded-circle btn-primary width height d-flex justify-content-center align-items-center p-1"
@@ -112,10 +108,9 @@
           <i class="ti ti-plus fs-3" aria-hidden="true"></i>
         </a>
       </li>
-      <?php } ?>
     </ul>
   </div>
-  <?php } ?>
+
   <div class="card bg-body bg-opacity-50 shadow border-0 rounded-4">
     <div class="card-body">
       <div class="custom-buttons d-none">
@@ -163,7 +158,7 @@
       <th data-name="phone" data-orderable="true" class="text-nowrap">Số Điện Thoại</th>
       <th data-name="email" data-orderable="true" class="text-nowrap">Email</th>
       <th data-name="name_business" data-orderable="true" class="text-nowrap">Tên doanh nghiệp</th>
-      <!-- <th data-name="service_id" data-orderable="true" class="text-nowrap">Service ID</th> -->
+      <th data-name="service" data-orderable="true" class="text-nowrap">Dịch vụ</th>
       <th data-name="datetime" data-orderable="true" class="text-nowrap">Thời gian</th>
       <th data-name="method" data-orderable="true" class="text-nowrap">Phương thức</th>
       <th data-name="note" data-orderable="true" class="text-nowrap">Ghi chú</th>

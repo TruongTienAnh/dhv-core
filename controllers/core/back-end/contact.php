@@ -77,6 +77,89 @@ $app->router("/admin/contact", 'POST', function($vars) use ($app, $jatbi) {
     ]);
 })->setPermissions(['contact']);
 
+// Hàm thêm liên hệ mới
+$app->router("/admin/contact-add", 'GET', function($vars) use ($app, $jatbi) {
+    $vars['title'] = $jatbi->lang("Thêm liên hệ");
+    echo $app->render('templates/backend/contact/contact-post.html', $vars, 'global');
+})->setPermissions(['contact']);
+
+$app->router("/admin/contact-add", 'POST', function($vars) use ($app, $jatbi) {
+    $app->header(['Content-Type' => 'application/json']);
+
+    // Lấy dữ liệu POST, lọc xss
+    $name = $app->xss($_POST['name'] ?? '');
+    $phone = $app->xss($_POST['phone'] ?? '');
+    $email = $app->xss($_POST['email'] ?? '');
+    $province = $app->xss($_POST['province'] ?? '');
+    $title = $app->xss($_POST['title'] ?? '');
+    $note = $app->xss($_POST['note'] ?? '');
+    $datetime = date('Y-m-d H:i:s'); // Lấy thời gian hiện tại
+
+    // Kiểm tra dữ liệu bắt buộc
+    if (empty($name) || empty($phone) || empty($email)) {
+        echo json_encode([
+            "status" => "error",
+            "content" => $jatbi->lang("Vui lòng nhập đầy đủ thông tin bắt buộc")
+        ]);
+        return;
+    }
+
+    $insert = [
+        "name" => $name,
+        "phone" => $phone,
+        "email" => $email,
+        "province" => $province,
+        "title" => $title,
+        "note" => $note,
+        "datetime" => $datetime
+    ];
+
+    $result = $app->insert("contact", $insert);
+
+    if (!$result) {
+        echo json_encode([
+            "status" => "error",
+            "content" => $jatbi->lang("Không thể thêm liên hệ")
+        ]);
+        return;
+    }
+
+    echo json_encode([
+        "status" => "success",
+        "content" => $jatbi->lang("Thêm liên hệ thành công")
+    ]);
+})->setPermissions(['contact']);
+
+
+// Hàm xóa liên hệ
+$app->router("/admin/contact-delete", 'GET', function($vars) use ($app, $jatbi) {
+    $app->header(['Content-Type' => 'application/json']);
+
+    $id = (int)($_GET['id'] ?? 0);
+
+    if ($id <= 0) {
+        echo json_encode([
+            "status" => "error",
+            "content" => $jatbi->lang("ID không hợp lệ")
+        ]);
+        return;
+    }
+
+    $result = $app->delete("contact", ["id" => $id]);
+
+    if (!$result) {
+        echo json_encode([
+            "status" => "error",
+            "content" => $jatbi->lang("Xóa liên hệ thất bại")
+        ]);
+        return;
+    }
+
+    echo json_encode([
+        "status" => "success",
+        "content" => $jatbi->lang("Xóa liên hệ thành công")
+    ]);
+})->setPermissions(['contact']);
 
 
 

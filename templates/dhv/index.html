@@ -89,7 +89,6 @@
                                         <img src="<?= $service['author_image'] ?>" alt="courses info">
                                         <p><?= $service['author_name'] ?></p>
                                     </div>
-                                    <span>$46</span> <!-- Nếu có giá trong DB thì thay thế chỗ này -->
                                 </div>
                             </div>
                         </div>
@@ -219,7 +218,17 @@
                         <h2 class="title">Đồng hành cùng doanh nghiệp của bạn</h2>
                         <span>Hãy để chúng tôi tư vấn và hỗ trợ cho bạn!</span>
                         <ul>
-                            <li><a class="main-btn" href="#">ĐĂNG KÝ TƯ VẤN MIỄN PHÍ</a></li>
+                            <li>
+                                <a
+                                type="button"  
+                                class="main-btn" 
+                                data-action="modal" 
+                                data-url="/register-post"  
+                                data-bs-toggle="modal" 
+                                data-bs-target=".modal-load">
+                                    ĐĂNG KÝ TƯ VẤN MIỄN PHÍ 
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -227,5 +236,3 @@
         </div>
     </section> 
     <!--====== OFFER PART ENDS ======-->
-
-

@@ -157,6 +157,51 @@ $app->router("/library-detail/library-add/{slug}", 'POST', function($vars) use (
 });
 
 
+// $app->router("/library-detail/{slug}", 'GET', function($vars) use ($app) {
+//     $slug = $vars['slug'] ?? null;
+
+//     if (!$slug) {
+//         http_response_code(400);
+//         echo "Thiếu slug tài liệu.";
+//         return;
+//     }
+
+//     // Truy vấn theo slug
+//     $documents = $app->select("resources", "*", [
+//         "slug" => $slug
+//     ]);
+
+//     if (!$documents) {
+//         http_response_code(404);
+//         echo "Tài liệu không tồn tại.";
+//         return;
+//     }
+
+//     $document = $documents[0];
+
+//     // Lấy danh mục để hiển thị sidebar
+//     $categories = $app->select("categories", [
+//         "[>]resources" => ["id" => "id_category"]
+//     ], [
+//         "categories.id",
+//         "categories.name",
+//         "categories.slug",
+//         "total" => Medoo\Medoo::raw("COUNT(resources.id)")
+//     ], [
+//         "GROUP" => [
+//             "categories.id",
+//             "categories.name",
+//             "categories.slug"
+//         ],
+//         "ORDER" => "categories.name"
+//     ]);
+
+//     echo $app->render('templates/dhv/library-detail.html', [
+//         'document' => $document,
+//         'categories' => $categories ?? []
+//     ]);
+// });
+
 $app->router("/library-detail/{slug}", 'GET', function($vars) use ($app) {
     $slug = $vars['slug'] ?? null;
 
@@ -166,7 +211,23 @@ $app->router("/library-detail/{slug}", 'GET', function($vars) use ($app) {
         return;
     }
 
-    // Truy vấn theo slug
+    // Nếu có từ khóa tìm kiếm
+    $query = $_GET['q'] ?? null;
+
+    if ($query) {
+        // Tìm các tài liệu có tiêu đề chứa từ khóa
+        $documents = $app->select("resources", "*", [
+            "title[~]" => $query
+        ]);
+
+        echo $app->render('templates/dhv/library-search.html', [
+            'query' => $query,
+            'results' => $documents
+        ]);
+        return;
+    }
+
+    // Truy vấn chi tiết tài liệu theo slug
     $documents = $app->select("resources", "*", [
         "slug" => $slug
     ]);
@@ -198,7 +259,10 @@ $app->router("/library-detail/{slug}", 'GET', function($vars) use ($app) {
 
     echo $app->render('templates/dhv/library-detail.html', [
         'document' => $document,
-        'categories' => $categories ?? []
+        'categories' => $categories ?? [],
+        'search_query' => $_GET['search'] ?? '' // ← dòng này rất quan trọng
     ]);
+
 });
+
 

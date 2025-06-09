@@ -241,32 +241,26 @@ function swal_success(text,$this=null) {
 function swal_appointment(formData, response) {
     let date = formData.get('date') || 'Không xác định';
     let time = formData.get('time') || 'Không xác định';
+  
 
-    // Xử lý tên dịch vụ hiển thị theo loại gói
-    let service = 'Dịch vụ cá nhân';
-    if (packageValue === 'dvdn') {
-        service = 'Dịch vụ doanh nghiệp';
-    } else if (packageValue === 'tcsk') {
-        service = 'Tổ chức sự kiện, hội thảo';
-    }
 
     // Định dạng ngày từ YYYY-MM-DD sang DD/MM/YYYY nếu hợp lệ
     if (date !== 'Không xác định' && date.includes('-')) {
         let parts = date.split('-');
         date = `${parts[2]}/${parts[1]}/${parts[0]}`;
     }
-
-    let data = response || {};
+        
+    // let data = response || {};
 
     let message = `
         <div style="text-align: left;">
             <h3 style="color: #00205B; font-size: 20px; text-align: center; margin-bottom: 25px;">ĐĂNG KÝ TƯ VẤN THÀNH CÔNG</h3>
 
-            <p style="font-size: 16px; margin: 10px 0;"><strong>Dịch vụ:</strong> <span>${data.service || service}</span></p>
-            <p style="font-size: 16px; margin: 10px 0;"><strong>Gói:</strong> <span>${data.service || service}</span></p>
-            <p style="font-size: 16px; margin: 10px 0;"><strong>Hình thức:</strong> <span>${data.method || 'Online qua Google Meet'}</span></p>
+            <p style="font-size: 16px; margin: 10px 0;"><strong>Dịch vụ:</strong> <span>${response.data.service_title}</span></p>
+            <p style="font-size: 16px; margin: 10px 0;"><strong>Gói:</strong> <span>${response.data.service_type}</span></p>
+            <p style="font-size: 16px; margin: 10px 0;"><strong>Hình thức:</strong> <span>${response.data.method}</span></p>
             <p style="font-size: 16px; margin: 10px 0;"><strong>Thời gian:</strong> <span>${time} ngày ${date}</span></p>
-            <p style="font-size: 16px; margin: 10px 0;"><strong>Nội dung:</strong> <span>Tư vấn cùng chuyên gia ${data.expert || 'ABC'}</span></p>
+            <p style="font-size: 16px; margin: 10px 0;"><strong>Nội dung:</strong> <span>${response.data.note || "Tư vấn của chuyên gia"}</span></p>
 
             <p style="margin-top: 20px; font-style: italic; color: #00205B; font-weight: bold; text-align: center;">
                 ĐÂY LÀ CUỘC HẸN QUAN TRỌNG! BẠN VUI LÒNG LƯU LẠI NGÀY, GIỜ
@@ -298,6 +292,7 @@ function swal_appointment(formData, response) {
         }
     });
 }
+
 
 
 
