@@ -8,6 +8,7 @@ $requests = [
     'library' => "controllers/core/front-end/library.php",
 
     'services' => "controllers/core/front-end/services.php",
+    'services-detail' => "controllers/core/front-end/services-detail.php",
 
     'news' => "controllers/core/front-end/news.php",
     'projects' => "controllers/core/front-end/projects.php",

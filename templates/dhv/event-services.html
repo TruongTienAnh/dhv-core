@@ -1,184 +1,118 @@
-
-    <!-- Custom CSS for Cards -->
-
-</head>
-
-
-    <!--====== HEADER PART ENDS ======-->
-
-    <!--====== BANNER PART START ======-->
-<section class="banner-area bg_cover mt-80" style="background-image: url(<?=$setting['template']?>/assets-frontend/images/Media/trangchu/Banner\ chính.jpg)">
+<!--====== BANNER PART START ======-->
+<section class="banner-area bg_cover mt-80"
+    style="background-image: url(<?=$setting['template']?>/assets-frontend/images/Media/trangchu/Banner\ chính.jpg)">
     <div class="container">
         <div class="row justify-content-center align-items-center" style="height: 100vh;">
             <div class="col-lg-7 text-center">
                 <div class="banner-content">
                     <h3 class="title">CORE</h3>
-                        <nav aria-label="breadcrumb">
-                            <ol class="breadcrumb" style="
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb" style="
                                 background-color: transparent;
                                 font-size: 30px;
                                 display: flex;
                                 justify-content: center;
                             ">
-                                <li class="breadcrumb-item" style="color: white;">
-                                    <a href="/" style="color: white;">Trang chủ</a>
-                                </li>
-                                 <li class="breadcrumb-item active" aria-current="page" style="color: white;">Dịch vụ</li>
-                                <li class="breadcrumb-item active" aria-current="page" style="color: white;">Tổ chức sự kiện</li>
-                            </ol>
-                        </nav>
+                            <li class="breadcrumb-item" style="color: white;">
+                                <a href="/" style="color: white;">Trang chủ</a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page" style="color: white;">Dịch vụ</li>
+                            <li class="breadcrumb-item active" aria-current="page" style="color: white;">Tổ chức sự kiện
+                            </li>
+                        </ol>
+                    </nav>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-    <!--====== PAGE TITLE PART ENDS ======-->
+<!--====== PAGE TITLE PART ENDS ======-->
 
-    <!--====== SERVICES PART START ======-->
-    <div class="dream-course-area">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="dream-course-content">
-                        <div class="dream-course-title text-center">
-                            <span>Tìm kiếm dịch vụ bạn mong muốn</span>
-                        </div>
-                        <form action="#">
-                            <div class="dream-course-search d-flex">
-                                <div class="input-box">
-                                    <i class="fal fa-search"></i>
-                                    <input type="text" placeholder="Tìm kiếm dịch vụ">
-                                </div>
-                                <div class="dream-course-btn">
-                                    <button type="button">Tìm kiếm</button>
-                                </div>
-                            </div>
-                        </form>
+<!--====== SERVICES PART START ======-->
+<div class="dream-course-area">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="dream-course-content">
+                    <div class="dream-course-title text-center">
+                        <span>Tìm kiếm dịch vụ bạn mong muốn</span>
                     </div>
+                    <form action="#">
+                        <div class="dream-course-search d-flex">
+                            <div class="input-box">
+                                <i class="fal fa-search"></i>
+                                <input type="text" placeholder="Tìm kiếm dịch vụ">
+                            </div>
+                            <div class="dream-course-btn">
+                                <button type="button">Tìm kiếm</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
-    <!--====== SERVICES PART ENDS ======-->
+</div>
+<!--====== SERVICES PART ENDS ======-->
 
-    <!--====== OFFER PART START ======-->
-    <section class="services-area pt-5 pb-5">
-        <div class="container">
-            <div class="row">
-                <!-- Card 1 -->
-                <div class="col-lg-4 col-md-6 col-sm-8">
-                    <div class="card">
-                        <div class="single-courses ">
-                            <div class="courses-thumb">
-                                <img src="<?=$setting['template']?>/assets-frontend/images/Media/3. Dịch vụ/1.JPG" alt="courses">
-
-                                <div class="corses-thumb-title">
-                                    <span>Đào tạo</span>
-                                </div>
+<!--====== OFFER PART START ======-->
+<section class="services-area pt-5 pb-5">
+    <div class="container">
+        <div class="row" id="serviceList">
+            <?php if (!empty($services_data)): ?>
+            <?php foreach ($services_data as $data): ?>
+            <div class="col-lg-4 col-md-6 col-sm-8">
+                <div class="card">
+                    <div class="single-courses">
+                        <div class="courses-thumb">
+                            <img src="<?=$setting['template']?>/<?= htmlspecialchars($data['image']) ?>">
+                            <div class="corses-thumb-title">
+                                <span>
+                                    <?php echo htmlspecialchars($data['category_name']); ?>
+                                </span>
                             </div>
-
-                        </div>
-                        <div class="card-body">
-
-                            <h5>GÓI SỐ 3: PHÁT TRIỂN TỪ BÊN TRONG</h5>
-                            <ol>
-                                <li>Khảo sát nhu cầu đào tạo</li>
-                                <li>Thiết kế Khung chương trình "từ nòng giáp"</li>
-                                <li>Giảng viên nhiệt tình</li>
-                                <li>File tài liệu + tổng hợp buổi học</li>
-                            </ol>
-                            <a href="/bussines-services-detail" class="btn">XEM THÊM</a>
                         </div>
                     </div>
-                </div>
-                <!-- Card 2 -->
-                <div class="col-lg-4 col-md-6 col-sm-8">
-                    <div class="card">
-                        <div class="single-courses ">
-                            <div class="courses-thumb">
-                                <img src="<?=$setting['template']?>/assets-frontend/images/Media/3. Dịch vụ/1.JPG" alt="courses">
-
-                                <div class="corses-thumb-title">
-                                    <span>Đào tạo</span>
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="card-body">
-
-                            <h5>GÓI SỐ 3: PHÁT TRIỂN TỪ BÊN TRONG</h5>
-                            <ol>
-                                <li>Khảo sát nhu cầu đào tạo</li>
-                                <li>Thiết kế Khung chương trình "từ nòng giáp"</li>
-                                <li>Giảng viên nhiệt tình</li>
-                                <li>File tài liệu + tổng hợp buổi học</li>
-                            </ol>
-                            <a href="/bussines-services-detail" class="btn">XEM THÊM</a>
-                        </div>
+                    <div class="card-body">
+                        <h5>
+                            <?php echo htmlspecialchars($data['title']); ?>
+                        </h5>
+                        <ol>
+                            <?php foreach ($data['description_items'] as $item): ?>
+                            <?php if (!empty($item)): ?>
+                            <li>
+                                <?php echo htmlspecialchars($item); ?>
+                            </li>
+                            <?php endif; ?>
+                            <?php endforeach; ?>
+                        </ol>
+                        <a href="/services-detail/<?php echo htmlspecialchars($data['slug']); ?>" class="btn">XEM
+                            THÊM</a>
                     </div>
                 </div>
-                <!-- Card 3 -->
-                <div class="col-lg-4 col-md-6 col-sm-8">
-                    <div class="card">
-                        <div class="single-courses ">
-                            <div class="courses-thumb">
-                                <img src="<?=$setting['template']?>/assets-frontend/images/Media/3. Dịch vụ/1.JPG" alt="courses">
-
-                                <div class="corses-thumb-title">
-                                    <span>Đào tạo</span>
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="card-body">
-
-                            <h5>GÓI SỐ 3: PHÁT TRIỂN TỪ BÊN TRONG</h5>
-                            <ol>
-                                <li>Khảo sát nhu cầu đào tạo</li>
-                                <li>Thiết kế Khung chương trình "từ nòng giáp"</li>
-                                <li>Giảng viên nhiệt tình</li>
-                                <li>File tài liệu + tổng hợp buổi học</li>
-                            </ol>
-                            <a href="/bussines-services-detail" class="btn">XEM THÊM</a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-4 col-md-6 col-sm-8">
-                    <div class="card">
-                        <div class="single-courses ">
-                            <div class="courses-thumb">
-                                <img src="<?=$setting['template']?>/assets-frontend/images/Media/3. Dịch vụ/1.JPG" alt="courses">
-
-                                <div class="corses-thumb-title">
-                                    <span>Đào tạo</span>
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="card-body">
-
-                            <h5>GÓI SỐ 3: PHÁT TRIỂN TỪ BÊN TRONG</h5>
-                            <ol>
-                                <li>Khảo sát nhu cầu đào tạo</li>
-                                <li>Thiết kế Khung chương trình "từ nòng giáp"</li>
-                                <li>Giảng viên nhiệt tình</li>
-                                <li>File tài liệu + tổng hợp buổi học</li>
-                            </ol>
-                            <a href="/bussines-services-detail" class="btn">XEM THÊM</a>
-                        </div>
-                    </div>
-                </div>
-
             </div>
-    </section>
+            <?php endforeach; ?>
+            <?php else: ?>
+            <div class="col-12 text-center">
+                <p>
+                    <?php echo $content ?? 'Không có dịch vụ nào để hiển thị.'; ?>
+                </p>
+            </div>
+            <?php endif; ?>
+        </div>
+    </div>
+</section>
 
-                <nav aria-label="Page navigation">
-                <ul class="my-pagination justify-content-center">
-                    <li class="my-page-item active"><a class="my-page-link" href="#">1</a></li>
-                    <li class="my-page-item"><a class="my-page-link" href="#">2</a></li>
-                    <li class="my-page-item"><a class="my-page-link" href="#">3</a></li>
-                </ul>
-                </nav>
-    <!--====== OFFER PART ENDS ======-->
+<nav aria-label="Page navigation">
+    <ul class="my-pagination justify-content-center">
+        <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+        <li class="my-page-item <?= $i == $current_page ? 'active' : '' ?>">
+            <a class="my-page-link" href="?page=<?= $i ?>">
+                <?= $i ?>
+            </a>
+        </li>
+        <?php endfor; ?>
+    </ul>
+</nav>
+<!--====== OFFER PART ENDS ======-->
