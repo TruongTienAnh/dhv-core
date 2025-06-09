@@ -152,7 +152,7 @@ $servicesHandler = function($vars) use ($app, $jatbi, $setting) {
 
     // Phân trang
     $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
-    $limit = 16;
+    $limit = 6;
     $offset = ($page - 1) * $limit;
 
     // Tổng số dịch vụ để tính tổng số trang

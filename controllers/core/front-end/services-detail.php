@@ -7,6 +7,10 @@ $setting = $app->getValueData('setting');
 // Route cho chi tiết dịch vụ
 $app->router("/services-detail/{slug}", 'GET', function ($vars) use ($app, $jatbi, $setting) {
     $slug = $vars['slug'] ?? null;
+    // Phân trang
+    $page = isset($_GET['page']) && is_numeric($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+    $limit = 4; // 4 item trên mỗi trang
+    $offset = ($page - 1) * $limit;
 
     if (!$slug) {
         http_response_code(400);
@@ -28,8 +32,10 @@ $app->router("/services-detail/{slug}", 'GET', function ($vars) use ($app, $jatb
         "services_detail.title",
         "services_detail.description_title",
         "services_detail.rate",
-        "services_detail.price",
-        "services_detail.original_price",
+        "services_detail.min_price",
+        "services_detail.max_price",
+        "services_detail.original_min_price",
+        "services_detail.original_max_price",
         "services_detail.discount",
         "services_detail.object",
         "services_detail.content",
@@ -44,6 +50,10 @@ $app->router("/services-detail/{slug}", 'GET', function ($vars) use ($app, $jatb
         "LIMIT" => 1
     ]);
 
+
+// Tổng số tài liệu để tính tổng số trang
+    $totalDocuments = $app->count("services");
+    $totalPages = ceil($totalDocuments / $limit);
 
     if (!$services) {
         http_response_code(404);
@@ -91,6 +101,9 @@ $app->router("/services-detail/{slug}", 'GET', function ($vars) use ($app, $jatb
     echo $app->render('templates/dhv/services-detail.html', [
         'service_detail' => $service_detail,
         'categories' => $categories ?? [],
-        'setting' => $setting
+        'setting' => $setting,
+        'current_page' => $page,
+        'total_pages' => $totalPages
     ]);
+
 });

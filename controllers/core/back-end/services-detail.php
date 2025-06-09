@@ -27,7 +27,7 @@ $app->router("/admin/services-detail", 'POST', function($vars) use ($app, $jatbi
     $orderDir = strtoupper($_POST['order'][0]['dir'] ?? 'DESC');
 
     // Valid columns for ordering (sync with template)
-    $validColumns = ["checkbox", "title", "description", "service_id", "rate", "price",  "original_price", "discount", "object", "content", "author_box_id", "action"];
+    $validColumns = ["checkbox", "title", "description", "service_id", "rate", "min_price", "max_price",  "original_min_price","original_max_price", "discount", "object", "content", "author_box_id", "action"];
     $orderColumn = $validColumns[$orderColumnIndex] ?? "service_id";
 
     // Search conditions
@@ -36,10 +36,10 @@ $app->router("/admin/services-detail", 'POST', function($vars) use ($app, $jatbi
             "OR" => [
                 "service_id[~]" => $searchValue,
                 "rate[~]" => $searchValue,
-                // "min_price[~]" => $searchValue,
-                // "max_price[~]" => $searchValue,
-                // "original_min_price[~]" => $searchValue,
-                // "original_max_price[~]" => $searchValue,
+                "min_price[~]" => $searchValue,
+                "max_price[~]" => $searchValue,
+                "original_min_price[~]" => $searchValue,
+                "original_max_price[~]" => $searchValue,
                 "discount[~]" => $searchValue,
                 "object[~]" => $searchValue,
                 "content[~]" => $searchValue,
@@ -66,10 +66,10 @@ $app->router("/admin/services-detail", 'POST', function($vars) use ($app, $jatbi
         "title",
         "description_title",
         "rate",
-      
-        "price",
-        "original_price",
-      
+        "min_price",
+        "max_price",
+        "original_min_price",
+        "original_max_price",
         "discount",
         "object",
         "content",
@@ -84,15 +84,15 @@ $app->router("/admin/services-detail", 'POST', function($vars) use ($app, $jatbi
         $object = $data['object'] ? $data['object'] : $jatbi->lang("Không xác định");
 
         return [
-            "checkbox" => $app->component("box", ["data" => $data['id']]), // Use id as unique identifier
+            "checkbox" => $app->component("box", ["data" => $data['id']]), 
             "service_id" => $data['service_id'] ?? 'N/A',
             "title" => $data['title'] ?? $jatbi->lang("Chưa có tiêu đề"),
             "description_title" => $data['description_title'] ?? $jatbi->lang("Chưa có mô tả"),
             "rate" => $data['rate'] !== null ? $data['rate'] : $jatbi->lang("Chưa đánh giá"),
-            "price" => $data['price'] !== null ? number_format($data['price']) : $jatbi->lang("Không xác định"),
-            // "max_price" => $data['max_price'] !== null ? number_format($data['max_price']) : $jatbi->lang("Không xác định"),
-            // "original_min_price" => $data['original_min_price'] !== null ? number_format($data['original_min_price']) : $jatbi->lang("Không xác định"),
-            "original_price" => $data['original_price'] !== null ? number_format($data['original_price']) : $jatbi->lang("Không xác định"),
+            "min_price" => $data['min_price'] !== null ? number_format($data['min_price']) : $jatbi->lang("Không xác định"),
+            "max_price" => $data['max_price'] !== null ? number_format($data['max_price']) : $jatbi->lang("Không xác định"),
+            "original_min_price" => $data['original_min_price'] !== null ? number_format($data['original_min_price']) : $jatbi->lang("Không xác định"),
+            "original_max_price" => $data['original_max_price'] !== null ? number_format($data['original_max_price']) : $jatbi->lang("Không xác định"),
             "discount" => $data['discount'] !== null ? $data['discount'] . '%' : $jatbi->lang("Không có"),
             "object" => $object,
             "content" => $content,
@@ -136,7 +136,6 @@ $app->router("/admin/services-detail-add", 'GET', function($vars) use ($app, $ja
     $vars['author_boxes'] = $app->select("author_boxes", ['id', 'name']); // Lấy danh sách author_boxes để chọn author_box_id
     echo $app->render('templates/backend/services/services-detail-post.html', $vars, 'global');
 })->setPermissions(['services-detail']);
-
 $app->router("/admin/services-detail-add", 'POST', function($vars) use ($app, $jatbi, $setting) {
     $app->header(['Content-Type' => 'application/json']);
 
@@ -145,15 +144,19 @@ $app->router("/admin/services-detail-add", 'POST', function($vars) use ($app, $j
     $title = $app->xss($_POST['title'] ?? '');
     $description_title = $app->xss($_POST['description_title'] ?? '');
     $rate = $app->xss($_POST['rate'] ?? '');
-    $price = $app->xss($_POST['price'] ?? '');
-    $original_price = $app->xss($_POST['original_price'] ?? '');
+    $min_price = $app->xss($_POST['min_price'] ?? '');
+    $max_price = $app->xss($_POST['max_price'] ?? '');
+    $original_min_price = $app->xss($_POST['original_min_price'] ?? '');
+    $original_max_price = $app->xss($_POST['original_max_price'] ?? '');
     $discount = $app->xss($_POST['discount'] ?? '');
     $object = $app->xss($_POST['object'] ?? '');
     $content = $app->xss($_POST['content'] ?? '');
     $author_box_id = $app->xss($_POST['author_box_id'] ?? '');
 
     // Kiểm tra dữ liệu bắt buộc
-    if (empty($service_id) || empty($title) || empty($description_title) || empty($rate) || empty($price) || empty($object)) {
+    $required_fields = ['service_id', 'title', 'description_title', 'rate', 'min_price', 'max_price', 'original_min_price', 'original_max_price', 'object'];
+    $empty_fields = array_filter($required_fields, fn($field) => empty($_POST[$field]));
+    if (!empty($empty_fields)) {
         echo json_encode(["status" => "error", "content" => $jatbi->lang("Vui lòng không để trống các trường bắt buộc")]);
         return;
     }
@@ -177,7 +180,7 @@ $app->router("/admin/services-detail-add", 'POST', function($vars) use ($app, $j
     }
 
     // Kiểm tra giá hợp lệ
-    if (!is_numeric($price) || $price < 0) {
+    if (!is_numeric($min_price) || $min_price < 0 || !is_numeric($max_price) || $max_price < 0) {
         echo json_encode(["status" => "error", "content" => $jatbi->lang("Giá không hợp lệ")]);
         return;
     }
@@ -188,8 +191,10 @@ $app->router("/admin/services-detail-add", 'POST', function($vars) use ($app, $j
         "title" => $title,
         "description_title" => $description_title,
         "rate" => $rate,
-        "price" => $price,
-        "original_price" => $original_price ?: $price,
+        "min_price" => $min_price,
+        "max_price" => $max_price,
+        "original_min_price" => $original_min_price ?: $min_price,
+        "original_max_price" => $original_max_price ?: $max_price,
         "discount" => $discount ?: null,
         "object" => $object,
         "content" => $content ?: null,
@@ -202,14 +207,12 @@ $app->router("/admin/services-detail-add", 'POST', function($vars) use ($app, $j
     try {
         // Lưu vào DB (bảng `services_detail`)
         $app->insert("services_detail", $insert);
-
         echo json_encode(["status" => "success", "content" => $jatbi->lang("Thêm thành công")]);
     } catch (Exception $e) {
         error_log("Insert error: " . $e->getMessage());
         echo json_encode(["status" => "error", "content" => "Lỗi: " . $e->getMessage()]);
     }
 })->setPermissions(['services-detail']);
-
 // Sửa chi tiết dịch vụ
 $app->router("/admin/services-detail-edit", 'GET', function ($vars) use ($app, $jatbi) {
     $vars['title1'] = $jatbi->lang("Sửa chi tiết dịch vụ");
@@ -234,7 +237,6 @@ $app->router("/admin/services-detail-edit", 'GET', function ($vars) use ($app, $
         echo $app->render('templates/common/error-modal.html', $vars, 'global');
     }
 })->setPermissions(['services-detail']);
-
 $app->router("/admin/services-detail-edit", 'POST', function ($vars) use ($app, $jatbi, $setting) {
     $app->header(['Content-Type' => 'application/json']);
 
@@ -257,15 +259,19 @@ $app->router("/admin/services-detail-edit", 'POST', function ($vars) use ($app, 
     $title = $app->xss($_POST['title'] ?? '');
     $description_title = $app->xss($_POST['description_title'] ?? '');
     $rate = $app->xss($_POST['rate'] ?? '');
-    $price = $app->xss($_POST['price'] ?? '');
-    $original_price = $app->xss($_POST['original_price'] ?? '');
+    $min_price = $app->xss($_POST['min_price'] ?? '');
+    $max_price = $app->xss($_POST['max_price'] ?? '');
+    $original_min_price = $app->xss($_POST['original_min_price'] ?? '');
+    $original_max_price = $app->xss($_POST['original_max_price'] ?? '');
     $discount = $app->xss($_POST['discount'] ?? '');
     $object = $app->xss($_POST['object'] ?? '');
     $content = $app->xss($_POST['content'] ?? '');
     $author_box_id = $app->xss($_POST['author_box_id'] ?? '');
 
     // Validate required fields
-    if (empty($service_id) || empty($title) || empty($description_title) || empty($rate) || empty($price) || empty($object)) {
+    $required_fields = ['service_id', 'title', 'description_title', 'rate', 'min_price', 'max_price', 'original_min_price', 'original_max_price', 'object'];
+    $empty_fields = array_filter($required_fields, fn($field) => empty($_POST[$field]));
+    if (!empty($empty_fields)) {
         echo json_encode(["status" => "error", "content" => $jatbi->lang("Vui lòng không để trống các trường bắt buộc")]);
         return;
     }
@@ -289,7 +295,7 @@ $app->router("/admin/services-detail-edit", 'POST', function ($vars) use ($app, 
     }
 
     // Validate price
-    if (!is_numeric($price) || $price < 0) {
+    if (!is_numeric($min_price) || $min_price < 0 || !is_numeric($max_price) || $max_price < 0) {
         echo json_encode(["status" => "error", "content" => $jatbi->lang("Giá không hợp lệ")]);
         return;
     }
@@ -300,8 +306,10 @@ $app->router("/admin/services-detail-edit", 'POST', function ($vars) use ($app, 
         "title" => $title,
         "description_title" => $description_title,
         "rate" => $rate,
-        "price" => $price,
-        "original_price" => $original_price ?: $price,
+        "min_price" => $min_price,
+        "max_price" => $max_price,
+        "original_min_price" => $original_min_price ?: $min_price,
+        "original_max_price" => $original_max_price ?: $max_price,
         "discount" => $discount ?: null,
         "object" => $object,
         "content" => $content ?: null,
@@ -313,7 +321,6 @@ $app->router("/admin/services-detail-edit", 'POST', function ($vars) use ($app, 
 
     try {
         $app->update("services_detail", $update, ["id" => $id]);
-
         echo json_encode(["status" => "success", "content" => $jatbi->lang("Cập nhật thành công")]);
     } catch (Exception $e) {
         error_log("Update error: " . $e->getMessage());
