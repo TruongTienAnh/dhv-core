@@ -1,126 +1,4 @@
 <?php
-// if (!defined('ECLO')) die("Hacking attempt");
-// $jatbi = new Jatbi($app);
-// $setting = $app->getValueData('setting');
-
-// // Route cho danh sách dịch vụ doanh nghiệp
-// $app->router("/business-services", 'GET', function($vars) use ($app, $jatbi, $setting) {
-//     // Tiêu đề trang
-//     $vars['title'] = $jatbi->lang('Dịch vụ doanh nghiệp');
-
-//     $services_data = [];
-//     try {
-//         // Truy vấn dữ liệu từ bảng services và JOIN với bảng categories
-//         $services = $app->select("services", [
-//             "[>]categories" => ["category_id" => "id"]
-//         ], [
-//             "services.id",
-//             "services.image",
-//             "services.title",
-//             "services.description",
-//             "services.type",
-//             "services.category_id",
-//             "categories.name(category_name)" 
-//         ], [
-//             "services.type" => "Doanh nghiệp", 
-//             "ORDER" => ["services.id" => "ASC"]
-//         ]);
-
-//         if ($services === false || $services === null || empty($services)) {
-//             $vars['content'] = $jatbi->lang("Không tìm thấy dịch vụ nào.");
-//         } else {
-//             foreach ($services as $service) {
-//                 $description_items = explode("\n", $service['description'] ?? '');
-//                 $formatted_items = array_map('trim', $description_items);
-
-//                 $services_data[] = [
-//                     'type' => $service['type'] ?? '',
-//                     'image' => $service['image'] ?? '', // Lưu đường dẫn tương đối
-//                     'category_name' => $service['category_name'] ?? '', 
-//                     'title' => $service['title'] ?? '',
-//                     'description_items' => $formatted_items,
-//                     'id' => $service['id'] ?? ''
-//                 ];
-//             }
-//         }
-//     } catch (Exception $e) {
-//         $vars['content'] = $jatbi->lang("Lỗi: " . $e->getMessage());
-//     }
-
-//     // Truyền dữ liệu vào template
-//     $vars['services_data'] = $services_data;
-//     $vars['setting'] = $setting;    
-//     echo $app->render('templates/dhv/business-services.html', $vars);
-// });
-
-// // Route cho danh sách dịch vụ tổ chức sự kiện
-// $app->router("/event-services", 'GET', function($vars) use ($app, $jatbi, $setting) {
-//     // Tiêu đề trang
-//     $vars['title'] = $jatbi->lang('Dịch vụ tổ chức sự kiện');
-
-//     $services_data = [];
-//     try {
-//         // Truy vấn dữ liệu từ bảng services và JOIN với bảng categories
-//         $services = $app->select("services", [
-//             "[>]categories" => ["category_id" => "id"]
-//         ], [
-//             "services.id",
-//             "services.image",
-//             "services.title",
-//             "services.description",
-//             "services.type",
-//             "services.category_id",
-//             "categories.name(category_name)" 
-//         ], [
-//             "services.type" => "Tổ chức sự kiện", 
-//             "ORDER" => ["services.id" => "ASC"]
-//         ]);
-
-//         if ($services === false || $services === null || empty($services)) {
-//             $vars['content'] = $jatbi->lang("Không tìm thấy dịch vụ nào.");
-//         } else {
-//             foreach ($services as $service) {
-//                 $description_items = explode("\n", $service['description'] ?? '');
-//                 $formatted_items = array_map('trim', $description_items);
-
-//                 // Xử lý đường dẫn image để lấy phần tương đối
-//                 $image_path = $service['image'] ?? '';
-//                 $relative_image_path = '';
-//                 if (!empty($image_path)) {
-//                     // Tìm vị trí của '/templates' trong đường dẫn
-//                     $template_pos = strpos($image_path, '/templates');
-//                     if ($template_pos !== false) {
-//                         // Lấy phần từ '/templates' trở đi
-//                         $relative_image_path = substr($image_path, $template_pos);
-//                         // Đảm bảo đường dẫn bắt đầu bằng '/'
-//                         $relative_image_path = str_replace('\\', '/', $relative_image_path);
-//                     } else {
-//                         // Nếu không tìm thấy '/templates', giữ nguyên đường dẫn
-//                         $relative_image_path = str_replace('\\', '/', $image_path);
-//                     }
-//                 }
-
-//                 $services_data[] = [
-//                     'type' => $service['type'] ?? '',
-//                     'image' => $relative_image_path, // Lưu đường dẫn tương đối
-//                     'category_name' => $service['category_name'] ?? '', 
-//                     'title' => $service['title'] ?? '',
-//                     'description_items' => $formatted_items,
-//                     'id' => $service['id'] ?? ''
-//                 ];
-//             }
-//         }
-//     } catch (Exception $e) {
-//         $vars['content'] = $jatbi->lang("Lỗi: " . $e->getMessage());
-//     }
-
-//     // Truyền dữ liệu vào template
-//     $vars['services_data'] = $services_data;
-
-//     echo $app->render('templates/dhv/event-services.html', $vars);
-// });
-
-
 
 if (!defined('ECLO')) die("Hacking attempt");
 $jatbi = new Jatbi($app);
@@ -155,10 +33,50 @@ $servicesHandler = function($vars) use ($app, $jatbi, $setting) {
     $limit = 6;
     $offset = ($page - 1) * $limit;
 
-    // Tổng số dịch vụ để tính tổng số trang
-    $totalServices = $app->count("services", [
-        "type" => $serviceType
+    // Lấy từ khóa tìm kiếm
+    $searchQuery = isset($_GET['search']) ? trim($_GET['search']) : '';
+    $vars['search_query'] = $searchQuery;
+
+    // Lấy danh mục từ filter
+    $categoryFilter = isset($_GET['category']) ? trim($_GET['category']) : '';
+    $vars['category_filter'] = $categoryFilter;
+
+    // Lấy danh sách danh mục cho filter
+    $categories = $app->select("categories", [
+        "[>]services" => ["id" => "category_id"]
+    ], [
+        "categories.id",
+        "categories.name",
+        "categories.slug",
+        "total" => Medoo\Medoo::raw("COUNT(services.id)")
+    ], [
+        "GROUP" => [
+            "categories.id",
+            "categories.name",
+            "categories.slug"
+        ],
+        "ORDER" => "categories.name"
     ]);
+    $vars['categories'] = $categories ?? [];
+
+    // Điều kiện truy vấn
+    $conditions = [
+        "services.type" => $serviceType,
+        "services.status" => 'A'
+    ];
+    if (!empty($searchQuery)) {
+        $conditions["OR"] = [
+            "services.title[~]" => "%{$searchQuery}%",
+            "services.description[~]" => "%{$searchQuery}%",
+            "categories.name[~]" => "%{$searchQuery}%"
+        ];
+    }
+    if (!empty($categoryFilter)) {
+        $conditions["services.category_id"] = $categoryFilter;
+    }
+
+    // Tổng số dịch vụ để tính tổng số trang
+    $totalServices = $app->count("services", $conditions);
     $totalPages = ceil($totalServices / $limit);
 
     // Lấy danh sách dịch vụ giới hạn theo phân trang
@@ -175,11 +93,10 @@ $servicesHandler = function($vars) use ($app, $jatbi, $setting) {
             "services.type",
             "services.category_id",
             "categories.name(category_name)"
-        ], [
-            "services.type" => $serviceType,
+        ], array_merge($conditions, [
             "LIMIT" => [$offset, $limit],
             "ORDER" => ["services.id" => "ASC"]
-        ]);
+        ]));
 
         if ($services === false || $services === null || empty($services)) {
             $vars['content'] = $jatbi->lang("Không tìm thấy dịch vụ nào.");
@@ -215,28 +132,13 @@ $servicesHandler = function($vars) use ($app, $jatbi, $setting) {
         $vars['content'] = $jatbi->lang("Lỗi: " . $e->getMessage());
     }
 
-    // Lấy danh sách danh mục dịch vụ kèm số lượng (cho sidebar nếu cần)
-    $categories = $app->select("categories", [
-        "[>]services" => ["id" => "category_id"]
-    ], [
-        "categories.id",
-        "categories.name",
-        "categories.slug",
-        "total" => Medoo\Medoo::raw("COUNT(services.id)")
-    ], [
-        "GROUP" => [
-            "categories.id",
-            "categories.name",
-            "categories.slug"
-        ],
-        "ORDER" => "categories.name"
-    ]);
-
     echo $app->render($template, [
         'services_data' => $services_data,
         'categories' => $categories ?? [],
         'current_page' => $page,
         'total_pages' => $totalPages,
+        'search_query' => $vars['search_query'],
+        'category_filter' => $vars['category_filter'],
         'setting' => $setting,
         'title' => $vars['title'],
         'content' => $vars['content'] ?? null

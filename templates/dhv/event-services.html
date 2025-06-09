@@ -29,23 +29,35 @@
 
 <!--====== PAGE TITLE PART ENDS ======-->
 
-<!--====== SERVICES PART START ======-->
+    <!--====== BANNER PART ENDS ======-->
 <div class="dream-course-area">
     <div class="container">
         <div class="row">
             <div class="col-lg-12">
                 <div class="dream-course-content">
                     <div class="dream-course-title text-center">
-                        <span>Tìm kiếm dịch vụ bạn mong muốn</span>
+                        <span>Tìm kiếm dịch vụ của bạn</span>
                     </div>
-                    <form action="#">
+                    <form action="" method="get">
                         <div class="dream-course-search d-flex">
                             <div class="input-box">
                                 <i class="fal fa-search"></i>
-                                <input type="text" placeholder="Tìm kiếm dịch vụ">
+                                <input type="text" name="search" style="width: 450px;" placeholder="Search Your Course" value="<?php echo htmlspecialchars($_GET['search'] ?? ''); ?>">
                             </div>
-                            <div class="dream-course-btn">
-                                <button type="button">Tìm kiếm</button>
+                            <div class="dream-course-category d-none d-lg-inline-block">
+                                <select name="category" class="nice-select" tabindex="0">
+                                    <option value="" data-display="Danh mục">Danh mục</option>
+                                    <?php
+                                    // Giả định $categories được truyền từ PHP (sẽ lấy từ DB trong handler)
+                                    foreach ($categories ?? [] as $cat) {
+                                        $selected = ($_GET['category'] ?? '') == $cat['id'] ? ' selected' : '';
+                                        echo "<option value=\"{$cat['id']}\"{$selected}>{$cat['name']}</option>";
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                            <div class="dream-course-btn" style="margin-left: auto;">
+                                <button type="submit" style="background-color: red;">Tìm kiếm</button>
                             </div>
                         </div>
                     </form>
@@ -54,65 +66,60 @@
         </div>
     </div>
 </div>
-<!--====== SERVICES PART ENDS ======-->
 
 <!--====== OFFER PART START ======-->
 <section class="services-area pt-5 pb-5">
     <div class="container">
         <div class="row" id="serviceList">
             <?php if (!empty($services_data)): ?>
-            <?php foreach ($services_data as $data): ?>
-            <div class="col-lg-4 col-md-6 col-sm-8">
-                <div class="card">
-                    <div class="single-courses">
-                        <div class="courses-thumb">
-                            <img src="<?=$setting['template']?>/<?= htmlspecialchars($data['image']) ?>">
-                            <div class="corses-thumb-title">
-                                <span>
-                                    <?php echo htmlspecialchars($data['category_name']); ?>
-                                </span>
+                <?php foreach ($services_data as $data): ?>
+                    <div class="col-lg-4 col-md-6 col-sm-8">
+                        <div class="card">
+                            <div class="single-courses">
+                                <div class="courses-thumb">
+            
+                                    <!-- <img src="<?= $setting['template']?>/uploads/services/<?=$data['image']; ?>" alt="courses"> -->
+                                    <img src="<?=$setting['template']?>/<?= htmlspecialchars($data['image']) ?>" >
+                                    <div class="corses-thumb-title">
+                                        <span><?php echo htmlspecialchars($data['category_name']); ?></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <h5><?php echo htmlspecialchars($data['title']); ?></h5>
+                                <ol>
+                                    <?php foreach ($data['description_items'] as $item): ?>
+                                        <?php if (!empty($item)): ?>
+                                            <li><?php echo htmlspecialchars($item); ?></li>
+                                        <?php endif; ?>
+                                    <?php endforeach; ?>
+                                </ol>
+                                <a href="/services-detail/<?php echo htmlspecialchars($data['slug']); ?>" class="btn">XEM THÊM</a>
                             </div>
                         </div>
                     </div>
-                    <div class="card-body">
-                        <h5>
-                            <?php echo htmlspecialchars($data['title']); ?>
-                        </h5>
-                        <ol>
-                            <?php foreach ($data['description_items'] as $item): ?>
-                            <?php if (!empty($item)): ?>
-                            <li>
-                                <?php echo htmlspecialchars($item); ?>
-                            </li>
-                            <?php endif; ?>
-                            <?php endforeach; ?>
-                        </ol>
-                        <a href="/services-detail/<?php echo htmlspecialchars($data['slug']); ?>" class="btn">XEM
-                            THÊM</a>
-                    </div>
-                </div>
-            </div>
-            <?php endforeach; ?>
+                <?php endforeach; ?>
             <?php else: ?>
-            <div class="col-12 text-center">
-                <p>
-                    <?php echo $content ?? 'Không có dịch vụ nào để hiển thị.'; ?>
-                </p>
-            </div>
+                <div class="col-12 text-center">
+                    <p><?php echo $content ?? 'Không có dịch vụ nào để hiển thị.'; ?></p>
+                </div>
             <?php endif; ?>
         </div>
     </div>
+
 </section>
 
-<nav aria-label="Page navigation">
-    <ul class="my-pagination justify-content-center">
-        <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-        <li class="my-page-item <?= $i == $current_page ? 'active' : '' ?>">
-            <a class="my-page-link" href="?page=<?= $i ?>">
-                <?= $i ?>
-            </a>
-        </li>
-        <?php endfor; ?>
-    </ul>
-</nav>
+                <!-- Phân trang -->
+                        <nav aria-label="Page navigation">
+                            <ul class="my-pagination justify-content-center">
+                                <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                                    <li class="my-page-item <?= $i === $current_page ? 'active' : '' ?>">
+                                        <a class="my-page-link" href="?page=<?= $i ?>">
+                                            <?= $i ?>
+                                        </a>
+                                    </li>
+                                <?php endfor; ?>
+                            </ul>
+                        </nav>
 <!--====== OFFER PART ENDS ======-->
+
