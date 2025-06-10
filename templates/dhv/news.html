@@ -73,7 +73,7 @@
                     <!-- Phân trang -->
                     <?php if ($total_pages > 1): ?>
                         <nav aria-label="Page navigation example">
-                            <ul class="pagination">
+                            <ul class="my-pagination justify-content-center">
                                 <?php if ($current_page > 1): ?>
                                     <li class="page-item">
                                         <a class="page-link" href="/news<?=$category_slug ? '/' . $category_slug : ''?>?page=<?=$current_page - 1?>&search=<?=urlencode($search_query)?>" aria-label="Previous">

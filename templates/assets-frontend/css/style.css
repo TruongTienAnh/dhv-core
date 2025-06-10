@@ -5962,12 +5962,12 @@ p {
       .blog-standard-area .blog-standard nav ul li a {
         height: 50px;
         width: 50px;
-        border-radius: 50%;
+        /* border-radius: 50%; */
         border: 0 !important;
         padding: 0;
         line-height: 50px;
         margin: 0 3px;
-        font-size: 14px;
+        font-size: 1.5rem;
         color: #7886a0;
         font-weight: 700;
         -webkit-transition: all 0.3s ease-out 0s;
@@ -5980,11 +5980,13 @@ p {
           background: #ff7575; }
         .blog-standard-area .blog-standard nav ul li a.active {
           color: #fff;
-          background: #ff7575; }
+          background: #d71920; }
       .blog-standard-area .blog-standard nav ul li:first-child a {
-        border-radius: 50% !important; }
+        /* border-radius: 50% !important;  */
+      }
       .blog-standard-area .blog-standard nav ul li:last-child a {
-        border-radius: 50% !important; }
+        /* border-radius: 50% !important;  */
+      }
 .blog-standard-area .blog-standard .single-blog-grid {
   background: #fff; }
   .blog-standard-area .blog-standard .single-blog-grid .blog-thumb {
