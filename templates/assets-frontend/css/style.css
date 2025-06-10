@@ -4078,15 +4078,15 @@ p {
   .course-grid-area .pagination-item nav ul li a {
     height: 50px;
     width: 50px;
-    border-radius: 50% !important;
     border: 0;
     padding: 0;
+    border-radius: 0px !important;
     text-align: center;
     line-height: 50px;
     margin: 0 6px;
-    font-size: 14px;
+    font-size: 1.5rem;
     color: #70a3bb;
-    font-weight: 700;
+    font-weight: 600;
     -webkit-transition: all 0.3s ease-out 0s;
     -moz-transition: all 0.3s ease-out 0s;
     -ms-transition: all 0.3s ease-out 0s;
@@ -4107,11 +4107,11 @@ p {
     .course-grid-area .pagination-item nav ul li a span {
       color: #001b61; }
     .course-grid-area .pagination-item nav ul li a.active {
-      background: #00ffd8;
-      color: #001b61; }
+      background: #d71920;
+      color: #FFF; }
     .course-grid-area .pagination-item nav ul li a:hover {
-      background: #00ffd8;
-      color: #001b61; }
+      background: #d71920;
+      color: #FFF; }
   @media (max-width: 767px) {
     .course-grid-area .single-course-list {
       display: block; } }
@@ -5964,12 +5964,13 @@ p {
         width: 50px;
         /* border-radius: 50%; */
         border: 0 !important;
+        border-radius: 0px !important;
         padding: 0;
         line-height: 50px;
         margin: 0 3px;
         font-size: 1.5rem;
         color: #7886a0;
-        font-weight: 700;
+        font-weight: 600;
         -webkit-transition: all 0.3s ease-out 0s;
         -moz-transition: all 0.3s ease-out 0s;
         -ms-transition: all 0.3s ease-out 0s;

@@ -54,7 +54,7 @@
                             <div class="col-lg-12">
                                 <div class="single-course-list white-bg mt-30 d-flex align-items-center flex-wrap">
                                     <div class="course-list-thumb">
-                                        <img src="<?=$setting['template']?>/assets-frontend/images/Media/5.2.Dự án/<?=$project['image_url']?>" alt="Ảnh dự án <?=$project['title']?>">
+                                        <img src="<?=$setting['template']?>/uploads/projects/<?=$project['image_url']?>" alt="Ảnh dự án <?=$project['title']?>">
                                     </div>
                                     <div class="courses-content">
                                         <a href="/project-detail/<?=$project['slug']?>">
@@ -83,7 +83,7 @@
                                     <?php if ($current_page > 1): ?>
                                         <li class="page-item">
                                             <a class="page-link" href="/projects?page=<?=$current_page - 1?>&search=<?=urlencode($search_query)?>&industry=<?=urlencode($industry_filter)?>" aria-label="Previous">
-                                                <span aria-hidden="true"><i class="fal fa-arrow-left"></i></span>
+                                                <span aria-hidden="true"><i class="fal fa-angle-double-left"></i></span>
                                             </a>
                                         </li>
                                     <?php endif; ?>
@@ -103,7 +103,7 @@
                                     <?php if ($current_page < $total_pages): ?>
                                         <li class="page-item">
                                             <a class="page-link" href="/projects?page=<?=$current_page + 1?>&search=<?=urlencode($search_query)?>&industry=<?=urlencode($industry_filter)?>" aria-label="Next">
-                                                <span aria-hidden="true"><i class="fal fa-arrow-right"></i></span>
+                                                <span aria-hidden="true"><i class="fal fa-angle-double-right"></i></span>
                                             </a>
                                         </li>
                                     <?php endif; ?>
