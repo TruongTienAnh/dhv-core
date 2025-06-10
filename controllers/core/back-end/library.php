@@ -67,17 +67,15 @@ $app->router("/admin/library", 'POST', function($vars) use ($app, $jatbi) {
     $start = intval($_POST['start'] ?? 0);
     $length = intval($_POST['length'] ?? 10);
     $searchValue = $_POST['search']['value'] ?? '';
+    $category = $_POST['category'] ?? '';
+    $dateFrom = $_POST['date_from'] ?? '';
+    $dateTo = $_POST['date_to'] ?? '';
 
     $orderColumnIndex = $_POST['order'][0]['column'] ?? 1;
     $orderDir = strtoupper($_POST['order'][0]['dir'] ?? 'DESC');
 
-    $validColumns = ["checkbox", "title", "description", "file_url", "img_url", "name", "action"];
+    $validColumns = ["checkbox", "title", "description", "file_url", "img_url", "name", "created_at", "action"];
     $orderColumn = $validColumns[$orderColumnIndex] ?? "title";
-
-    $Category = $_POST['category'] ?? '';
-    $dateFrom = $_POST['date_to'] ?? '';
-    $dateTo = $_POST['date_form'] ?? '';
-
 
     // Điều kiện WHERE
     $where = [
@@ -91,9 +89,12 @@ $app->router("/admin/library", 'POST', function($vars) use ($app, $jatbi) {
         "ORDER" => [$orderColumn => $orderDir]
     ];
 
-    if (!empty($Category)) {
-        $where["AND"]["resources.id_category"] = $Category;
+    // Thêm điều kiện lọc theo danh mục
+    if (!empty($category) ) {
+        $where["AND"]["resources.id_category"] = $category;
     }
+
+    // Thêm điều kiện lọc theo ngày tháng
     if (!empty($dateFrom)) {
         $where["AND"]["resources.created_at[>=]"] = $dateFrom . ' 00:00:00';
     }
@@ -101,8 +102,10 @@ $app->router("/admin/library", 'POST', function($vars) use ($app, $jatbi) {
         $where["AND"]["resources.created_at[<=]"] = $dateTo . ' 23:59:59';
     }
 
+    // Đếm tổng số bản ghi
     $count = $app->count("resources", ["AND" => $where["AND"]]);
 
+    // Lấy dữ liệu
     $datas = $app->select("resources", [
         "[>]categories" => ["id_category" => "id"]
     ], [
@@ -116,7 +119,7 @@ $app->router("/admin/library", 'POST', function($vars) use ($app, $jatbi) {
         "categories.name",
     ], $where) ?? [];
 
-
+    // Format dữ liệu cho DataTables
     $formattedData = array_map(function($data) use ($app, $jatbi) {
         return [
             "checkbox" => $app->component("box", ["data" => $data['id']]),
@@ -125,7 +128,7 @@ $app->router("/admin/library", 'POST', function($vars) use ($app, $jatbi) {
             "file_url" => $data['file_url'],
             "img_url" => $data['img_url'],
             "name" => $data['name'],
-            "created_at" => $data['created_at'],
+            "created_at" => date("Y/m/d H:i", strtotime($data['created_at'])),
             "action" => $app->component("action", [
                 "button" => [
                     [
@@ -155,8 +158,7 @@ $app->router("/admin/library", 'POST', function($vars) use ($app, $jatbi) {
         "draw" => $draw,
         "recordsTotal" => $count,
         "recordsFiltered" => $count,
-        "data" => $formattedData,
-        "test"=>$Category
+        "data" => $formattedData
     ]);
 })->setPermissions(['library']);
 
