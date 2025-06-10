@@ -344,7 +344,6 @@ $app->router("/admin/news-status/{id}", 'POST', function($vars) use ($app, $jatb
 
 // Route xóa tin tức
 $app->router("/admin/news-deleted", 'GET', function($vars) use ($app, $jatbi) {
-    $app->setGlobalFile(__DIR__ . '/../../includes/global.php');
     $vars['title'] = $jatbi->lang("Xóa tin tức");
     echo $app->render('templates/common/deleted.html', $vars, 'global');
 })->setPermissions(['news.deleted']);
@@ -372,7 +371,6 @@ $app->router("/admin/news-deleted", 'POST', function($vars) use ($app, $jatbi) {
 
 // Route khôi phục tin tức
 $app->router("/admin/news-restore/{id}", 'GET', function($vars) use ($app, $jatbi) {
-    $app->setGlobalFile(__DIR__ . '/../../includes/global.php');
     $vars['data'] = $app->get("trashs", "*", ["active" => $vars['id'], "deleted" => 0]);
     if ($vars['data']) {
         echo $app->render('templates/common/restore.html', $vars, 'global');
