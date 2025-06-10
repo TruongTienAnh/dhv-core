@@ -52,7 +52,7 @@
                     placeholder="Tên Doanh Nghiệp">
                 </div>
 
-                <div class="mb-3">
+                <!-- <div class="mb-3">
                   <select name="service_package" class="form-select custom-select" required>
                   <option value="">Chọn gói dịch vụ</option>
                   <?php foreach ($service_packages as $item): ?>
@@ -61,7 +61,19 @@
                     </option>
                   <?php endforeach; ?>
                   </select>
-                </div>                
+                </div>  -->
+
+
+                <div class="mb-3">
+                  <select name="service_package" class="form-select custom-select" required>
+                    <option value="">Chọn gói dịch vụ</option>
+                    <?php foreach ($service_packages as $item):?>
+                        <option value="<?= $item['id'] ?>" <?= $serviceID == $item['id'] ? 'selected' : '' ?>>
+                    <?= $item['title'] ?> (<?= $item['type'] ?>)
+                    </option>
+                    <?php endforeach; ?>
+                  </select>
+                </div>
 				
 				<div class="mb-3">
 					<textarea name="note" class="form-textarea" placeholder="Vấn đề đang gặp phải và mong muốn ..." style="background: white;"></textarea>
