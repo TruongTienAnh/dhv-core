@@ -15,6 +15,8 @@ $app->router("/admin/contact", 'POST', function($vars) use ($app, $jatbi) {
     $start = $_POST['start'] ?? 0;
     $length = $_POST['length'] ?? 10;
     $searchValue = $_POST['search']['value'] ?? '';
+    $dateFrom = $_POST['date_from'] ?? '';
+    $dateTo = $_POST['date_to'] ?? '';
 
     $orderColumnIndex = $_POST['order'][0]['column'] ?? 1;
     $orderDir = strtoupper($_POST['order'][0]['dir'] ?? 'DESC');
@@ -35,6 +37,14 @@ $app->router("/admin/contact", 'POST', function($vars) use ($app, $jatbi) {
         "LIMIT" => [$start, $length],
         "ORDER" => [$orderColumn => $orderDir]
     ];
+
+    // Thêm điều kiện lọc theo ngày tháng
+    if (!empty($dateFrom)) {
+        $where["AND"]["datetime[>=]"] = $dateFrom . ' 00:00:00';
+    }
+    if (!empty($dateTo)) {
+        $where["AND"]["datetime[<=]"] = $dateTo . ' 23:59:59';
+    }
 
     // Đếm tổng số bản ghi
     $count = $app->count("contact", ["AND" => $where["AND"]]);

@@ -790,11 +790,74 @@ function sendAjaxRequest(url, formData, options, $this) {
         processData: false,
         success: function (response) {
             topbar.hide();
+            console.log('Response:', response); // Debug
             if (response.status === 'error') {
                 swal_error(response.content);
             } else if (response.status === 'success') {
+                if (response.file) {
+                    console.log('Thử tải file từ:', response.file); // Debug
+                    // Cách 1: Dùng thẻ <a> với sự kiện click
+                    try {
+                        const link = document.createElement('a');
+                        link.href = response.file;
+                        link.download = ''; // Trình duyệt tự lấy tên file
+                        link.style.display = 'none';
+                        document.body.appendChild(link);
+                        // Tạo sự kiện click giả lập
+                        const clickEvent = new MouseEvent('click', {
+                            view: window,
+                            bubbles: true,
+                            cancelable: true
+                        });
+                        link.dispatchEvent(clickEvent);
+                        document.body.removeChild(link);
+                        console.log('Đã gọi link.click() qua MouseEvent');
+                    } catch (e) {
+                        console.error('Lỗi tải bằng <a>:', e);
+                        swal_error('Không thể tải file bằng cách 1. Thử cách khác...');
+                    }
+                    // Cách 2: Dùng fetch và Blob
+                    try {
+                        fetch(response.file)
+                            .then(res => {
+                                if (!res.ok) throw new Error('Fetch failed: ' + res.status);
+                                return res.blob();
+                            })
+                            .then(blob => {
+                                const blobUrl = window.URL.createObjectURL(blob);
+                                const link = document.createElement('a');
+                                link.href = blobUrl;
+                                link.download = '1.pdf'; // Tên file cố định
+                                link.style.display = 'none';
+                                document.body.appendChild(link);
+                                link.click();
+                                document.body.removeChild(link);
+                                window.URL.revokeObjectURL(blobUrl);
+                                console.log('Đã tải bằng fetch và Blob');
+                            })
+                            .catch(e => {
+                                console.error('Lỗi tải bằng fetch:', e);
+                                swal_error('Không thể tải file bằng cách 2.');
+                            });
+                    } catch (e) {
+                        console.error('Lỗi khởi tạo fetch:', e);
+                    }
+                    // Cách 3: Dùng iframe ẩn
+                    try {
+                        const iframe = document.createElement('iframe');
+                        iframe.style.display = 'none';
+                        iframe.src = response.file;
+                        document.body.appendChild(iframe);
+                        setTimeout(() => document.body.removeChild(iframe), 1000);
+                        console.log('Đã thử iframe');
+                    } catch (e) {
+                        console.error('Lỗi tải bằng iframe:', e);
+                    }
+                } else {
+                    console.log('Không có response.file trong JSON');
+                    swal_error('Không tìm thấy file để tải.');
+                }
                 if (options.remove) $(options.remove).remove();
-
                 if (options.load) {
                     if (response.load === 'true') {
                         window.location.href = options.load;
@@ -806,28 +869,50 @@ function sendAjaxRequest(url, formData, options, $this) {
                         pjax.loadUrl(options.load === 'this' ? '' : options.load);
                     }
                 }
-
                 if (options.alert) {
                     swal_success(response.content, $this);
                 }
             } else if (response.status === 'appointment') {
-                // Xử lý trạng thái mới "appointment"
                 if (options.alert) {
-                    swal_appointment(formData, response); // Hiển thị thông báo cuộc hẹn
+                    swal_appointment(formData, response);
                 }
                 if (options.load) {
-                    pjax.loadUrl(options.load === 'this' ? '' : options.load); // Reload trang nếu cần
+                    pjax.loadUrl(options.load === 'this' ? '' : options.load);
                 }
             }
             $this.removeAttr('disabled');
         },
-        error: function () {
+        error: function (xhr, status, error) {
             topbar.hide();
-            swal_error('Lỗi kết nối mạng. Vui lòng thử lại sau.'); // Thêm thông báo lỗi mạng
+            console.error('AJAX error:', status, error, xhr.responseText);
+            swal_error('Lỗi kết nối mạng. Vui lòng thử lại sau.');
             $this.removeAttr('disabled');
         }
     });
 }
+
+$(document).on('submit', '#downloadForm', function(e) {
+    e.preventDefault();
+    const name = $('input[name="name"]').val().trim();
+    const phone = $('input[name="phone"]').val().trim();
+    const email = $('input[name="email"]').val().trim();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!name || !phone || !email) {
+        swal_error('Vui lòng điền đầy đủ thông tin.');
+        return false;
+    }
+    if (!emailRegex.test(email)) {
+        swal_error('Email không hợp lệ.');
+        return false;
+    }
+
+    const formData = new FormData(this);
+    const url = $(this).attr('action');
+    console.log('Gửi form tới:', url);
+    sendAjaxRequest(url, formData, { alert: true }, $(this).find('button[type="submit"]'));
+});
+
 if ('serviceWorker' in navigator && 'PushManager' in window) {
     navigator.serviceWorker.register('/sw.js')
     .then(function(registration) {

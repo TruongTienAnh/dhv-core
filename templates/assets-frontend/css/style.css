@@ -2665,7 +2665,7 @@ p {
     color: #001b61;
     font-size: 20px;
     cursor: pointer;
-    z-index: 99;
+    z-index: 98;
     -webkit-transition: all 0.3s ease-out 0s;
     -moz-transition: all 0.3s ease-out 0s;
     -ms-transition: all 0.3s ease-out 0s;
