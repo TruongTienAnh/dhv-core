@@ -38,17 +38,6 @@
                     <input type="date" name="date_to" class="form-control filter-name" />
                 </div>
 
-                <!-- Bộ lọc phương thức -->
-                <div class="px-3">
-                    <label class="form-label small mb-1">Danh mục</label>
-                        <select name="category" class="form-select filter-category mt-2">
-                            <option >Danh mục</option>
-                            <?php foreach ($categories as $category): ?>
-                                <option value="<?= $category['id'] ?>"><?= $category['name'] ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                </div>
-
                 <hr class="border-secondary border-opacity-50 my-2" />
                 <div class="px-3 py-2 text-end w-100">
                 <button

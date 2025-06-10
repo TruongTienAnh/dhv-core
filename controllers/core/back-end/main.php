@@ -18,7 +18,7 @@
             echo $app->render('templates/dhv/login.html', $vars);
         }
         else {
-            $app->redirect('/admin');
+            $app->redirect('/admin/consultation');
         }
     });
     $app->router("/login", 'POST', function($vars) use ($app, $jatbi,$setting) {

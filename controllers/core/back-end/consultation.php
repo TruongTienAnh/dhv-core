@@ -11,19 +11,22 @@ $app->router("/admin/consultation", 'GET', function($vars) use ($app, $jatbi, $s
 $app->router("/admin/consultation", 'POST', function($vars) use ($app, $jatbi) {
     $app->header(['Content-Type' => 'application/json']);
 
-    $draw = $_POST['draw'] ?? 0;
-    $start = $_POST['start'] ?? 0;
-    $length = $_POST['length'] ?? 10;
+    // Nhận tham số từ POST
+    $draw = intval($_POST['draw'] ?? 0);
+    $start = intval($_POST['start'] ?? 0);
+    $length = intval($_POST['length'] ?? 10);
     $searchValue = $_POST['search']['value'] ?? '';
+    $method = $_POST['method'] ?? '';
+    $dateFrom = $_POST['date_from'] ?? '';
+    $dateTo = $_POST['date_to'] ?? '';
 
+    // Xử lý sắp xếp
     $orderColumnIndex = $_POST['order'][0]['column'] ?? 1;
     $orderDir = strtoupper($_POST['order'][0]['dir'] ?? 'DESC');
-
-    // Cập nhật danh sách cột theo table bạn cung cấp
-    $validColumns = ["checkbox", "name", "phone", "email", "name_business", "datetime", "service","method", "status", "note","action"];
+    $validColumns = ["checkbox", "name", "phone", "email", "name_business", "datetime", "service", "method", "status", "note", "action"];
     $orderColumn = $validColumns[$orderColumnIndex] ?? "datetime";
 
-    // Điều kiện WHERE
+    // Xây dựng điều kiện WHERE
     $where = [
         "AND" => [
             "OR" => [
@@ -37,11 +40,24 @@ $app->router("/admin/consultation", 'POST', function($vars) use ($app, $jatbi) {
         "ORDER" => [$orderColumn => $orderDir]
     ];
 
+    // Thêm bộ lọc method
+    if (!empty($method)) {
+        $where["AND"]["appointments.method"] = $method;
+    }
+
+    // Thêm bộ lọc ngày tháng
+    if (!empty($dateFrom)) {
+        $where["AND"]["appointments.datetime[>=]"] = $dateFrom;
+    }
+    if (!empty($dateTo)) {
+        // Đảm bảo date_to bao gồm cả ngày cuối (thêm 23:59:59)
+        $where["AND"]["appointments.datetime[<=]"] = $dateTo . ' 23:59:59';
+    }
+
     // Đếm bản ghi
     $count = $app->count("appointments", ["AND" => $where["AND"]]);
 
     // Truy vấn dữ liệu
-    // $datas = $app->select("appointments", "*", $where) ?? [];
     $datas = $app->select("appointments", [
         "[>]services" => ["service" => "id"]
     ], [
@@ -57,7 +73,6 @@ $app->router("/admin/consultation", 'POST', function($vars) use ($app, $jatbi) {
         "services.type(service_type)"
     ], $where) ?? [];
 
-
     // Map dữ liệu
     $formattedData = array_map(function($data) use ($app, $jatbi) {
         $methodLabels = [
@@ -71,40 +86,41 @@ $app->router("/admin/consultation", 'POST', function($vars) use ($app, $jatbi) {
             "cancelled" => $jatbi->lang("Đã hủy")
         ];
 
-            return [
-                "checkbox" => $app->component("box", ["data" => $data['id']]),
-                "name" => !empty($data['name']) ? $data['name'] : '–',
-                "phone" => !empty($data['phone']) ? $data['phone'] : '–',
-                "email" => !empty($data['email']) ? $data['email'] : '–',
-                "name_business" => !empty($data['name_business']) ? $data['name_business'] : '–',
-                "datetime" => !empty($data['datetime']) ? date("d/m/Y H:i", strtotime($data['datetime'])) : '–',
-                "service" => (!empty($data['service_title']) || !empty($data['service_type'])) ? "{$data['service_title']} - {$data['service_type']}" : '–',
-                "method" => !empty($methodLabels[$data['method']]) ? $methodLabels[$data['method']] : (!empty($data['method']) ? $data['method'] : '–'),
-                "status" => $app->component("status", [
-                    "url" => "/admin/consultation-status/" . $data['id'],
-                    "data" => $data['status'] ?? '',
-                    "permission" => ['consultation.edit']
-                ]),
-                "note" => !empty($data['note']) ? $data['note'] : '–',
-                "action" => $app->component("action", [
-                    "button" => [
-                        [
-                            'type' => 'button',
-                            'name' => $jatbi->lang("Sửa"),
-                            'permission' => ['consultation'],
-                            'action' => ['data-url' => '/admin/consultation-edit?id=' . $data['id'], 'data-action' => 'modal']
-                        ],
-                        [
-                            'type' => 'button',
-                            'name' => $jatbi->lang("Xóa"),
-                            'permission' => ['consultation'],
-                            'action' => ['data-url' => '/admin/consultation-deleted?id=' . $data['id'], 'data-action' => 'modal']
-                        ]
+        return [
+            "checkbox" => $app->component("box", ["data" => $data['id']]),
+            "name" => !empty($data['name']) ? $data['name'] : '–',
+            "phone" => !empty($data['phone']) ? $data['phone'] : '–',
+            "email" => !empty($data['email']) ? $data['email'] : '–',
+            "name_business" => !empty($data['name_business']) ? $data['name_business'] : '–',
+            "datetime" => !empty($data['datetime']) ? date("d/m/Y H:i", strtotime($data['datetime'])) : '–',
+            "service" => (!empty($data['service_title']) || !empty($data['service_type'])) ? "{$data['service_title']} - {$data['service_type']}" : '–',
+            "method" => !empty($methodLabels[$data['method']]) ? $methodLabels[$data['method']] : (!empty($data['method']) ? $data['method'] : '–'),
+            "status" => $app->component("status", [
+                "url" => "/admin/consultation-status/" . $data['id'],
+                "data" => $data['status'] ?? '',
+                "permission" => ['consultation.edit']
+            ]),
+            "note" => !empty($data['note']) ? $data['note'] : '–',
+            "action" => $app->component("action", [
+                "button" => [
+                    [
+                        'type' => 'button',
+                        'name' => $jatbi->lang("Sửa"),
+                        'permission' => ['consultation'],
+                        'action' => ['data-url' => '/admin/consultation-edit?id=' . $data['id'], 'data-action' => 'modal']
+                    ],
+                    [
+                        'type' => 'button',
+                        'name' => $jatbi->lang("Xóa"),
+                        'permission' => ['consultation'],
+                        'action' => ['data-url' => '/admin/consultation-deleted?id=' . $data['id'], 'data-action' => 'modal']
                     ]
-                ])
-            ];
+                ]
+            ])
+        ];
     }, $datas);
 
+    // Trả về JSON
     echo json_encode([
         "draw" => $draw,
         "recordsTotal" => $count,

@@ -67,7 +67,6 @@ $app->router("/admin/library", 'POST', function($vars) use ($app, $jatbi) {
     $start = intval($_POST['start'] ?? 0);
     $length = intval($_POST['length'] ?? 10);
     $searchValue = $_POST['search']['value'] ?? '';
-    $category = $_POST['category'] ?? '';
     $dateFrom = $_POST['date_from'] ?? '';
     $dateTo = $_POST['date_to'] ?? '';
 
@@ -88,11 +87,6 @@ $app->router("/admin/library", 'POST', function($vars) use ($app, $jatbi) {
         "LIMIT" => [$start, $length],
         "ORDER" => [$orderColumn => $orderDir]
     ];
-
-    // Thêm điều kiện lọc theo danh mục
-    if (!empty($category) ) {
-        $where["AND"]["resources.id_category"] = $category;
-    }
 
     // Thêm điều kiện lọc theo ngày tháng
     if (!empty($dateFrom)) {

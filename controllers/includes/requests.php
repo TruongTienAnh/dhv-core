@@ -67,12 +67,12 @@
                             "router"    => '/admin/logs',
                             "icon"  => '<i class="fa fa-list-alt"></i>',
                         ],
-                        'config'    => [
-                            "name"  => $jatbi->lang("Cấu hình"),
-                            "router"    => '/admin/config',
-                            "icon"  => '<i class="fa fa-cog"></i>',
-                            "req"   => 'modal-url',
-                        ],
+                        // 'config'    => [
+                        //     "name"  => $jatbi->lang("Cấu hình"),
+                        //     "router"    => '/admin/config',
+                        //     "icon"  => '<i class="fa fa-cog"></i>',
+                        //     "req"   => 'modal-url',
+                        // ],
                     ],
                     "controllers"=>"controllers/core/back-end/admin.php",
                     "main"=>'false',
@@ -81,7 +81,7 @@
                         'blockip.add'   =>$jatbi->lang("Thêm Chặn truy cập"),
                         'blockip.edit'  =>$jatbi->lang("Sửa Chặn truy cập"),
                         'blockip.deleted'=>$jatbi->lang("Xóa Chặn truy cập"),
-                        'config'        =>$jatbi->lang("Cấu hình"),
+                        // 'config'        =>$jatbi->lang("Cấu hình"),
                         'logs'          =>$jatbi->lang("Nhật ký"),
                         'trash'          =>$jatbi->lang("Thùng rác"),
                     ]
@@ -168,6 +168,16 @@
                         // 'accounts.add' => $jatbi->lang("Thêm tài khoản"),
                         // 'accounts.edit' => $jatbi->lang("Sửa tài khoản"),
                         // 'accounts.deleted' => $jatbi->lang("Xóa tài khoản"),
+                    ]
+                ],
+                    'editor' => [
+                    "menu" => $jatbi->lang("Trình chỉnh sửa"),
+                    "url" => '/admin/editor',
+                    "icon" => '<i class="bi bi-layout-text-window-reverse"></i>',
+                    "controllers" => "controllers/core/back-end/editor.php",
+                    "main" => 'false',
+                    "permission" => [
+                        'editor' => $jatbi->lang("Trình chỉnh sửa"),
                     ]
                 ],
                 'services'=>[
