@@ -4438,7 +4438,7 @@ p {
             font-size: 16px; } }
         @media (max-width: 767px) {
           .course-details-area .course-details-items .course-thumb .tab-btns ul li a {
-            font-size: 12px;
+            font-size: 15px;
             padding: 0 0; } }
         @media only screen and (min-width: 576px) and (max-width: 767px) {
           .course-details-area .course-details-items .course-thumb .tab-btns ul li a {

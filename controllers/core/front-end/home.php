@@ -24,8 +24,11 @@ $app->router("/", 'GET', function($vars) use ($app, $jatbi, $setting) {
     echo $app->render('templates/dhv/index.html', $vars);
 });
 
+
 $app->router("/register-post", 'GET', function($vars) use ($app, $jatbi, $setting) {
     $vars['title'] = $jatbi->lang("Đăng ký nhận tư vấn");
+    $serviceID =  isset($_GET['serviceID']) ? $_GET['serviceID'] : '';
+    $vars['serviceID'] = $serviceID;
     $services = $app->select("services", ["id","title", "type"], [
         "status" => "A",
         "ORDER" => ["id" => "ASC"]
