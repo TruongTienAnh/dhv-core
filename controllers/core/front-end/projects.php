@@ -145,7 +145,6 @@ $projectDetailHandler = function($vars) use ($app, $jatbi, $setting) {
     ], [
         "project_id" => $project['id'],
         "status" => 'A',
-        "deleted" => 0
     ]);
 
     // Truyền dữ liệu vào template

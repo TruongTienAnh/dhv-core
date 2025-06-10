@@ -106,6 +106,8 @@ $app->router("/admin/projects", 'POST', function($vars) use ($app, $jatbi) {
         'projects.client_name',
         'projects.image_url',
         'projects.start_date',
+        'projects.end_date',
+        'projects.excerpt',
         'projects.status',
         'projects.created_at',
         'projects.updated_at',
@@ -114,9 +116,11 @@ $app->router("/admin/projects", 'POST', function($vars) use ($app, $jatbi) {
         $datas[] = [
             "checkbox" => $app->component("box", ["data" => $data['id']]),
             "title" => $data['title'],
+            "excerpt" => $data['excerpt'] ?: 'Chưa có mô tả',
             "client_name" => $data['client_name'] ?? 'Chưa xác định',
             "image" => $data['image_url'] ? '<img src="/templates/uploads/projects/' . $data['image_url'] . '" alt="' . $data['title'] . '" class="img-thumbnail" style="max-width: 100px; max-height: 100px;">' : 'Chưa có ảnh',
             "start_date" => $data['start_date'] ? date('d/m/Y', strtotime($data['start_date'])) : 'Chưa bắt đầu',
+            "end_date" => $data['end_date'] ? date('d/m/Y', strtotime($data['end_date'])) : 'Chưa kết thúc',
             "status" => $app->component("status", ["url" => "/admin/projects-status/" . $data['id'], "data" => $data['status'], "permission" => ['projects.edit']]),
             "action" => $app->component("action", [
                 "button" => [
@@ -205,10 +209,18 @@ $app->router("/admin/projects-add", 'POST', function($vars) use ($app, $jatbi) {
     $app->insert("projects", $insert);
     $project_id = $app->id();
 
-    if (!empty($_FILES['additional_images'])) {
+    // Xử lý ảnh bổ sung
+    if (!empty($_FILES['additional_images']['name'][0])) { // Kiểm tra nếu có file
+        $path_upload = 'templates/uploads/projects/';
         foreach ($_FILES['additional_images']['name'] as $key => $name) {
             if ($_FILES['additional_images']['error'][$key] === UPLOAD_ERR_OK) {
-                $handle = $app->upload(['tmp_name' => $_FILES['additional_images']['tmp_name'][$key], 'name' => $name]);
+                $handle = $app->upload([
+                    'tmp_name' => $_FILES['additional_images']['tmp_name'][$key],
+                    'name' => $name,
+                    'type' => $_FILES['additional_images']['type'][$key],
+                    'size' => $_FILES['additional_images']['size'][$key],
+                    'error' => $_FILES['additional_images']['error'][$key]
+                ]);
                 $new_image_name = $jatbi->active();
                 if ($handle->uploaded) {
                     $handle->allowed = ['image/*'];
@@ -298,10 +310,26 @@ $app->router("/admin/projects-edit/{id}", 'POST', function($vars) use ($app, $ja
 
     $app->update("projects", $update, ["id" => $vars['id']]);
 
-    if (!empty($_FILES['additional_images'])) {
+    // Xử lý xóa ảnh bổ sung cũ
+    if (!empty($_POST['deleted_image_ids'])) {
+        $deleted_ids = is_array($_POST['deleted_image_ids']) ? $_POST['deleted_image_ids'] : [$_POST['deleted_image_ids']];
+        foreach ($deleted_ids as $image_id) {
+            $app->delete("project_images", ["id" => $image_id, "project_id" => $vars['id']]);
+        }
+    }
+
+    // Xử lý ảnh bổ sung mới
+    if (!empty($_FILES['additional_images']['name'][0])) {
+        $path_upload = 'templates/uploads/projects/';
         foreach ($_FILES['additional_images']['name'] as $key => $name) {
             if ($_FILES['additional_images']['error'][$key] === UPLOAD_ERR_OK) {
-                $handle = $app->upload(['tmp_name' => $_FILES['additional_images']['tmp_name'][$key], 'name' => $name]);
+                $handle = $app->upload([
+                    'tmp_name' => $_FILES['additional_images']['tmp_name'][$key],
+                    'name' => $name,
+                    'type' => $_FILES['additional_images']['type'][$key],
+                    'size' => $_FILES['additional_images']['size'][$key],
+                    'error' => $_FILES['additional_images']['error'][$key]
+                ]);
                 $new_image_name = $jatbi->active();
                 if ($handle->uploaded) {
                     $handle->allowed = ['image/*'];
@@ -341,6 +369,20 @@ $app->router("/admin/projects-status/{id}", 'POST', function($vars) use ($app, $
     }
 })->setPermissions(['projects.edit']);
 
+
+$app->router("/admin/projectsImage-status/{id}", 'POST', function($vars) use ($app, $jatbi) {
+    $app->header(['Content-Type' => 'application/json']);
+
+    $project = $app->get("project_images", "*", ["id" => $vars['id']]);
+    if ($project) {
+        $status = $project['status'] === 'A' ? 'D' : 'A';
+        $app->update("project_images", ["status" => $status], ["id" => $vars['id']]);
+        $jatbi->logs('project_images', 'projectImage-status', $project);
+        echo json_encode(['status' => 'success', 'content' => $jatbi->lang("Cập nhật thành công")]);
+    } else {
+        echo json_encode(['status' => 'error', 'content' => $jatbi->lang("Không tìm thấy dữ liệu")]);
+    }
+})->setPermissions(['projects.edit']);
 // Route xóa dự án
 $app->router("/admin/projects-deleted", 'GET', function($vars) use ($app, $jatbi) {
     $vars['title'] = $jatbi->lang("Xóa dự án");

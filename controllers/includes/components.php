@@ -41,6 +41,23 @@
                 </div>';
             }
         });
+        //status Component for modal
+        $app->setComponent('status-modal', function($vars) use ($app, $setting, $jatbi) {
+            $url = isset($vars['url']) ? $vars['url'] : '';
+            $data = isset($vars['data']) ? $vars['data'] : '';
+            $permissions = isset($vars['permission']) ? $vars['permission'] : [];
+            $hasPermission = empty($permissions) || array_reduce($permissions, fn($carry, $perm) => $carry || $jatbi->permission($perm) == 'true', false);
+            if ($hasPermission) {
+                echo '<div class="form-check form-switch">
+                    <input class="form-check-input" data-action="click" data-url="'.$url.'"  type="checkbox" role="switch" ' . ($data=='A' ? 'checked' : '') . '>
+                </div>';
+            }
+            else {
+                echo '<div class="form-check form-switch">
+                    <input class="form-check-input" disabled type="checkbox" role="switch" ' . ($data=='A' ? 'checked' : '') . '>
+                </div>';
+            }
+        });
         //box Component
         $app->setComponent('box', function($vars) use ($app, $setting, $jatbi) {
             $data = isset($vars['data']) ? $vars['data'] : '';
