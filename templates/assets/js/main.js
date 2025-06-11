@@ -818,14 +818,29 @@ function sendAjaxRequest(url, formData, options, $this) {
                 if (options.load) {
                     pjax.loadUrl(options.load === 'this' ? '' : options.load); // Reload trang nếu cần
                 }
-            }else if (response.status === 'document') {
-                
+            } else if (response.status === 'download') {
+                // Handle PDF download
+                if (response.file || response.url) {
+                    const downloadUrl = response.file || response.url;
+                    const link = document.createElement('a');
+                    link.href = downloadUrl;
+                    link.download = response.filename || 'document.pdf'; 
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+
+                    if (options.alert) {
+                        swal_success(response.content || 'Tải xuống tệp PDF thành công!', $this);
+                    }
+                } else {
+                    swal_error('Không tìm thấy tệp PDF để tải xuống.');
+                }
             }
             $this.removeAttr('disabled');
         },
         error: function () {
             topbar.hide();
-            swal_error('Lỗi kết nối mạng. Vui lòng thử lại sau.'); // Thêm thông báo lỗi mạng
+            swal_error('Lỗi kết nối mạng. Vui lòng thử lại sau.');
             $this.removeAttr('disabled');
         }
     });
