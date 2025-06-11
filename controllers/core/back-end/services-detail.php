@@ -167,6 +167,12 @@ $app->router("/admin/services-detail-add", 'POST', function($vars) use ($app, $j
         return;
     }
 
+    // Kiểm tra xem service_id đã có chi tiết chưa
+    if ($app->has("services_detail", ["service_id" => $service_id])) {
+        echo json_encode(["status" => "error", "content" => $jatbi->lang("Dịch vụ này đã có chi tiết. Mỗi dịch vụ chỉ được có một chi tiết.")]);
+        return;
+    }
+
     // Kiểm tra author_box_id tồn tại nếu được cung cấp
     if (!empty($author_box_id) && !$app->has("author_boxes", ["id" => $author_box_id])) {
         echo json_encode(["status" => "error", "content" => $jatbi->lang("Tác giả không tồn tại")]);
@@ -282,6 +288,13 @@ $app->router("/admin/services-detail-edit", 'POST', function ($vars) use ($app, 
         return;
     }
 
+    // Kiểm tra xem service_id đã có chi tiết khác chưa (trừ bản ghi hiện tại)
+    $existing_detail = $app->select("services_detail", ["id"], ["service_id" => $service_id, "id[!]" => $id]);
+    if ($existing_detail) {
+        echo json_encode(["status" => "error", "content" => $jatbi->lang("Dịch vụ này đã có chi tiết khác. Mỗi dịch vụ chỉ có một chi tiết.")]);
+        return;
+    }
+
     // Validate author_box_id if provided
     if (!empty($author_box_id) && !$app->has("author_boxes", ["id" => $author_box_id])) {
         echo json_encode(["status" => "error", "content" => $jatbi->lang("Tác giả không tồn tại")]);
@@ -316,8 +329,8 @@ $app->router("/admin/services-detail-edit", 'POST', function ($vars) use ($app, 
         "author_box_id" => $author_box_id ?: null,
     ];
 
-    // Debug: Log data before update
-    error_log("Update data: " . print_r($update, true));
+    // // Debug: Log data before update
+    // error_log("Update data: " . print_r($update, true));
 
     try {
         $app->update("services_detail", $update, ["id" => $id]);
@@ -327,7 +340,6 @@ $app->router("/admin/services-detail-edit", 'POST', function ($vars) use ($app, 
         echo json_encode(["status" => "error", "content" => "Lỗi: " . $e->getMessage()]);
     }
 })->setPermissions(['services-detail']);
-
 
 
 // Delete service detail
