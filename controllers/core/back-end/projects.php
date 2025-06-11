@@ -66,6 +66,8 @@ $app->router("/admin/projects", 'POST', function($vars) use ($app, $jatbi) {
     $orderDir = strtoupper($_POST['order'][0]['dir'] ?? 'DESC');
     $status = $_POST['status'] ?? '';
 
+    error_log("Start: $start, Length: $length, Status: $status, Search: $searchValue");
+
     $validColumns = [
         0 => "id",
         1 => "title",
@@ -95,9 +97,18 @@ $app->router("/admin/projects", 'POST', function($vars) use ($app, $jatbi) {
         $where["AND"] = array_merge($where["AND"], $andConditions);
     }
 
-    $ids = $app->select("projects", "id", $where);
-    $count = count($ids);
+    error_log("Where: " . json_encode($where));
 
+    // Tính recordsTotal và recordsFiltered
+    $totalWhere = [
+        "AND" => $where["AND"]
+    ];
+    $recordsTotal = $app->count("projects", "id", $totalWhere);
+    $recordsFiltered = $recordsTotal; // Nếu không có bộ lọc khác biệt, bằng recordsTotal
+
+    error_log("Records Total: $recordsTotal, Records Filtered: $recordsFiltered");
+
+    // Lấy dữ liệu trang hiện tại
     $datas = [];
     $app->select("projects", [
         'projects.id',
@@ -143,8 +154,8 @@ $app->router("/admin/projects", 'POST', function($vars) use ($app, $jatbi) {
 
     echo json_encode([
         "draw" => $draw,
-        "recordsTotal" => $count,
-        "recordsFiltered" => $count,
+        "recordsTotal" => $recordsTotal,
+        "recordsFiltered" => $recordsFiltered,
         "data" => $datas
     ]);
 })->setPermissions(['projects']);

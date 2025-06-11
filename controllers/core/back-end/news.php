@@ -59,7 +59,6 @@ $app->router("/admin/news", 'POST', function($vars) use ($app, $jatbi) {
         'Content-Type' => 'application/json',
     ]);
 
-    // Lấy dữ liệu từ DataTable
     $draw = isset($_POST['draw']) ? intval($_POST['draw']) : 0;
     $start = isset($_POST['start']) ? intval($_POST['start']) : 0;
     $length = isset($_POST['length']) ? intval($_POST['length']) : 10;
@@ -69,7 +68,8 @@ $app->router("/admin/news", 'POST', function($vars) use ($app, $jatbi) {
     $status = $_POST['status'] ?? '';
     $category_id = $_POST['category_id'] ?? '';
 
-    // Danh sách cột hợp lệ
+    error_log("Start: $start, Length: $length, Status: $status, Category ID: $category_id");
+
     $validColumns = [
         0 => "id",
         1 => "title",
@@ -81,7 +81,6 @@ $app->router("/admin/news", 'POST', function($vars) use ($app, $jatbi) {
     ];
     $orderColumn = $validColumns[$orderColumnIndex] ?? "id";
 
-    // Điều kiện lọc cơ bản
     $where = [
         "AND" => [
             "news.deleted" => 0
@@ -90,40 +89,38 @@ $app->router("/admin/news", 'POST', function($vars) use ($app, $jatbi) {
         "ORDER" => [$orderColumn => $orderDir]
     ];
 
-    // Xây dựng điều kiện AND
     $andConditions = [];
-
-    // Lọc theo trạng thái
     if (!empty($status)) {
         $andConditions["news.status"] = $status;
     }
-
-    // Lọc theo danh mục
     if (!empty($category_id)) {
         $andConditions["news.category_id"] = $category_id;
     }
-
-    // Tìm kiếm
     if (!empty($searchValue)) {
         $andConditions["OR"] = [
             "news.title[~]" => $searchValue,
             "categories_news.name[~]" => $searchValue
         ];
     }
-
     if (!empty($andConditions)) {
         $where["AND"] = array_merge($where["AND"], $andConditions);
     }
 
-    // Lấy tổng số dòng phù hợp
-    $ids = $app->select("news", [
+    error_log("Where: " . json_encode($where));
+
+    // Tính recordsTotal và recordsFiltered
+    $totalWhere = [
+        "AND" => $where["AND"]
+    ];
+    $recordsTotal = $app->count("news", [
         "[>]categories_news" => ["category_id" => "id"]
-    ], "news.id", $where);
-    $count = count($ids);
+    ], "news.id", $totalWhere);
+    $recordsFiltered = $recordsTotal; // Nếu không có bộ lọc khác biệt, bằng recordsTotal
+
+    error_log("Records Total: $recordsTotal, Records Filtered: $recordsFiltered");
 
     // Lấy dữ liệu trang hiện tại
     $datas = [];
-
     $app->select("news", [
         "[>]categories_news" => ["category_id" => "id"]
     ], [
@@ -168,11 +165,10 @@ $app->router("/admin/news", 'POST', function($vars) use ($app, $jatbi) {
         ];
     });
 
-    // Trả kết quả về DataTable
     echo json_encode([
         "draw" => $draw,
-        "recordsTotal" => $count,
-        "recordsFiltered" => $count,
+        "recordsTotal" => $recordsTotal,
+        "recordsFiltered" => $recordsFiltered,
         "data" => $datas
     ]);
 })->setPermissions(['news']);
