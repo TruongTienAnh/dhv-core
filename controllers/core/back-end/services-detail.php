@@ -13,57 +13,25 @@ $app->router("/admin/services-detail", 'GET', function ($vars) use ($app, $jatbi
     $vars['title'] = $jatbi->lang("Quản lý chi tiết dịch vụ");
     echo $app->render('templates/backend/services/services-detail.html', $vars);
 })->setPermissions(['services-detail']);
-
 $app->router("/admin/services-detail", 'POST', function($vars) use ($app, $jatbi, $setting) {
     $app->header(['Content-Type' => 'application/json']);
 
-    $draw = intval($_POST['draw'] ?? 0);
-    $start = intval($_POST['start'] ?? 0);
-    $length = intval($_POST['length'] ?? 10);
-    $searchValue = $_POST['search']['value'] ?? '';
-    $objectFilter = $_POST['object'] ?? '';
+    // Lấy các tham số từ DataTables
+    $draw = isset($_POST['draw']) ? intval($_POST['draw']) : 0;
+    $start = isset($_POST['start']) ? intval($_POST['start']) : 0;
+    $length = isset($_POST['length']) ? intval($_POST['length']) : 10;
+    $searchValue = isset($_POST['search']['value']) ? $_POST['search']['value'] : '';
+    $objectFilter = isset($_POST['object']) ? $_POST['object'] : '';
 
-    $orderColumnIndex = $_POST['order'][0]['column'] ?? 1;
-    $orderDir = strtoupper($_POST['order'][0]['dir'] ?? 'DESC');
+    $orderColumnIndex = isset($_POST['order'][0]['column']) ? $_POST['order'][0]['column'] : 1;
+    $orderDir = strtoupper(isset($_POST['order'][0]['dir']) ? $_POST['order'][0]['dir'] : 'DESC');
 
-    // Valid columns for ordering (sync with template)
-    $validColumns = ["checkbox", "title", "description", "service_id", "rate", "min_price", "max_price",  "original_min_price","original_max_price", "discount", "object", "content", "author_box_id", "action"];
-    $orderColumn = $validColumns[$orderColumnIndex] ?? "service_id";
-
-    // Search conditions
-    $where = [
-        "AND" => [
-            "OR" => [
-                "service_id[~]" => $searchValue,
-                "rate[~]" => $searchValue,
-                "min_price[~]" => $searchValue,
-                "max_price[~]" => $searchValue,
-                "original_min_price[~]" => $searchValue,
-                "original_max_price[~]" => $searchValue,
-                "discount[~]" => $searchValue,
-                "object[~]" => $searchValue,
-                "content[~]" => $searchValue,
-                "author_box_id[~]" => $searchValue,
-            ]
-        ],
-        "LIMIT" => [$start, $length],
-        "ORDER" => [$orderColumn => $orderDir]
-    ];
-
-    // Add object filter
-    if (!empty($objectFilter)) {
-        $where["AND"]["object"] = $objectFilter;
-    }
-
-    // Count total records matching the search conditions
-    $count = $app->count("services_detail", ["AND" => $where["AND"]]);
-    error_log("Total count: " . $count);
-
-    // Fetch data from services_detail table with all columns
-    $datas = $app->select("services_detail", [
-        "id",
+    // Danh sách cột hợp lệ
+    $validColumns = [
+        "checkbox",
         "service_id",
-        "title",
+        "service_title",
+        "detail_title",
         "description_title",
         "rate",
         "min_price",
@@ -74,54 +42,112 @@ $app->router("/admin/services-detail", 'POST', function($vars) use ($app, $jatbi
         "object",
         "content",
         "author_box_id",
-        "service_id" 
-    ], $where) ?? [];
-    error_log("Fetched data: " . print_r($datas, true)); // Debug raw data
+        "action"
+    ];
+    $orderColumn = $validColumns[$orderColumnIndex] ?? "service_id";
 
-    // Format data for DataTables
+    // Điều kiện lọc dữ liệu
+    $conditions = ["AND" => []];
+
+    if (!empty($searchValue)) {
+        $conditions["AND"]["OR"] = [
+            "services_detail.service_id[~]" => $searchValue,
+            "services_detail.rate[~]" => $searchValue,
+            "services_detail.min_price[~]" => $searchValue,
+            "services_detail.max_price[~]" => $searchValue,
+            "services_detail.original_min_price[~]" => $searchValue,
+            "services_detail.original_max_price[~]" => $searchValue,
+            "services_detail.discount[~]" => $searchValue,
+            "services_detail.object[~]" => $searchValue,
+            "services_detail.content[~]" => $searchValue,
+            "author_boxes.name[~]" => $searchValue,
+            "services.title[~]" => $searchValue,
+            "services_detail.title[~]" => $searchValue
+        ];
+    }
+
+    if (!empty($objectFilter)) {
+        $conditions["AND"]["services_detail.object"] = $objectFilter;
+    }
+
+    // Kiểm tra nếu conditions bị trống
+    if (empty($conditions["AND"])) {
+        unset($conditions["AND"]);
+    }
+
+    // Đếm tổng số bản ghi với JOIN
+    $count = $app->count("services_detail", [
+        "[>]services" => ["service_id" => "id"],
+        "[>]author_boxes" => ["author_box_id" => "id"]
+    ], "services_detail.id", $conditions);
+
+    // Truy vấn danh sách dữ liệu
+    $datas = $app->select("services_detail", [
+        "[>]services" => ["service_id" => "id"],
+        "[>]author_boxes" => ["author_box_id" => "id"]
+    ], [
+        "services_detail.id",
+        "services_detail.service_id",
+        "services.title(service_title)",
+        "services_detail.title(detail_title)",
+        "services_detail.description_title",
+        "services_detail.rate",
+        "services_detail.min_price",
+        "services_detail.max_price",
+        "services_detail.original_min_price",
+        "services_detail.original_max_price",
+        "services_detail.discount",
+        "services_detail.object",
+        "services_detail.content",
+        "author_boxes.name(author_name)"
+    ], array_merge($conditions, [
+        "LIMIT" => [$start, $length],
+        "ORDER" => [$orderColumn => $orderDir]
+    ])) ?? [];
+
+    // Xử lý dữ liệu đầu ra
     $formattedData = array_map(function($data) use ($app, $jatbi, $setting) {
-        $content = $data['content'] ? str_replace("\n", "<br>", wordwrap($data['content'], 50, "<br>", true)) : $jatbi->lang("Không có nội dung");
+        $content = $data['content'] ? str_replace("\n", "<br>", wordwrap($data['content'], 100, "<br>", true)) : $jatbi->lang("Không có nội dung");
         $object = $data['object'] ? $data['object'] : $jatbi->lang("Không xác định");
+        $author_name = $data['author_name'] ?? $jatbi->lang("Không xác định");
+        $service_title = $data['service_title'] ?? $jatbi->lang("Chưa có tiêu đề dịch vụ");
+        $detail_title = $data['detail_title'] ?? $jatbi->lang("Chưa có tiêu đề chi tiết");
 
         return [
-            "checkbox" => $app->component("box", ["data" => $data['id']]), 
+            "checkbox" => $app->component("box", ["data" => $data['id']]),
             "service_id" => $data['service_id'] ?? 'N/A',
-            "title" => $data['title'] ?? $jatbi->lang("Chưa có tiêu đề"),
+            "service_title" => $service_title,
+            "detail_title" => $detail_title,
             "description_title" => $data['description_title'] ?? $jatbi->lang("Chưa có mô tả"),
-            "rate" => $data['rate'] !== null ? $data['rate'] : $jatbi->lang("Chưa đánh giá"),
-            "min_price" => $data['min_price'] !== null ? number_format($data['min_price']) : $jatbi->lang("Không xác định"),
-            "max_price" => $data['max_price'] !== null ? number_format($data['max_price']) : $jatbi->lang("Không xác định"),
-            "original_min_price" => $data['original_min_price'] !== null ? number_format($data['original_min_price']) : $jatbi->lang("Không xác định"),
-            "original_max_price" => $data['original_max_price'] !== null ? number_format($data['original_max_price']) : $jatbi->lang("Không xác định"),
-            "discount" => $data['discount'] !== null ? $data['discount'] . '%' : $jatbi->lang("Không có"),
+            "rate" => $data['rate'] ? $data['rate'] : $jatbi->lang("Không xác định"),
+            "min_price" => $data['min_price'] ? number_format($data['min_price'], 0, '.', ',') : $jatbi->lang("Không xác định"),
+            "max_price" => $data['max_price'] ? number_format($data['max_price'], 0, '.', ',') : $jatbi->lang("Không xác định"),
+            "original_min_price" => $data['original_min_price'] ? number_format($data['original_min_price'], 0, '.', ',') : $jatbi->lang("Không xác định"),
+            "original_max_price" => $data['original_max_price'] ? number_format($data['original_max_price'], 0, '.', ',') : $jatbi->lang("Không xác định"),
+            "discount" => $data['discount'] ? $data['discount'] . '%' : $jatbi->lang("Không có"),
             "object" => $object,
             "content" => $content,
-            "author_box_id" => $data['author_box_id'] !== null ? $data['author_box_id'] : $jatbi->lang("Không xác định"),
+            "author_box_id" => $author_name,
             "action" => $app->component("action", [
                 "button" => [
                     [
                         'type' => 'button',
                         'name' => $jatbi->lang("Sửa"),
                         'permission' => ['services-detail'],
-                        'action' => [
-                            'data-url' => '/admin/services-detail-edit?id=' . ($data['id'] ?? ''),
-                            'data-action' => 'modal'
-                        ]
+                        'action' => ['data-url' => '/admin/services-detail-edit?id=' . ($data['id'] ?? ''), 'data-action' => 'modal']
                     ],
                     [
                         'type' => 'button',
                         'name' => $jatbi->lang("Xóa"),
                         'permission' => ['services-detail'],
-                        'action' => [
-                            'data-url' => '/admin/services-detail-deleted?id=' . ($data['id'] ?? ''),
-                            'data-action' => 'modal'
-                        ]
-                    ]
+                        'action' => ['data-url' => '/admin/services-detail-deleted?id=' . ($data['id'] ?? ''), 'data-action' => 'modal']
+                    ],
                 ]
-            ])
+            ]),
         ];
     }, $datas);
 
+    // Trả về dữ liệu dưới dạng JSON cho DataTables
     echo json_encode([
         "draw" => $draw,
         "recordsTotal" => $count,

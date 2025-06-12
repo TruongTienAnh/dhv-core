@@ -62,13 +62,11 @@ $app->router("/services-detail/{slug}", 'GET', function ($vars) use ($app, $jatb
 
     $service_detail = $services[0];
 
-    // Kiểm tra xem dịch vụ có chi tiết hay không
+// Kiểm tra xem dịch vụ có chi tiết hay không
     if (empty($service_detail['service_detail_id'])) {
-           echo json_encode([
-                "status" => "error",
-                "content" => $jatbi->lang("Một số chi tiết dịch vụ xóa thất bại"),
-                "errors" => $service_detail
-            ]);
+        http_response_code(404);
+        echo $jatbi->lang("Dịch vụ này không có chi tiết dịch vụ.");
+        return;
     }
      
 

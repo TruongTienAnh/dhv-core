@@ -183,7 +183,7 @@
                 'services'=>[
                     "menu"=>$jatbi->lang("Dịch vụ - Chi tiết"),
                     "url"=>'/admin/services',
-                    "icon"=>'<i class="ti ti-user "></i>',
+                    "icon"=>'<i class="ti ti-briefcase "></i>',
                     "sub"=>[
                         'services'      =>[
                             "name"  => $jatbi->lang("Dịch vụ"),
@@ -210,6 +210,19 @@
                         'services-detail.add' => $jatbi->lang("Thêm Chi tiết dịch vụ"),
                         'services-detail.edit' => $jatbi->lang("Sửa Chi tiết dịch vụ"),   
                         'services-detail.deleted' => $jatbi->lang("Xóa Chi tiết dịch vụ"),
+                    ]
+                ],
+                           'author'=>[
+                    "menu"=>$jatbi->lang("Chuyên gia"),
+                    "url"=>'/admin/author',
+                    "icon"=>'<i class="ti ti-user-star "></i>',
+                    "controllers"=>"controllers/core/back-end/author.php",
+                    "main"=>'false',
+                    "permission"=>[
+                        'author'=> $jatbi->lang("Chuyên gia"),
+                        // 'author.add' => $jatbi->lang("Thêm chuyên gia"),
+                        // 'author.edit' => $jatbi->lang("Sửa chuyên gia"),
+                        // 'author.deleted' => $jatbi->lang("Xóa chuyên gia"),
                     ]
                 ],
             ],
