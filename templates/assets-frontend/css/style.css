@@ -4468,8 +4468,8 @@ p {
       .course-details-area .course-details-items .course-thumb .tab-btns ul li:nth-child(4) a i {
         color: #0066ff; }
     .course-details-area .course-details-items .course-details-item .course-text p {
-      font-size: 14px;
-      color: #6b93aa;
+      font-size: 20px;
+      color: black;
       line-height: 26px;
       padding-right: 15px;
       padding-top: 20px; }

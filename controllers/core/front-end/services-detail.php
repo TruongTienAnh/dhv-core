@@ -28,7 +28,8 @@ $app->router("/services-detail/{slug}", 'GET', function ($vars) use ($app, $jatb
         "services.image",
         "services.title(service_title)",
         "services.slug",
-        "services_detail.id(service_detail_id)", // Thêm alias để dễ kiểm tra
+        "services.type",
+        "services_detail.id(service_detail_id)", 
         "services_detail.title",
         "services_detail.description_title",
         "services_detail.rate",
