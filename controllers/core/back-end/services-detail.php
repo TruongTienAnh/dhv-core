@@ -12,7 +12,10 @@ $setting = $app->getValueData('setting');
 $app->router("/admin/services-detail", 'GET', function ($vars) use ($app, $jatbi, $setting) {
     $vars['title'] = $jatbi->lang("Quản lý chi tiết dịch vụ");
     echo $app->render('templates/backend/services/services-detail.html', $vars);
-})->setPermissions(['services-detail']);
+})->setPermissions(['services-detail']);;
+
+
+
 $app->router("/admin/services-detail", 'POST', function($vars) use ($app, $jatbi, $setting) {
     $app->header(['Content-Type' => 'application/json']);
 
@@ -107,7 +110,7 @@ $app->router("/admin/services-detail", 'POST', function($vars) use ($app, $jatbi
 
     // Xử lý dữ liệu đầu ra
     $formattedData = array_map(function($data) use ($app, $jatbi, $setting) {
-        $content = $data['content'] ? str_replace("\n", "<br>", wordwrap($data['content'], 100, "<br>", true)) : $jatbi->lang("Không có nội dung");
+        $content = $data['content'] ? $data['content'] : $jatbi->lang("Không có nội dung"); // Giữ nguyên HTML
         $object = $data['object'] ? $data['object'] : $jatbi->lang("Không xác định");
         $author_name = $data['author_name'] ?? $jatbi->lang("Không xác định");
         $service_title = $data['service_title'] ?? $jatbi->lang("Chưa có tiêu đề dịch vụ");
@@ -165,7 +168,7 @@ $app->router("/admin/services-detail-add", 'GET', function($vars) use ($app, $ja
 $app->router("/admin/services-detail-add", 'POST', function($vars) use ($app, $jatbi, $setting) {
     $app->header(['Content-Type' => 'application/json']);
 
-    // Lấy dữ liệu từ form (xử lý XSS)
+    // Lấy dữ liệu từ form (xử lý XSS cho các trường không phải HTML)
     $service_id = $app->xss($_POST['service_id'] ?? '');
     $title = $app->xss($_POST['title'] ?? '');
     $description_title = $app->xss($_POST['description_title'] ?? '');
@@ -176,7 +179,7 @@ $app->router("/admin/services-detail-add", 'POST', function($vars) use ($app, $j
     $original_max_price = $app->xss($_POST['original_max_price'] ?? '');
     $discount = $app->xss($_POST['discount'] ?? '');
     $object = $app->xss($_POST['object'] ?? '');
-    $content = $app->xss($_POST['content'] ?? '');
+    $content = $_POST['content'] ?? ''; // Không dùng $app->xss để giữ HTML
     $author_box_id = $app->xss($_POST['author_box_id'] ?? '');
 
     // Kiểm tra dữ liệu bắt buộc
@@ -286,7 +289,7 @@ $app->router("/admin/services-detail-edit", 'POST', function ($vars) use ($app, 
         return;
     }
 
-    // Get form data (with XSS sanitization)
+    // Get form data (with XSS sanitization for non-HTML fields)
     $service_id = $app->xss($_POST['service_id'] ?? '');
     $title = $app->xss($_POST['title'] ?? '');
     $description_title = $app->xss($_POST['description_title'] ?? '');
@@ -297,7 +300,7 @@ $app->router("/admin/services-detail-edit", 'POST', function ($vars) use ($app, 
     $original_max_price = $app->xss($_POST['original_max_price'] ?? '');
     $discount = $app->xss($_POST['discount'] ?? '');
     $object = $app->xss($_POST['object'] ?? '');
-    $content = $app->xss($_POST['content'] ?? '');
+    $content = $_POST['content'] ?? ''; // Không dùng $app->xss để giữ HTML
     $author_box_id = $app->xss($_POST['author_box_id'] ?? '');
 
     // Validate required fields
@@ -355,8 +358,8 @@ $app->router("/admin/services-detail-edit", 'POST', function ($vars) use ($app, 
         "author_box_id" => $author_box_id ?: null,
     ];
 
-    // // Debug: Log data before update
-    // error_log("Update data: " . print_r($update, true));
+    // Debug: Log data before update
+    error_log("Update data: " . print_r($update, true));
 
     try {
         $app->update("services_detail", $update, ["id" => $id]);

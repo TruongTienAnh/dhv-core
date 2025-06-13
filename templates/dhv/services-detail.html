@@ -85,9 +85,9 @@
                         <div class="tab-pane fade" id="pills-2" role="tabpanel" aria-labelledby="pills-2-tab">
                             <div class="course-details-item">
                                 <div class="course-text">
-                                    <p style="font-size: 20px; line-height: 1.6;">
-                                        <?= htmlspecialchars($service_detail['content']) ?>
-                                    </p>
+                                    <div style="font-size: 20px; line-height: 1.6;">
+                                        <?= $service_detail['content'] ?? $jatbi->lang("Không có nội dung") ?>
+                                    </div>
                                 </div>
 
 
