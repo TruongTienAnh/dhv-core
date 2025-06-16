@@ -1,74 +1,79 @@
-
 <div class="modal fade modal-load" tabindex="-1" data-bs-backdrop="static">
-	<div class="modal-dialog modal-lg pt-standalone">
-		<div class="modal-content rounded-5">
-			<div class="modal-header border-0">
-				<h5 class="modal-title fw-bold"><?= $title1 ?></h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-			</div>
-			<div class="modal-body">
-				<form method="POST" action="<?= $_SERVER['REQUEST_URI'] ?>" enctype="multipart/form-data">
-					<div class="row g-3">
-						<div class="col-lg-12">
+    <div class="modal-dialog modal-lg pt-standalone">
+        <div class="modal-content rounded-5">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold"><?= $title1 ?></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="<?= $_SERVER['REQUEST_URI'] ?>" enctype="multipart/form-data">
+                    <div class="row g-3">
+                        <div class="col-lg-12">
+                            <div class="mb-3 d-none">
+                                <label class="fw-bold text-body mb-2"><?=$jatbi->lang("Mã Thư viện")?> <span class="text-danger">*</span></label>
+                                <input type="text" name="id" class="form-control py-3 rounded-4 bg-body-tertiary" placeholder="<?=$jatbi->lang("Mã thư viện")?>" value="<?= $data['id'] ?? '' ?>">
+                            </div>
 
-							<div class="mb-3 d-none">
-								<label class="fw-bold text-body mb-2"><?=$jatbi->lang("Mã Thư viện")?> <span class="text-danger">*</span></label>
-								<input type="text" name="id" class="form-control py-3 rounded-4 bg-body-tertiary" placeholder="<?=$jatbi->lang("Mã thư viện")?>" value="<?=$data['id'] ?? ''?>">
-							</div>
+                            <div class="mb-3">
+                                <label class="fw-bold text-body mb-2"><?=$jatbi->lang("Tiêu đề")?> <span class="text-danger">*</span></label>
+                                <input type="text" name="title" class="form-control py-3 rounded-4 bg-body-tertiary" placeholder="<?=$jatbi->lang("Tiêu đề")?>" value="<?= $data['title'] ?? '' ?>">
+                            </div>
 
-							<div class="mb-3">
-								<label class="fw-bold text-body mb-2"><?=$jatbi->lang("Tiêu đề")?> <span class="text-danger">*</span></label>
-								<input type="text" name="title" class="form-control py-3 rounded-4 bg-body-tertiary" placeholder="<?=$jatbi->lang("Tiêu đề")?>" value="<?=$data['title'] ?? ''?>">
-							</div>
+                            <div class="mb-3">
+                                <label class="fw-bold text-body mb-2"><?=$jatbi->lang("Mô tả")?> <span class="text-danger">*</span></label>
+                                <input type="text" name="description" class="form-control py-3 rounded-4 bg-body-tertiary" placeholder="<?=$jatbi->lang("Mô tả")?>" value="<?= $data['description'] ?? '' ?>">
+                            </div>
 
-							<div class="mb-3">
-								<label class="fw-bold text-body mb-2"><?=$jatbi->lang("Mô tả")?> <span class="text-danger">*</span></label>
-								<input type="text" name="description" class="form-control py-3 rounded-4 bg-body-tertiary" placeholder="<?=$jatbi->lang("Mô tả")?>" value="<?=$data['description'] ?? ''?>">
-							</div>
+                            <div class="mb-3 row">
+								         <div class="col-md-6">
+                                    <label class="fw-bold text-body mb-2"><?= $jatbi->lang("Ảnh minh họa") ?> <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <input type="file" name="image" class="form-control py-3 rounded-4 bg-body-tertiary" accept="image/*" <?= !isset($data['id']) ? 'required' : '' ?>>
+                                    </div>
+                                    <?php if (isset($data['img_url']) && !empty($data['img_url'])): ?>
+                                        <div class="mt-2">
+                                            <img src="<?= htmlspecialchars($setting['template'] . '/' . $data['img_url']) ?>" alt="Current Image" style="max-width: 100px;">
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="fw-bold text-body mb-2"><?= $jatbi->lang("File PDF") ?> <span class="text-danger">*</span></label>
+                                    <input type="file" name="file" class="form-control py-3 rounded-4 bg-body-tertiary" accept="application/pdf" <?= !isset($data['id']) ? 'required' : '' ?>>
+                                    <?php if (isset($data['file_url']) && !empty($data['file_url'])): ?>
+                                        <div class="mt-2">
+                                            <small class="text-muted"><?= $jatbi->lang("File hiện tại:") ?> <a href="<?= htmlspecialchars($setting['template'] . '/' . $data['file_url']) ?>" target="_blank"><?= basename($data['file_url']) ?></a></small>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                       
+                            </div>
 
-							<div class="mb-3 row">
-								<div class="col-md-8">
-									<label class="fw-bold text-body mb-2"><?= $jatbi->lang("File PDF") ?> <span class="text-danger">*</span></label>
-									<input type="file" name="file" class="form-control py-3 rounded-4 bg-body-tertiary" accept="application/pdf" required>
-								</div>
-								<div class="col-md-4">
-									<label class="fw-bold text-body mb-2"><?= $jatbi->lang("Ảnh minh họa") ?> <span class="text-danger">*</span></label>
-									<input type="file" name="image" class="form-control py-3 rounded-4 bg-body-tertiary" accept="image/*" required>
-								</div>
-							</div>
+                            <div class="mb-3">
+                                <label class="fw-bold text-body mb-2"><?= $jatbi->lang("Danh mục") ?> <span class="text-danger">*</span></label>
+                                <select name="category" class="form-select py-3 rounded-4 bg-body-tertiary" required>
+                                    <option value=""><?= $jatbi->lang("Chọn danh mục") ?></option>
+                                    <?php foreach ($categories as $category): ?>
+                                        <option value="<?= $category['id'] ?>" <?= isset($data['id_category']) && $data['id_category'] == $category['id'] ? 'selected' : '' ?>>
+                                            <?= $category['name'] ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
 
+                            <div class="mb-3">
+                                <label class="fw-bold text-body mb-2"><?= $jatbi->lang("Ngày đăng") ?> <span class="text-danger">*</span></label>
+                                <input type="date" name="create_at" class="form-control py-3 rounded-4 bg-body-tertiary" value="<?= isset($data['created_at']) ? date('Y-m-d', strtotime($data['created_at'])) : date('Y-m-d') ?>">
+                            </div>
+                        </div>
 
-							<div class="mb-3">
-								<label class="fw-bold text-body mb-2"><?= $jatbi->lang("Danh mục") ?> <span class="text-danger">*</span></label>
-								<select name="category" class="form-select py-3 rounded-4 bg-body-tertiary" required>
-									<option value=""><?= $jatbi->lang("Chọn danh mục") ?></option>
-									<?php foreach ($categories as $category): ?>
-										<option value="<?= $category['id'] ?>" <?= isset($data['id_category']) && $data['id_category'] == $category['id'] ? 'selected' : '' ?>>
-											<?= $category['name'] ?>
-										</option>
-									<?php endforeach; ?>
-								</select>
-							</div>
-
-							<div class="mb-3">
-								<label class="fw-bold text-body mb-2"><?= $jatbi->lang("Ngày đăng") ?> <span class="text-danger">*</span></label>
-								<input type="date" name="create_at" class="form-control py-3 rounded-4 bg-body-tertiary"
-									value="<?= $data['create_at'] ?? date('Y-m-d') ?>">
-							</div>
-
-						</div>
-
-						<div class="col-lg-12">
-							<button type="submit" class="btn btn-primary w-100 py-3 rounded-pill fw-bold"
-								data-action="submit" data-alert="true" data-load="this">
-								<?= $jatbi->lang("Hoàn thành") ?>
-							</button>
-						</div>
-
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
+                        <div class="col-lg-12">
+                            <button type="submit" class="btn btn-primary w-100 py-3 rounded-pill fw-bold" data-action="submit" data-alert="true" data-load="this">
+                                <?= $jatbi->lang("Hoàn thành") ?>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
-
